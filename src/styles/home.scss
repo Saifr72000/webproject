@@ -1,0 +1,128 @@
+@use "variables";
+@use "mixins";
+@use "globals";
+
+// General styles
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+// Navbar styling
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px 30px;
+  background: #222;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    
+    li {
+      a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 8px 15px;
+        border-radius: 5px;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+      
+      .btn {
+        background: #007bff;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+
+      .btn-primary {
+        @include mixins.button-style(#bb2897);
+      }
+      
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+
+        &:hover {
+          background: white;
+          color: #222;
+        }
+      }
+    }
+  }
+}
+
+// Hero section styling
+.hero {
+  margin-top: 100px;
+  padding: 60px 20px;
+  max-width: 600px;
+
+  h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #555;
+  }
+
+  .cta-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    
+    .btn-primary {
+      background: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+
+      &:hover {
+        background: #218838;
+      }
+    }
+
+    .btn-secondary {
+      background: #ffcc00;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+
+      &:hover {
+        background: #e6b800;
+      }
+    }
+  }
+}

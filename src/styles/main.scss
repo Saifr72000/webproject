@@ -1,0 +1,14 @@
+// Import variables, mixins, and any global resets
+@use "variables";
+@use "mixins";
+@use "home"; 
+@use "globals";
+
+//add global styles here
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
