@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
+  _id: mongoose.Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
@@ -9,10 +10,15 @@ export interface IUser extends Document {
   otpExpires: Date;
   isVerified: boolean;
   workspaces: mongoose.Types.ObjectId[];
+  refreshToken?: string;
   createdAt: Date;
 }
 
 const UserSchema = new Schema<IUser>({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    auto: true, // ✅ Ensures MongoDB generates an _id automatically
+  },
   firstName: {
     type: String,
     required: true,
@@ -29,6 +35,9 @@ const UserSchema = new Schema<IUser>({
   password: {
     type: String,
     required: true,
+  },
+  refreshToken: {
+    type: String,
   },
   otp: { type: String },
   otpExpires: {
@@ -50,4 +59,4 @@ const UserSchema = new Schema<IUser>({
   },
 });
 
-export const User = mongoose.model<IUser>("User", UserSchema);
+export const User = mongoose.model<IUser>("User", UserSchema, "users");

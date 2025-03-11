@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, check } from "express-validator";
 import { RequestHandler } from "express";
 
 // For validating input and sanization
@@ -36,4 +36,19 @@ export const registerUserValidator: RequestHandler[] = [
     .withMessage("Password is required")
     .isLength({ min: 6 })
     .withMessage("Password must be at leasr 6 characters long"),
+];
+
+export const updateUserValidator = [
+  check("firstName")
+    .optional()
+    .isString()
+    .withMessage("First name must be a string"),
+  check("lastName")
+    .optional()
+    .isString()
+    .withMessage("Last name must be a string"),
+  check("password")
+    .optional()
+    .isLength({ min: 6 })
+    .withMessage("Password must at least be 6 characters long"),
 ];

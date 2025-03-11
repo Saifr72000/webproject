@@ -6,8 +6,8 @@ export const validateRequest: RequestHandler = (req, res, next) => {
 
   if (!errors.isEmpty()) {
     res.status(400).json({ errors: errors.array() });
-    return; // ✅ Explicitly return to ensure the function exits
+    return; // Explicitly return to ensure the function exits
   }
 
-  return next(); // ✅ Explicitly return void
+  next(); // Explicitly return void
 };

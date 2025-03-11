@@ -1,13 +1,12 @@
 import { Request, Response } from "express-serve-static-core";
-import { registerUser } from "../services/user.service";
-
-export const getUsers = (request: Request, response: Response) => {
-  response.send([]);
-};
-
-export const getUsersById = (request: Request, response: Response) => {
-  response.send({});
-};
+import {
+  getAllUsers,
+  registerUser,
+  getUserById,
+  getUsersByWorkspace,
+  updateUser,
+} from "../services/user.service";
+import { User } from "../models/user.model";
 
 export const createUser = async (request: Request, response: Response) => {
   try {
@@ -24,5 +23,79 @@ export const createUser = async (request: Request, response: Response) => {
     } else {
       response.status(400).json({ message: "An unknwn error occurred" });
     }
+  }
+};
+
+export const retrieveUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await getAllUsers();
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving users" });
+  }
+};
+
+// Retrieve user by user id controller
+export const retrieveUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = await getUserById(req.params.id); // Fetch user from DB
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json(user); // ✅ Send the response directly
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Retrieve user by workspace id controller
+export const retrieveUserByWorkspace = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const users = await getUsersByWorkspace(req.params.id);
+    console.log(req);
+
+    if (users.length === 0) {
+      res.status(404).json({ message: "No users found in this workspace" });
+      return;
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+//Update user by user id controller
+
+export const updateUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, password } = req.body;
+    const updatedUser = await updateUser(id, { firstName, lastName, password });
+    console.log(req);
+    if (!updatedUser) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update user", error });
   }
 };
