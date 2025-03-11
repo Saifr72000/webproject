@@ -4,7 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import usersRouter from "./routes/users.routes";
 import { rateLimiter } from "./middlewares/rateLimit.middleware";
-
+import authRouter from "./routes/auth.routes";
+import cookieParser from "cookie-parser";
 // Load environment variables from .env
 dotenv.config();
 
@@ -13,10 +14,12 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json()); // To parse JSON request bodies
+app.use(cookieParser());
 app.use(rateLimiter);
 
 //Routes
 app.use("/api/users", usersRouter);
+app.use("/api/auth", authRouter);
 
 // MongoDB Connection
 const MONGO_URI =

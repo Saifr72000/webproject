@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
-import { User } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import { Workspace } from "../models/workspace.model";
 import { generateOTP } from "../utils/otp.util";
 import { Types } from "mongoose";
 import dotenv from "dotenv";
+import { NextFunction, Request, Response } from "express-serve-static-core";
+import mongoose from "mongoose";
 
 const SALT_ROUNDS = 10; //WE must consider moving this to .env file instead for security purposes
 
@@ -48,5 +50,52 @@ export const registerUser = async (
   newUser.workspaces.push(workspace._id as Types.ObjectId);
   await newUser.save();
 
-  return { newUser };
+  // Ensure no sensitive information is returned in the API response.
+  return {
+    firstName: newUser.firstName,
+    lastName: newUser.lastName,
+    email: newUser.email,
+    workspaces: newUser.workspaces,
+  };
+};
+
+export const getAllUsers = async (): Promise<IUser[]> => {
+  return await User.find().select("-password"); // Exclude password for security
+};
+
+export const getUserById = async (userId: string): Promise<IUser | null> => {
+  return await User.findById(userId).select("-password");
+};
+
+export const getUsersByWorkspace = async (
+  workspaceId: string
+): Promise<IUser[]> => {
+  return await User.find({ workspaces: workspaceId }).select("-password");
+};
+
+export const updateUser = async (
+  userId: string,
+  updates: Partial<Pick<IUser, "firstName" | "lastName" | "password">>
+): Promise<IUser | null> => {
+  try {
+    const { firstName, lastName, password } = updates;
+
+    const updateData: Partial<IUser> = {};
+
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      updateData.password = hashedPassword;
+    }
+
+    const updateUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+    return updateUser;
+  } catch (error) {
+    throw new Error("Failed to update user");
+  }
 };
