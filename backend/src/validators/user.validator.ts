@@ -11,7 +11,7 @@ export const registerUserValidator: RequestHandler[] = [
     .withMessage("First Name must contain only letters")
     .escape()
     .isLength({ min: 2 })
-    .withMessage("First name must be at leasr 2 characters"), //This can be removed actually
+    .withMessage("First name must be at least 2 characters"), //This can be removed actually
 
   body("lastName")
     .trim()
