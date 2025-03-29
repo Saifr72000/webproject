@@ -93,7 +93,7 @@ export const updateUser = async (
     const updateUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
       runValidators: true,
-    }).select("-password");
+    }).select("-password -refreshToken");
     return updateUser;
   } catch (error) {
     throw new Error("Failed to update user");

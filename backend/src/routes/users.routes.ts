@@ -21,12 +21,8 @@ router.post("/register", registerUserValidator, validateRequest, createUser);
 // Get user by user id
 router.get("/:id", authenticateUser, retrieveUserById);
 
-router.post(
-  "/updateuser/:id",
-  updateUserValidator,
-  validateRequest,
-  updateUserById
-);
+router.put("/:id", updateUserValidator, validateRequest, updateUserById);
+
 // Get all users
 router.get("/", validateRequest, retrieveUsers);
 
