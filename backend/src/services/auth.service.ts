@@ -25,7 +25,7 @@ export const loginUser = async (
   // ✅ Set access token in HTTP-only, secure cookies
   res.cookie("access_token", accessToken, {
     httpOnly: true, // Prevents JavaScript access (protects against XSS)
-    secure: true, // Ensures cookie is only sent over HTTPS
+    secure: false, // Ensures cookie is only sent over HTTPS
     sameSite: "strict", // Protects against CSRF
     maxAge: 15 * 60 * 1000, // 15 minutes expiration
   });

@@ -6,6 +6,7 @@ import usersRouter from "./routes/users.routes";
 import { rateLimiter } from "./middlewares/rateLimit.middleware";
 import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
+import workspacesRouter from "./routes/workspace.routes";
 // Load environment variables from .env
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(rateLimiter);
 //Routes
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/workspaces", workspacesRouter);
 
 // MongoDB Connection
 const MONGO_URI =
