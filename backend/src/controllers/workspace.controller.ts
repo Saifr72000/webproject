@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { createWorkspaceService,
+import { saveNewWorkspace,
      getWorkspaceForUser, 
-     getWorkspaceByIdService,
+     fetchWorkspaceId,
      deleteWorkspaceById,
      addUserToWorkspace,
      updateWorkspaceById
@@ -25,8 +25,8 @@ export const createWorkspace = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    // call service to create workspace
-    const workspace = await createWorkspaceService({
+    // call function to create workspace
+    const workspace = await saveNewWorkspace({
         name,
         userId: mongoose.Types.ObjectId.createFromHexString(userId.toString())
       });
@@ -76,7 +76,7 @@ export const getWorkspaceById = async (req: Request, res: Response): Promise<voi
       }
   
       //Call the service to fetch workspace
-      const workspace: IWorkspace | null = await getWorkspaceByIdService(workspaceId); // valid workspace or null
+      const workspace: IWorkspace | null = await fetchWorkspaceId(workspaceId); // valid workspace or null
   
       //Handle not found
       if (!workspace) {
