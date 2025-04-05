@@ -27,7 +27,7 @@ router.post(
   validateRequest,
   updateUserById
 );
-// Get all users
+// Get all users from db
 router.get("/", validateRequest, retrieveUsers);
 
 //Get users by workspace id
