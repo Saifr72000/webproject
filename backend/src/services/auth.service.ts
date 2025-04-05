@@ -22,7 +22,7 @@ export const loginUser = async (
   user.refreshToken = refreshToken;
   await user.save();
 
-  // ✅ Set access token in HTTP-only, secure cookies
+  // Set access token in HTTP-only, secure cookies
   res.cookie("access_token", accessToken, {
     httpOnly: true, // Prevents JavaScript access (protects against XSS)
     secure: false, // Ensures cookie is only sent over HTTPS
@@ -30,7 +30,7 @@ export const loginUser = async (
     maxAge: 15 * 60 * 1000, // 15 minutes expiration
   });
 
-  // ✅ Set refresh token in HTTP-only cookie
+  // Set refresh token in HTTP-only cookie
   res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
     secure: true,

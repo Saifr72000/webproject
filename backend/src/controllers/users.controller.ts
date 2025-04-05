@@ -49,7 +49,7 @@ export const retrieveUserById = async (
       return;
     }
 
-    res.status(200).json(user); // ✅ Send the response directly
+    res.status(200).json(user); // Send the response directly
   } catch (error) {
     console.error("Error retrieving user:", error);
     res.status(500).json({ message: "Internal server error" });

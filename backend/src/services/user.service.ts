@@ -35,7 +35,7 @@ export const registerUser = async (
     password: hashedPassword,
   });
 
-  await newUser.save();
+  await newUser.save(); // Saves user to db
 
   // Create default workspace
   const workspace = new Workspace({
