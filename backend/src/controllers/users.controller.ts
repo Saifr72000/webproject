@@ -92,14 +92,9 @@ export const updateUserById = async (
       return;
     }
 
- // clean up the response
-    const userObject = updatedUser.toObject();
-    delete userObject.__v;
-    userObject.id = userObject._id;
-    delete userObject._id;
-
-    res.status(200)
-      .json({ message: "User updated successfully", user: userObject });
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Failed to update user", error });
   }
