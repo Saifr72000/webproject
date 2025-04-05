@@ -16,7 +16,7 @@ export const loginController = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const result = await loginUser(email, password, res); // ✅ Pass `res` to set cookies
+    const result = await loginUser(email, password, res); // Pass `res` to set cookies
 
     if (!result) {
       res.status(401).json({ message: "Invalid credentials" });
@@ -25,7 +25,7 @@ export const loginController = async (
 
     res.status(200).json(result);
   } catch (error) {
-    next(error); // ✅ Forward error to Express error handler
+    next(error); // Forward error to Express error handler
   }
 };
 
@@ -35,18 +35,18 @@ export const refreshTokenController = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.cookies;
-    if (!refreshToken) {
+    const { refresh_token } = req.cookies;
+    if (!refresh_token) {
       res.status(401).json({ message: "Refresh Token Required" });
       return;
     }
 
-    const decoded = verifyRefreshToken(refreshToken);
+    const decoded = verifyRefreshToken(refresh_token);
     if (!decoded) {
       res.status(403).json({ message: "Invalid Refresh Token" });
       return;
     }
-
+    const refreshToken = refresh_token; // referring to user model key for storing refresh token
     const user = await User.findOne({ refreshToken });
     if (!user) {
       res.status(403).json({ message: "Refresh Token Not Found" });
@@ -55,7 +55,7 @@ export const refreshTokenController = async (
 
     const newAccessToken = generateAccessToken(user._id.toString());
 
-    res.cookie("accessToken", newAccessToken, {
+    res.cookie("access_token", newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -70,8 +70,8 @@ export const refreshTokenController = async (
 
 export const logoutController = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
 
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
