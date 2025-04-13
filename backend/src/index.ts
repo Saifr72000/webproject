@@ -13,10 +13,15 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your frontend dev URL
+    credentials: true, // allow cookies (very important!)
+  })
+);
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
-app.use(rateLimiter);
+/* app.use(rateLimiter); */
 
 //Routes
 app.use("/api/users", usersRouter);

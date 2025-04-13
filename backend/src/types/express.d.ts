@@ -1,9 +1,13 @@
-import { IUser } from "../../models/user.model"; // or wherever your user interface/type is
+import "express";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser; // or `any` if you're not using a User interface
+      user?: {
+        userId: string;
+        email: string;
+        // Add any other properties that might be in your JWT payload
+      };
     }
   }
 }
