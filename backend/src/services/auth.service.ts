@@ -40,6 +40,11 @@ export const loginUser = async (
 
   return {
     message: "Login successful",
-    user: { id: user._id, email: user.email },
+    user: {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    },
   };
 };

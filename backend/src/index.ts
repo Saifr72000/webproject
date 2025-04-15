@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import usersRouter from "./routes/users.routes";
+import studyRouter from "./routes/study.routes";
 import { rateLimiter } from "./middlewares/rateLimit.middleware";
 import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
@@ -13,13 +14,19 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your frontend dev URL
+    credentials: true, // allow cookies (very important!)
+  })
+);
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
-app.use(rateLimiter);
+/* app.use(rateLimiter); */
 
 //Routes
 app.use("/api/users", usersRouter);
+app.use("/api/studies", studyRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
 

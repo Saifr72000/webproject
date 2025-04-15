@@ -3,9 +3,6 @@ import { IUser, User } from "../models/user.model";
 import { Workspace } from "../models/workspace.model";
 import { generateOTP } from "../utils/otp.util";
 import { Types } from "mongoose";
-import dotenv from "dotenv";
-import { NextFunction, Request, Response } from "express-serve-static-core";
-import mongoose from "mongoose";
 
 const SALT_ROUNDS = 10; //WE must consider moving this to .env file instead for security purposes
 

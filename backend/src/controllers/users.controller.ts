@@ -99,3 +99,38 @@ export const updateUserById = async (
     res.status(500).json({ message: "Failed to update user", error });
   }
 };
+
+// Get current user from access token cookie
+export const getCurrentUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // The user object is already attached to the request by the authenticateUser middleware
+    if (!req.user || !req.user.userId) {
+      res.status(401).json({ message: "Authentication required" });
+      return;
+    }
+
+    const user = await getUserById(req.user.userId);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    // Return the user data without sensitive information
+    const userResponse = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      // Add any other non-sensitive fields you want to include
+    };
+
+    res.status(200).json(userResponse);
+  } catch (error) {
+    console.error("Error retrieving current user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

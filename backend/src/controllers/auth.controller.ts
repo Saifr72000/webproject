@@ -14,6 +14,7 @@ export const loginController = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  console.log("Login controller called from FF");
   try {
     const { email, password } = req.body;
     const result = await loginUser(email, password, res); // Pass `res` to set cookies
