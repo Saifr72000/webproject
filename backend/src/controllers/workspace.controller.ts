@@ -17,18 +17,18 @@ import { ObjectId } from "bson";
 export const createWorkspace = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name } = req.body;
-    const userId = req.user?.userId;
+    const userId = req.user?.userId; // firstly authenticateUser middleware added a user property to req: (req as any).user = decoded;
 
     // Validate user ID
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId.toString())) {
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId.toString())) { // is the userId a valid MongoDB ObjectId?
       res.status(401).json({ message: "Invalid or missing user ID." });
       return;
     }
 
     // call function to create workspace
-    const workspace = await saveNewWorkspace({
+    const workspace = await saveNewWorkspace({ // calling the service function and passing name and userId to it
         name,
-        userId: mongoose.Types.ObjectId.createFromHexString(userId.toString())
+        userId: mongoose.Types.ObjectId.createFromHexString(userId.toString()) // Converts userId string to ObjectId so that MongoDB can use it
       });
       
 
@@ -65,9 +65,9 @@ export const getUserWorkspaces = async (req : Request, res: Response): Promise <
 
 // This controller is for retrieving a workspace by its IDW
 
-export const getWorkspaceById = async (req: Request, res: Response): Promise<void> => {
+export const getWorkspaceById = async (req: Request, res: Response): Promise<void> => { 
     try {
-      const workspaceId = req.params.id;
+      const workspaceId = req.params.id; // Extract workspace ID from request parameters from the URL
   
       // Validate the ID
       if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
@@ -85,7 +85,7 @@ export const getWorkspaceById = async (req: Request, res: Response): Promise<voi
       }
   
       // Return the result
-      res.status(200).json(workspace);
+      res.status(200).json({workspace});
     } catch (error) {
       console.error("Error retrieving workspace:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -95,8 +95,8 @@ export const getWorkspaceById = async (req: Request, res: Response): Promise<voi
   // delete workspace by ID
   export const deleteWorkspace = async (req: Request, res: Response): Promise<void> => {
     try {
-          const WorkspaceId = req.params.id;
-          const userId = req.user?.userId;
+          const WorkspaceId = req.params.id; // Extract workspace ID from request parameters or the URL
+          const userId = req.user?.userId; // Extract user ID from request object (set by auth middleware)
 ;
 
         if (!userId){
@@ -191,7 +191,8 @@ export const addUserToWorkspaceController = async (req: Request, res: Response):
     }
 
     // Call service logic to add the user to the workspace (after service function)
-    const result = await addUserToWorkspace(workspaceId, ownerId, new mongoose.Types.ObjectId(userId as string));
+    const result = await addUserToWorkspace(workspaceId, ownerId,
+         new mongoose.Types.ObjectId(userId as string));
 
     if (result === "forbidden") {
       res.status(403).json({ message: "Only the owner can add users" });
@@ -214,3 +215,5 @@ export const addUserToWorkspaceController = async (req: Request, res: Response):
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+

@@ -3,7 +3,7 @@ import { IUser } from "../../models/user.model"; // or wherever your user interf
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser; // or `any` if you're not using a User interface
+      user?: IUser; // tells TypeScript that the user property might contain a user object
     }
   }
 }
