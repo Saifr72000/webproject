@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { nanoid } from "nanoid";
+import crypto from "crypto";
 
 export type StudyStatus = "draft" | "active" | "completed";
 
@@ -16,6 +16,7 @@ export interface DemographicField {
 }
 
 export interface IStudy extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   description: string;
   owner: mongoose.Types.ObjectId;
@@ -68,7 +69,7 @@ const StudySchema = new Schema<IStudy>({
   },
   publicUrl: {
     type: String,
-    default: () => nanoid(10),
+    default: () => crypto.randomBytes(6).toString("base64url"),
     unique: true,
   },
   createdAt: {
@@ -143,6 +144,19 @@ StudySchema.pre("save", function (next) {
   next();
 });
 
+//This can be removed for MVP basically
+/* StudySchema.pre('save', async function(next) {
+  if (this.isNew) {
+    // Check if publicUrl already exists
+    const existingStudy = await mongoose.models.Study.findOne({ publicUrl: this.publicUrl });
+    if (existingStudy) {
+      // Generate a new one if collision detected
+      this.publicUrl = crypto.randomBytes(6).toString('base64url');
+    }
+  }
+  next();
+});
+ */
 StudySchema.virtual("comparisons", {
   ref: "Comparison",
   localField: "_id",
@@ -155,7 +169,6 @@ StudySchema.set("toObject", { virtuals: true });
 // Indexes for faster queries
 StudySchema.index({ owner: 1 });
 StudySchema.index({ workspace: 1 });
-StudySchema.index({ publicUrl: 1 });
 StudySchema.index({ status: 1 });
 
 export const Study = mongoose.model<IStudy>("Study", StudySchema);

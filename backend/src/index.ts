@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import usersRouter from "./routes/users.routes";
+import studyRouter from "./routes/study.routes";
 import { rateLimiter } from "./middlewares/rateLimit.middleware";
 import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
@@ -25,6 +26,7 @@ app.use(cookieParser());
 
 //Routes
 app.use("/api/users", usersRouter);
+app.use("/api/studies", studyRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
 

@@ -23,7 +23,7 @@ export const createWorkspace = async (
 
     // Validate user ID
     if (!userId || !mongoose.Types.ObjectId.isValid(userId.toString())) {
-      res.status(401).json({ message: "Invalid or missing user ID." });
+      res.status(401).json({ message: "Authentication required" });
       return;
     }
 
