@@ -9,9 +9,11 @@ interface CreateWorkspaceOptions {
   userId: mongoose.Types.ObjectId; // userId of the owner of the workspace
 }
 
+
 // Function to create a new workspace
 // This function is used to create a new workspace and link it to the user
 export const saveNewWorkspace = async ({ name, userId }: CreateWorkspaceOptions) => { // name and userId are required
+
   // Create workspace instance
   const workspace = new Workspace({
     name, 

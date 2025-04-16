@@ -38,6 +38,7 @@ export const createWorkspace = async (
       
 
 
+
     // return response to the client
     res.status(201).json({
       message: "Workspace created successfully",
@@ -143,6 +144,53 @@ export const getWorkspaceById = async (req: Request, res: Response): Promise<voi
 
     // update workspace name, (checks if its the owner)
 export const updateWorkspace = async (req: Request, res: Response): Promise<void> => {
+
+
+// delete workspace by ID
+export const deleteWorkspace = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const WorkspaceId = req.params.id;
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(WorkspaceId)) {
+      res.status(400).json({ message: "Invalid Workspace ID" });
+      return;
+    }
+
+    const result = await deleteWorkspaceById(
+      WorkspaceId,
+      new mongoose.Types.ObjectId(userId as string)
+    );
+
+    if (result === "forbidden") {
+      res.status(403).json({ message: "only owner can delete this workspace" });
+      return;
+    }
+    if (!result) {
+      res.status(404).json({ message: "workspace not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "workspace deleted successfully" });
+  } catch (error) {
+    console.error("Error retrieving workspace:", error);
+    res.status(500).json({ message: "internal sever error" });
+  }
+};
+
+// update workspace name, (checks if its the owner)
+export const updateWorkspace = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+
 
   try {
     const workspaceId = req.params.id;
