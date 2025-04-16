@@ -8,7 +8,7 @@ interface CreateWorkspaceOptions {
   userId: mongoose.Types.ObjectId;
 }
 
-export const createWorkspaceService = async ({ name, userId }: CreateWorkspaceOptions) => {
+export const saveNewWorkspace = async ({ name, userId }: CreateWorkspaceOptions) => {
   // Create workspace instance
   const workspace = new Workspace({
     name,
@@ -35,7 +35,7 @@ export const getWorkspaceForUser = async (userId: mongoose.Types.ObjectId) => {
       };
 
 
-      export const getWorkspaceByIdService = async (
+      export const fetchWorkspaceId = async (
         workspaceId: string
       ): Promise<(Document & IWorkspace) | null> => {
         return Workspace.findById(workspaceId);

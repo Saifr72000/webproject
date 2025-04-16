@@ -33,6 +33,7 @@ export const createWorkspace = async (
       userId: mongoose.Types.ObjectId.createFromHexString(userId.toString()),
     });
 
+
     // return response to the client
     res.status(201).json({
       message: "Workspace created successfully",
@@ -147,6 +148,7 @@ export const updateWorkspace = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+
   try {
     const workspaceId = req.params.id;
     const userId = req.user?.userId;
