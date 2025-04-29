@@ -3,26 +3,31 @@ import { User } from "../models/user.model";
 import mongoose from "mongoose";
 import { IWorkspace } from "../models/workspace.model";
 
-interface CreateWorkspaceOptions {
-  name: string;
-  userId: mongoose.Types.ObjectId;
+// typescript interface that says: " Any object passed to saveNewWorkspace() must have a name (string) and a userId (ObjectId)"
+interface CreateWorkspaceOptions { 
+  name: string; // name of the workspace
+  userId: mongoose.Types.ObjectId; // userId of the owner of the workspace
 }
 
-export const saveNewWorkspace = async ({ name, userId }: CreateWorkspaceOptions) => {
+
+// Function to create a new workspace
+// This function is used to create a new workspace and link it to the user
+export const saveNewWorkspace = async ({ name, userId }: CreateWorkspaceOptions) => { // name and userId are required
+
   // Create workspace instance
   const workspace = new Workspace({
-    name,
-    owner: userId,
-    members: [{ user: userId, role: "owner" }],
+    name, 
+    owner: userId, // Set the owner of the workspace to the userId passed in
+    members: [{ user: userId, role: "owner" }], // Add the user as a member with the role of owner
   });
 
   // Save the workspace to the database
-  await workspace.save();
+  await workspace.save(); // Save the workspace to the database and gives it an ID
 
   // Link workspace to the user
   await User.findByIdAndUpdate(userId, {
     $push: { workspaces: workspace._id },
-  });
+  }); // Find the user with this userId, and push the new workspace’s ID into their workspaces array.
   return workspace;
 };
 
@@ -37,15 +42,15 @@ export const getWorkspaceForUser = async (userId: mongoose.Types.ObjectId) => {
 
       export const fetchWorkspaceId = async (
         workspaceId: string
-      ): Promise<(Document & IWorkspace) | null> => {
+      ): Promise<(Document & IWorkspace) | null> => { // promise to return workspace or null
         return Workspace.findById(workspaceId);
       };
 
       export const deleteWorkspaceById = async (
         workspaceId: string,
         userId: mongoose.Types.ObjectId
-    ): Promise<true | "forbidden" | null> => {
-        const workspace = await Workspace.findById(workspaceId);
+    ): Promise<true | "forbidden" | null> => { // promise to return true or "forbidden" or null
+        const workspace = await Workspace.findById(workspaceId); // Find workspace by ID
 
         if (!workspace) {
             return null;
@@ -65,7 +70,7 @@ export const updateWorkspaceById = async (
   userId: mongoose.Types.ObjectId,
   updates: { name?: string }
 ): Promise<IWorkspace | "forbidden" | null> => {
-  const workspace = await Workspace.findById(workspaceId);
+  const workspace = await Workspace.findById(workspaceId);// finds the whole workspace document that includes the name, owner, members, studies, and createdAt fields
   if (!workspace) return null;
 
   const isOwner = workspace.owner.equals(userId);
@@ -81,10 +86,10 @@ export const updateWorkspaceById = async (
 
 
 export const addUserToWorkspace = async (
-    workspaceId: string,
-    ownerId: mongoose.Types.ObjectId,
+    workspaceId: string, // ID of the workspace to which the user is being added
+    ownerId: mongoose.Types.ObjectId, // the ownerId must be a mongoose ObjectId and not just a string
     newUserId: mongoose.Types.ObjectId
-  ): Promise<IWorkspace | "forbidden" | "already-member" | null> => {
+  ): Promise<IWorkspace | "forbidden" | "already-member" | null> => { // promise to return workspace or "forbidden" or "already-member" or null
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) return null;
   

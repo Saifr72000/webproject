@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
-import {
-  createWorkspaceService,
-  getWorkspaceForUser,
-  getWorkspaceByIdService,
-  deleteWorkspaceById,
-  addUserToWorkspace,
-  updateWorkspaceById,
+
+import { saveNewWorkspace,
+     getWorkspaceForUser, 
+     fetchWorkspaceId,
+     deleteWorkspaceById,
+     addUserToWorkspace,
+     updateWorkspaceById
+
+
 } from "../services/workspace.service";
 import mongoose from "mongoose";
 import { Workspace } from "../models/workspace.model";
@@ -19,19 +21,22 @@ export const createWorkspace = async (
 ): Promise<void> => {
   try {
     const { name } = req.body;
-    const userId = req.user?.userId;
+    const userId = req.user?.userId; // firstly authenticateUser middleware added a user property to req: (req as any).user = decoded;
 
     // Validate user ID
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId.toString())) {
-      res.status(401).json({ message: "Authentication required" });
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId.toString())) { // is the userId a valid MongoDB ObjectId?
+      res.status(401).json({ message: "Invalid or missing user ID." });
       return;
     }
 
-    // call service to create workspace
-    const workspace = await createWorkspaceService({
-      name,
-      userId: mongoose.Types.ObjectId.createFromHexString(userId.toString()),
-    });
+    // call function to create workspace
+    const workspace = await saveNewWorkspace({ // calling the service function and passing name and userId to it
+        name,
+        userId: mongoose.Types.ObjectId.createFromHexString(userId.toString()) // Converts userId string to ObjectId so that MongoDB can use it
+      });
+      
+
 
 
     // return response to the client
@@ -72,37 +77,74 @@ export const getUserWorkspaces = async (
 
 // This controller is for retrieving a workspace by its IDW
 
-export const getWorkspaceById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const workspaceId = req.params.id;
 
-    // Validate the ID
-    if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
-      res.status(400).json({ message: "Invalid workspace ID" });
-      return;
+export const getWorkspaceById = async (req: Request, res: Response): Promise<void> => { 
+    try {
+      const workspaceId = req.params.id; // Extract workspace ID from request parameters from the URL
+  
+      // Validate the ID
+      if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
+        res.status(400).json({ message: "Invalid workspace ID" });
+        return;
+      }
+  
+      //Call the service to fetch workspace
+      const workspace: IWorkspace | null = await fetchWorkspaceId(workspaceId); // valid workspace or null
+  
+      //Handle not found
+      if (!workspace) {
+        res.status(404).json({ message: "Workspace not found" });
+        return;
+      }
+  
+      // Return the result
+      res.status(200).json({workspace});
+    } catch (error) {
+      console.error("Error retrieving workspace:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
+  };
 
-    //Call the service to fetch workspace
-    const workspace: IWorkspace | null = await getWorkspaceByIdService(
-      workspaceId
-    ); // valid workspace or null
+  // delete workspace by ID
+  export const deleteWorkspace = async (req: Request, res: Response): Promise<void> => {
+    try {
+          const WorkspaceId = req.params.id; // Extract workspace ID from request parameters or the URL
+          const userId = req.user?.userId; // Extract user ID from request object (set by auth middleware)
+;
 
-    //Handle not found
-    if (!workspace) {
-      res.status(404).json({ message: "Workspace not found" });
-      return;
-    }
+        if (!userId){
+            res.status(401).json({message: "Unauthorized"});
+            return;
+        }
+        
+        if (!mongoose.Types.ObjectId.isValid(WorkspaceId)){
+            res.status(400).json({ message: "Invalid Workspace ID"});
+            return;
+        }
 
-    // Return the result
-    res.status(200).json(workspace);
-  } catch (error) {
-    console.error("Error retrieving workspace:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+        const result = await deleteWorkspaceById(WorkspaceId, userId);
+
+        if (result === "forbidden") {
+            res.status(403).json({message: "only owner can delete this workspace"})
+            return;
+        }
+        if (!result){
+            res.status(404).json({ message: "workspace not found"});
+            return;
+        }
+
+        res.status(200).json({ message: "workspace deleted successfully"});
+    } catch (error) {
+        console.error("Error retrieving workspace:", error);
+        res.status(500).json({ message: "internal sever error"});
+    };
+  };
+
+
+
+    // update workspace name, (checks if its the owner)
+export const updateWorkspace = async (req: Request, res: Response): Promise<void> => {
+
 
 // delete workspace by ID
 export const deleteWorkspace = async (
@@ -148,6 +190,7 @@ export const updateWorkspace = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+
 
   try {
     const workspaceId = req.params.id;
@@ -215,11 +258,10 @@ export const addUserToWorkspaceController = async (
     }
 
     // Call service logic to add the user to the workspace (after service function)
-    const result = await addUserToWorkspace(
-      workspaceId,
-      new mongoose.Types.ObjectId(ownerId as string),
-      new mongoose.Types.ObjectId(userId as string)
-    );
+
+    const result = await addUserToWorkspace(workspaceId, ownerId,
+         new mongoose.Types.ObjectId(userId as string));
+
 
     if (result === "forbidden") {
       res.status(403).json({ message: "Only the owner can add users" });
@@ -244,3 +286,5 @@ export const addUserToWorkspaceController = async (
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
