@@ -1,10 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export type ComparisonType =
-  | "select-one"
-  | "yes-or-no"
-  | "select-multiple"
-  | "ranking";
+export type ComparisonType = "scale" | "order" | "binary" | "multi-select";
 
 export interface IComparison extends Document {
   question: string; // The main question text shown to participants
@@ -15,30 +11,29 @@ export interface IComparison extends Document {
   order: number;
   createdAt: Date;
   updatedAt: Date;
-
   // Type-specific configuration
-  config?: {
+config?: {
     // For select-multiple: minimum and maximum selections
     minSelections?: number;
     maxSelections?: number;
     // For ranking: whether partial rankings are allowed
     allowPartialRanking?: boolean;
     // Any other type-specific configuration
+    scaleMin?: number;
+    scaleMax?: number;
+    scaleLabels?: string[];
+    binaryLabels?: [string, string];
   };
 }
 
-const ComparisonSchema: Schema<IComparison> = new Schema({
-  question: {
-    type: String,
-    required: true,
-  },
+const ComparisonSchema: Schema<IComparison> = new Schema({ question: {   type: String,  required: true, },
   instructions: {
     type: String,
     required: false,
   },
   type: {
     type: String,
-    enum: ["select-one", "yes-or-no", "select-multiple", "ranking"],
+    enum: ["scale", "order", "binary", "multi-select"],
     required: true,
   },
   study: {
@@ -68,6 +63,8 @@ const ComparisonSchema: Schema<IComparison> = new Schema({
     minSelections: { type: Number, min: 1 },
     maxSelections: { type: Number },
     allowPartialRanking: { type: Boolean, default: false },
+    scaleLabels: [String],
+    binaryLabels: [String],
   },
 });
 

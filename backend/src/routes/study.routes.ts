@@ -9,6 +9,7 @@ import {
   stimuliUpload,
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
+import { parseConfigIfNeeded } from "../middlewares/parseConfig.middleware";
 
 const router = Router();
 
@@ -32,6 +33,7 @@ router.post(
   "/:studyId/comparisons",
   authenticateUser,
   stimuliUpload.array("stimuli"),
+  parseConfigIfNeeded,          
   validateStimuliUploads,
   createComparisonValidator,
   validateRequest,

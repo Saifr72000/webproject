@@ -2,25 +2,38 @@ import { Request, Response } from "express";
 import {
   createComparisonService,
   createStimulusService,
+  getComparisonsByStudy,
+  getComparisonById,
+  updateComparison,
+  deleteComparison,
 } from "../services/comparison.service";
-import mongoose from "mongoose";
-import { Comparison } from "../models/comparison.model";
-import { IStimulus, Stimulus } from "../models/stimuli.model";
-import multer from "multer";
+import { IStimulus } from "../models/stimuli.model";
 
-// Create a new comparison with uploaded stimuli
+
 export const createComparison = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  //Authentication validation is done by middleware executed prior to this controller function
   try {
     const { studyId } = req.params;
-    const { question, type, order, instructions, config } = req.body;
+    const { question, type, order, instructions } = req.body;
+    let { config } = req.body;
+
+    // ✅ Parse config if it comes as a JSON string (e.g., from multipart/form-data)
+    if (typeof config === "string") {
+      try {
+        config = JSON.parse(config);
+      } catch (e) {
+        res.status(400).json({
+          message: "Invalid JSON in config field",
+          error: e instanceof Error ? e.message : String(e),
+        });
+        return; // 🛑 Stop here after sending error response
+      }
+    }
+
     const files = req.files as Express.Multer.File[];
 
-    //Process all uploaded files and create documents out of them
-    // ensure that stimulus required fields are present, the ones we pass to service
     const stimuliPromises = files.map((file) =>
       createStimulusService({
         originalname: file.originalname,
@@ -30,15 +43,10 @@ export const createComparison = async (
       })
     );
 
-    // Here we wait for all stimuli to be created
-    const stimuli = (await Promise.all(stimuliPromises)) as IStimulus[];
+    const stimuli: IStimulus[] = await Promise.all(stimuliPromises);
     const stimuliIds = stimuli.map((stimulus) => stimulus._id.toString());
 
-    // ensuyre parsing is done of the order value, from string to number
-    const parsedOrder = order ? parseInt(order as string) : 0;
-    //If parsedorder is equal to NaN, then set it to 0, otherwise set it to parsedOrder
-    // Ensures that order is a number always
-    const orderValue = isNaN(parsedOrder) ? 0 : parsedOrder;
+    const orderValue = isNaN(parseInt(order)) ? 0 : parseInt(order);
 
     const comparison = await createComparisonService(
       studyId,
@@ -55,45 +63,86 @@ export const createComparison = async (
       comparison: comparison.toObject(),
     });
   } catch (error) {
-    console.error("Error creating study:", error);
+    console.error("Error creating comparison:", error);
     res.status(500).json({
-      message: "Failed to create study",
+      message: "Failed to create comparison",
       error: error instanceof Error ? error.message : String(error),
     });
   }
 };
-/* const storage = multer.memoryStorage();
 
-const fileFilter = (
-  req: any, //because I we do not know how multer will handle the request object
-  file: Express.Multer.File,
-  cb: multer.FileFilterCallback
-) => {
-  const allowedMimeTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "video/mp4",
-    "video/webm",
-    "audio/mpeg",
-    "audio/wav",
-    "audio/ogg",
-    "application/pdf",
-  ];
-
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Unsupported file type"));
+export const getComparisons = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { studyId } = req.params;
+    const comparisons = await getComparisonsByStudy(studyId);
+    res.status(200).json(comparisons);
+  } catch (error) {
+    console.error("Error retrieving comparisons:", error);
+    res.status(500).json({
+      message: "Failed to retrieve comparisons",
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 };
 
-export const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 }, //10mb limit
-});
+export const getComparisonId = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const comparison = await getComparisonById(id);
+    if (!comparison) {
+      res.status(404).json({ message: "Comparison not found" });
+      return;
+    }
+    res.status(200).json(comparison);
+  } catch (error) {
+    console.error("Error fetching comparison:", error);
+    res.status(500).json({
+      message: "Failed to fetch comparison",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+export const updateComparisonController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const updatedComparison = await updateComparison(id, updates);
+    if (!updatedComparison) {
+      res.status(404).json({ message: "Comparison not found" });
+      return;
+    }
+
+    res.status(200).json(updatedComparison);
+  } catch (error) {
+    console.error("Error updating comparison:", error);
+    res.status(500).json({ message: "Failed to update comparison" });
+  }
+};
+
+export const deleteComparisonController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const deletedComparison = await deleteComparison(id);
+    if (!deletedComparison) {
+      res.status(404).json({ message: "Comparison not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Comparison deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comparison:", error);
+    res.status(500).json({ message: "Failed to delete comparison" });
+  }
+};
+
+    
+
+
+
+
+/* const storage = multer.memoryStorage(); (moved to middleware)
 
 export const createComparison = async (req: Request, res: Response) => {
   try {

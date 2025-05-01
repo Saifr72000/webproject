@@ -12,7 +12,7 @@ export interface DemographicField {
   id: string;
   label: string;
   required: boolean;
-  options: DemographicOption[];
+  enum: ["age", "gender", "country"];
 }
 
 export interface IStudy extends Document {
@@ -31,6 +31,7 @@ export interface IStudy extends Document {
     enabled: boolean;
     fields: DemographicField[];
   };
+
 }
 
 const DemographicOptionSchema = new Schema(
@@ -81,6 +82,7 @@ const StudySchema = new Schema<IStudy>({
     type: Number,
     default: 0,
   },
+
   responseCount: {
     type: Number,
     default: 0,

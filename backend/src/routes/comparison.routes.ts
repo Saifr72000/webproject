@@ -1,7 +1,20 @@
-import { Router } from "express";
-import { createComparison } from "../controllers/comparison.controller";
-import { createComparisonValidator } from "../validators/comparison.validator";
-import { validateRequest } from "../middlewares/validateRequest.middleware";
-import { authenticateUser } from "../middlewares/auth.middleware";
+import express from "express";
+import { createComparison, updateComparisonController, deleteComparisonController, getComparisons, getComparisonId} from "../controllers/comparison.controller";
+import { upload } from "../middlewares/upload.middleware";
 
-const router = Router();
+
+const router = express.Router();
+
+router.post(
+  "/study/:studyId",
+  upload.array("files"),
+  createComparison
+);
+
+router.get("/study/:studyId", getComparisons);
+router.get("/:id", getComparisonId);
+router.put("/:id", updateComparisonController);
+router.delete("/:id", deleteComparisonController);
+
+
+export default router;

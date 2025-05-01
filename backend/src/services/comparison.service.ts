@@ -1,8 +1,4 @@
-import {
-  Comparison,
-  IComparison,
-  ComparisonType,
-} from "../models/comparison.model";
+import {Comparison,IComparison,ComparisonType,} from "../models/comparison.model";
 import mongoose, { Types } from "mongoose";
 import { IStimulus, Stimulus } from "../models/stimuli.model";
 
@@ -11,17 +7,17 @@ export const createComparisonService = async (
   question: string,
   type: string,
   stimuliIds: string[] | Types.ObjectId[],
-  order: number,
+  order: number = 0,
   instructions?: string,
-  config?: any
-) => {
+  config?: IComparison["config"]
+
+): Promise<IComparison> => {
   try {
     // Authentication is done in the auth.middleware.ts file
     // Validation is done in the comparison.validar.ts file
 
     // Convert string IDs to ObjectId if needed
-    const studyObjectId =
-      typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
+    const studyObjectId = typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
 
     const stimuliObjectIds = stimuliIds.map((id) =>
       typeof id === "string" ? new Types.ObjectId(id) : id
@@ -59,7 +55,7 @@ export const createStimulusService = async (file: {
   mimetype: string;
   buffer: Buffer;
   size: number;
-}) => {
+}): Promise<IStimulus> => {
   try {
     const stimulus = new Stimulus({
       name: file.originalname,
@@ -81,7 +77,7 @@ export const createStimulusService = async (file: {
   }
 };
 
-/* export const getComparisonsByStudy = async (
+ export const getComparisonsByStudy = async (
   studyId: string
 ): Promise<IComparison[]> => {
   return await Comparison.find({ study: studyId }).sort({ order: 1 });
@@ -89,26 +85,17 @@ export const createStimulusService = async (file: {
 
 export const getComparisonById = async (
   id: string
-): Promise<IComparison[] | null> => {
-  return await Comparison.findById(id);
+): Promise<IComparison | null> => {
+  return await Comparison.findById(id).populate({
+    path: "stimuli",
+    select: "-data",
+  });
 };
 
 export const updateComparison = async (
   id: string,
-  updates: Partial<{
-    question: string;
-    instructions: string;
-    type: ComparisonType;
-    stimuli: string[];
-    order: number;
-    config: {
-      minSelections?: number;
-      maxSelections?: number;
-      allowPartialRanking?: boolean;
-    };
-  }>
+  updates: Partial<IComparison>
 ): Promise<IComparison | null> => {
-  // Convert stimuli IDs to ObjectIds if present
   const updateData: any = { ...updates };
   if (updates.stimuli) {
     updateData.stimuli = updates.stimuli.map((id) => new Types.ObjectId(id));
@@ -127,4 +114,4 @@ export const deleteComparison = async (id: string): Promise<boolean> => {
   const result = await Comparison.findByIdAndDelete(id);
   return !!result;
 };
- */
+
