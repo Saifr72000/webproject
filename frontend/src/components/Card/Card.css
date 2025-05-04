@@ -1,0 +1,24 @@
+.study-card {
+  margin-top: 20px;
+  color: var(--text-color);
+}
+
+.quiz-image img {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block; /* Removes any inline element spacing issues */
+}
+
+.study-content {
+  background-color: var(--secondary-background-color);
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* .quiz-image {
+    width: 100px;
+    height: 100px;
+  } */

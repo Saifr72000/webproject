@@ -35,6 +35,13 @@ code {
   border-radius: 7px;
 }
 
+.secondary-btn {
+  background-color: transparent;
+  color: var(--primary-text-color);
+  border: 1px solid var(--primary-text-color);
+  cursor: pointer;
+  padding: 0.75rem;
+}
 .loader-container {
   display: flex;
   justify-content: center;

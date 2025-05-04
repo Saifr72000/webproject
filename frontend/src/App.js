@@ -5,11 +5,12 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 // Pages
 import LoginPage from "./pages/Login/LoginPage";
-import StudiesPage from "./pages/Studies/StudyOverview";
+import StudiesPage from "./pages/Studies/StudyOverviewPage";
 import CreateStudy from "./pages/CreateStudy/CreateStudy";
 import RegisterPage from "./pages/Register/RegisterPage";
 // Layout
 import AppLayout from "./layout/AppLayout";
+import ViewStudyPage from "./pages/ViewStudy/ViewStudyPage";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           >
             <Route path="studies" element={<StudiesPage />} />
             <Route path="create-study" element={<CreateStudy />} />
+            <Route path="study/:studyId" element={<ViewStudyPage />} />
             {/* Optional: default to /dashboard if no sub-route is provided */}
             <Route index element={<Navigate to="/studies" />} />
           </Route>
