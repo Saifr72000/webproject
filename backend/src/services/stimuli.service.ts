@@ -32,7 +32,7 @@ export const saveStimulusMetadata = async (
     mimetype,
     size,
     data,
-    comparison: comparisonId ? [comparisonId] : [],
+    comparison: comparisonId ? comparisonId : null,
   });
   const savedStimulus = (await stimulus.save()) as unknown as IStimulusDocument;
 

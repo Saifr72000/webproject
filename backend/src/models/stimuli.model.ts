@@ -2,8 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IStimulus extends Document {
   _id: mongoose.Types.ObjectId | string;
-  name: string;
-  type: string;
+  filename: string;
   mimetype: string;
   size: number;
   data: Buffer;
@@ -13,11 +12,7 @@ export interface IStimulus extends Document {
 
 const StimulusSchema = new Schema<IStimulus>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    type: {
+    filename: {
       type: String,
       required: true,
     },
@@ -40,6 +35,7 @@ const StimulusSchema = new Schema<IStimulus>(
     comparison: {
       type: Schema.Types.ObjectId,
       ref: "Comparison",
+      required: false,
     },
   },
   { timestamps: true }

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Study } from "../models/study.model";
+import { saveStimulusMetadata } from "../services/stimuli.service";
 import {
   createStudyService,
   getStudyByIdService,
@@ -12,31 +13,34 @@ export const createStudy = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name, description, workspaceId, demographicsEnabled } = req.body;
+    const { name, description } = req.body;
+
+    let coverImageId;
+
+    if (req.file) {
+      const fileData = {
+        filename: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        data: req.file.buffer,
+      };
+      const savedFile = await saveStimulusMetadata(fileData);
+
+      savedFile.url = `/api/files/${savedFile._id}`;
+      await savedFile.save();
+
+      coverImageId = savedFile?._id;
+    }
 
     // Get the user ID from the authenticated user
     const userId = req.user?.userId as string;
-
-    /*  if (!userId) {
-      res.status(401).json({ message: "Authentication required" });
-      return;
-    } */
-
-    // Validate required fields
-    if (!name || !description || !workspaceId) {
-      res.status(400).json({
-        message: "Name, description, and workspace are required fields",
-      });
-      return;
-    }
 
     // Create the study using the service
     const study = await createStudyService(
       name,
       description,
       userId,
-      workspaceId,
-      demographicsEnabled
+      coverImageId as mongoose.Types.ObjectId
     );
 
     // Return the created study

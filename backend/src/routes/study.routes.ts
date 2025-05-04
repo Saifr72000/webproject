@@ -9,13 +9,22 @@ import {
   stimuliUpload,
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
+import multer from "multer";
 
 const router = Router();
+
+// Multer setup for handling file uploads in memory (MongoDB)
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+});
 
 // create study route
 router.post(
   "/register/study",
   authenticateUser,
+  upload.single("coverImage"),
   createStudyValidator,
   validateRequest,
   createStudy

@@ -4,7 +4,7 @@ import {
   ComparisonType,
 } from "../models/comparison.model";
 import mongoose, { Types } from "mongoose";
-import { IStimulus, Stimulus } from "../models/stimuli.model";
+import { Stimulus } from "../models/stimuli.model";
 
 export const createComparisonService = async (
   studyId: string | Types.ObjectId,

@@ -40,12 +40,12 @@ const StudySchema = new Schema<IStudy>(
     workspace: {
       type: Schema.Types.ObjectId,
       ref: "Workspace",
-      required: true,
+      required: false,
     },
     status: {
       type: String,
       enum: ["draft", "active", "completed"],
-      default: "draft",
+      default: "active",
     },
     participantCount: {
       type: Number,
