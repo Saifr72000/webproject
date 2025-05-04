@@ -8,48 +8,43 @@ export interface IStimulus extends Document {
   size: number;
   data: Buffer;
   url: string;
-  createdAt: Date;
+  comparison: mongoose.Types.ObjectId | string;
 }
 
-const StimulusSchema = new Schema<IStimulus>({
-  name: {
-    type: String,
-    required: true,
+const StimulusSchema = new Schema<IStimulus>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    mimetype: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: Number,
+      required: true,
+    },
+    data: {
+      type: Buffer,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: false,
+    },
+    comparison: {
+      type: Schema.Types.ObjectId,
+      ref: "Comparison",
+    },
   },
-  type: {
-    type: String,
-    required: true,
-  },
-  mimetype: {
-    type: String,
-    required: true,
-  },
-  size: {
-    type: Number,
-    required: true,
-  },
-  data: {
-    type: Buffer,
-    required: true,
-  },
-  url: {
-    type: String,
-    required: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
-StimulusSchema.pre("save", function (next) {
-  if (this.isNew && !this.url) {
-    // Set the URL using the document's ID
-    this.url = `/api/stimuli/${this._id}`;
-  }
-  next();
-});
-
-StimulusSchema.index({ name: 1 }); // Indexing the name field for faster lookups
+// Indexing the name field for faster lookups
 
 export const Stimulus = mongoose.model<IStimulus>("Stimulus", StimulusSchema);

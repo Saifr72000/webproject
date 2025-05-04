@@ -15,12 +15,12 @@ export const createStudy = async (
     const { name, description, workspaceId, demographicsEnabled } = req.body;
 
     // Get the user ID from the authenticated user
-    const userId = req.user?.userId;
+    const userId = req.user?.userId as string;
 
-    if (!userId) {
+    /*  if (!userId) {
       res.status(401).json({ message: "Authentication required" });
       return;
-    }
+    } */
 
     // Validate required fields
     if (!name || !description || !workspaceId) {

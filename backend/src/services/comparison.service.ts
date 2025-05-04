@@ -71,9 +71,6 @@ export const createStimulusService = async (file: {
 
     await stimulus.save();
 
-    /* stimulus.url = `/api/stimuli/${stimulus._id}`;
-    await stimulus.save(); */
-
     return stimulus;
   } catch (error) {
     console.error("Error in createStimulus service:", error);

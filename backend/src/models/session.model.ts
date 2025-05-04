@@ -1,122 +1,203 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
+import { IStudy } from "./study.model";
+import { IComparison, ComparisonType } from "./comparison.model";
 
-export interface IResponse {
-  comparison: mongoose.Types.ObjectId;
-  data: any; // Flexible structure based on comparison type
-  createdAt: Date;
+// Base response interface
+interface IBaseResponse {
+  comparison: Types.ObjectId | IComparison;
+  answeredAt: Date;
+  comparisonTitle: string;
 }
+
+// Rating response (for rating comparison type)
+interface IRatingResponse extends IBaseResponse {
+  responses: Array<{
+    stimulus: Types.ObjectId;
+    rating: number;
+  }>;
+}
+
+// Single select response (for single-select comparison type)
+interface ISingleSelectResponse extends IBaseResponse {
+  selectedStimulus: Types.ObjectId;
+}
+
+// Binary response (for binary comparison type)
+interface IBinaryResponse extends IBaseResponse {
+  responses: Array<{
+    stimulus: Types.ObjectId;
+    selected: boolean;
+  }>;
+}
+
+// Multi-select response (for multi-select comparison type)
+interface IMultiSelectResponse extends IBaseResponse {
+  selectedStimuli: Types.ObjectId[];
+}
+
+// Union type for all response types, it can either one of Interfaces defined above
+type ResponseType =
+  | IRatingResponse
+  | ISingleSelectResponse
+  | IBinaryResponse
+  | IMultiSelectResponse;
 
 export interface ISession extends Document {
-  study: mongoose.Types.ObjectId;
+  study: Types.ObjectId | IStudy;
+  currentIndex: number;
   startedAt: Date;
   completedAt?: Date;
-  demographics?: Record<string, string>; // Stores demographic responses
-  responses: IResponse[];
-  progress: number; // 0-100 percentage of completion
-  userAgent?: string;
-  referrer?: string;
-  duration?: number; // Total time in seconds
+  isComplete: boolean;
 
-  _previousResponsesCount?: number;
+  // Demographic data
+  demographics?: {
+    age?: string;
+    gender?: string;
+    nationality?: string;
+  };
+
+  // User agent for analytics
+  userAgent?: string;
+
+  // Responses to comparisons
+  responses: ResponseType[];
 }
 
-const ResponseSchema = new Schema({
-  comparison: {
-    type: Schema.Types.ObjectId,
-    ref: "Comparison",
-    required: true,
-  },
-  data: {
-    type: Schema.Types.Mixed,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+const SessionSchema = new Schema<ISession>(
+  {
+    study: {
+      type: Schema.Types.ObjectId,
+      ref: "Study",
+      required: true,
+    },
+    currentIndex: {
+      type: Number,
+      default: 0,
+    },
+    startedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    completedAt: Date,
+    isComplete: {
+      type: Boolean,
+      default: false,
+    },
+    demographics: {
+      age: String,
+      gender: String,
+      nationality: String,
+    },
+    userAgent: String,
+    responses: [
+      {
+        // Common fields for all response types
+        comparison: {
+          type: Schema.Types.ObjectId,
+          ref: "Comparison",
+          required: true,
+        },
 
-const SessionSchema = new Schema<ISession>({
-  study: {
-    type: Schema.Types.ObjectId,
-    ref: "Study",
-    required: true,
-    index: true,
-  },
-  startedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  completedAt: {
-    type: Date,
-  },
-  demographics: {
-    type: Schema.Types.Mixed,
-    default: {},
-  },
-  responses: [ResponseSchema],
-  progress: {
-    type: Number,
-    default: 0,
-    min: 0,
-    max: 100,
-  },
-  userAgent: {
-    type: String,
-  },
-  referrer: {
-    type: String,
-  },
-  duration: {
-    type: Number,
-  },
-});
+        comparisonTitle: {
+          type: String,
+          required: true,
+        },
 
-// Calculate duration when session is completed
-SessionSchema.pre("save", function (next) {
-  if (this.isModified("completedAt") && this.completedAt && this.startedAt) {
-    this.duration = Math.round(
-      (this.completedAt.getTime() - this.startedAt.getTime()) / 1000
-    );
-  }
-  next();
-});
+        // Fields for rating/scale type
+        ratingResponses: [
+          {
+            stimulus: {
+              type: Schema.Types.ObjectId,
+              ref: "Stimulus",
+            },
+            rating: Number,
+          },
+        ],
 
-// Update study participant count when a new session is created
-SessionSchema.post("save", async function () {
-  if (this.isNew) {
-    await mongoose.model("Study").findByIdAndUpdate(this.study, {
-      $inc: { participantCount: 1 },
-    });
-  }
-});
+        // Field for single-select type
+        singleSelectResponse: {
+          type: Schema.Types.ObjectId,
+          ref: "Stimulus",
+        },
 
-// Store previous responses count for the pre-save hook
-SessionSchema.pre("save", function (next) {
-  if (this.isModified("responses")) {
-    this._previousResponsesCount = this.responses.length;
-  }
-  next();
-});
+        // Field for binary type
+        binaryResponses: [
+          {
+            stimulus: {
+              type: Schema.Types.ObjectId,
+              ref: "Stimulus",
+            },
+            selected: Boolean,
+          },
+        ],
 
-// Update study response count when responses are added
-SessionSchema.pre("save", async function (next) {
-  if (this.isModified("responses")) {
-    const previousCount = this._previousResponsesCount || 0;
-    const newResponsesCount = this.responses.length - previousCount;
-
-    if (newResponsesCount > 0) {
-      await mongoose.model("Study").findByIdAndUpdate(this.study, {
-        $inc: { responseCount: newResponsesCount },
-      });
-    }
-  }
-  next();
-});
-
-// Indexes for faster queries
-SessionSchema.index({ study: 1, completedAt: 1 });
-SessionSchema.index({ startedAt: 1 });
-SessionSchema.index({ progress: 1 });
+        // Field for multi-select type
+        multiSelectResponses: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: "Stimulus",
+          },
+        ],
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 export const Session = mongoose.model<ISession>("Session", SessionSchema);
+
+/* // Validation to ensure the correct fields are populated based on comparison type
+SessionSchema.path("responses").validate(async function (responses) {
+  for (const response of responses) {
+    if (!response.comparison) continue;
+
+    // If comparison is a string (ObjectId), we need to fetch the actual comparison
+    let comparisonDoc = response.comparison;
+    if (
+      typeof comparisonDoc === "string" ||
+      comparisonDoc instanceof Types.ObjectId
+    ) {
+      try {
+        const Comparison = mongoose.model("Comparison");
+        comparisonDoc = await Comparison.findById(comparisonDoc);
+        if (!comparisonDoc) return false;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    // Now validate based on comparison type
+    const comparisonType = comparisonDoc.type as ComparisonType;
+
+    switch (comparisonType) {
+      case "rating":
+        if (!response.responses || !response.responses.length) return false;
+        for (const r of response.responses) {
+          if (r.stimulus === undefined || r.rating === undefined) return false;
+        }
+        break;
+
+      case "single-select":
+        if (!response.selectedStimulus) return false;
+        break;
+
+      case "binary":
+        if (!response.responses || !response.responses.length) return false;
+        for (const r of response.responses) {
+          if (r.stimulus === undefined || r.selected === undefined)
+            return false;
+        }
+        break;
+
+      case "multi-select":
+        if (!response.selectedStimuli || !response.selectedStimuli.length)
+          return false;
+        break;
+
+      default:
+        return false;
+    }
+  }
+
+  return true;
+}, "Response format does not match comparison type"); */
