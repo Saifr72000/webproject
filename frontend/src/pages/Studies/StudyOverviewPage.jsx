@@ -2,11 +2,10 @@ import React from "react";
 import useFetch from "../../hooks/useFetch";
 import Card from "../../components/Card/Card";
 import "./StudyOverViewPage.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const StudyOverview = () => {
-  const { data, loading, error } = useFetch(
-    "http://localhost:2000/api/studies"
-  );
+  const { data, loading, error } = useFetch(`${BASE_URL}/api/studies`);
 
   console.log(data);
   return (
@@ -24,7 +23,7 @@ const StudyOverview = () => {
  */
           return (
             <Card
-              imageSrc={`http://localhost:2000/api/stimuli/${study?.coverImage}`}
+              imageSrc={`${BASE_URL}/api/stimuli/${study?.coverImage}`}
               participate={true}
               studyId={study?._id}
               key={study?._id}

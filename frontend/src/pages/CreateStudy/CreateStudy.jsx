@@ -4,6 +4,7 @@ import StudyForm from "../../components/StudyForm/StudyForm";
 import ComparisonForm from "../../components/ComparisonForm/ComparisonForm";
 import ComparisonList from "../../components/ComparisonList/ComparisonList";
 import "./CreateStudy.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const CreateStudy = () => {
   const navigate = useNavigate();
@@ -24,14 +25,11 @@ const CreateStudy = () => {
 
     try {
       // Example API call - replace with your actual implementation
-      const response = await fetch(
-        "http://localhost:2000/api/studies/register/study",
-        {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/studies/register/study`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create study");
@@ -67,7 +65,7 @@ const CreateStudy = () => {
     try {
       // Example API call - replace with your actual implementation
       const response = await fetch(
-        `http://localhost:2000/api/studies/${study._id}/comparisons`,
+        `${BASE_URL}/api/studies/${study._id}/comparisons`,
         {
           method: "POST",
           body: formData,

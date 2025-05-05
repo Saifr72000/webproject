@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const AuthContext = createContext();
 
@@ -14,8 +15,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const refreshSession = async () => {
       try {
-        await axios.post("http://localhost:2000/api/auth/refresh-token");
-        const response = await axios.get("http://localhost:2000/api/users/me");
+        await axios.post(`${BASE_URL}/api/auth/refresh-token`);
+        const response = await axios.get(`${BASE_URL}/api/users/me`);
         setUser(response.data);
         console.log("User from /me:", response.data);
       } catch (error) {
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (email, password) => {
-    const response = await axios.post("http://localhost:2000/api/auth/login", {
+    const response = await axios.post(`${BASE_URL}/api/auth/login`, {
       email,
       password,
     });
@@ -39,12 +40,12 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = async () => {
-    await axios.post("http://localhost:2000/api/auth/logout");
+    await axios.post(`${BASE_URL}/api/auth/logout`);
     setUser(null);
   };
 
   const register = async (firstName, lastName, email, password) => {
-    await axios.post("http://localhost:2000/api/users/register", {
+    await axios.post(`${BASE_URL}/api/users/register`, {
       firstName,
       lastName,
       email,
