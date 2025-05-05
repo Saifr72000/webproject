@@ -21,27 +21,60 @@ code {
   --background-color: #f9f9f9;
   --secondary-background-color: #f1f1f4;
   --primary-color: #1b84ff;
-  --primary-btn-color: #ffffff;
-  --primary-text-color: #071437;
-  --secondary-text-color: #616b86;
+  --primary-text-color: #ffffff;
+  --secondary-text-color: #495057;
 }
 
 .primary-btn {
   background-color: var(--primary-color);
-  color: var(--primary-btn-color);
+  color: var(--primary-text-color);
   border: none;
   cursor: pointer;
-  padding: 0.75rem;
+  padding: 0.75rem 1.25rem;
   border-radius: 7px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.primary-btn:hover {
+  background-color: #0d6efd;
+}
+
+.primary-btn:disabled {
+  background-color: #8bbdff;
+  cursor: not-allowed;
 }
 
 .secondary-btn {
-  background-color: transparent;
-  color: var(--primary-text-color);
-  border: 1px solid var(--primary-text-color);
+  background-color: #f8f9fa;
+  color: var(--secondary-text-color);
+  border: 1px solid #ced4da;
   cursor: pointer;
-  padding: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 7px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
+
+.secondary-btn:hover {
+  background-color: #e2e6ea;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
 .loader-container {
   display: flex;
   justify-content: center;

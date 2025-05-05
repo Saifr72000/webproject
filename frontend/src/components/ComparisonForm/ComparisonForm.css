@@ -1,0 +1,258 @@
+.comparison-form {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.comparison-form h3 {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.775rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 7px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(27, 132, 255, 0.25);
+}
+
+.secondary-btn {
+  background-color: #f8f9fa;
+  color: #212529;
+  border: 1px solid #ced4da;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 7px;
+  margin-right: 0.75rem;
+}
+
+.secondary-btn:hover {
+  background-color: #e2e6ea;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.uploaded-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.comparison-type-selector,
+.stimuli-type-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.comparison-type-option,
+.stimuli-type-option {
+  padding: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 7px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comparison-type-option:hover,
+.stimuli-type-option:hover {
+  background-color: #f8f9fa;
+}
+
+.comparison-type-option.active,
+.stimuli-type-option.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.stimuli-type-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.stimuli-type-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stimuli-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.add-stimulus-btn {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px dashed var(--primary-color);
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.add-stimulus-btn:hover {
+  background-color: rgba(27, 132, 255, 0.05);
+}
+
+.add-stimulus-btn::before {
+  content: "+";
+  margin-right: 0.25rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.stimulus-upload-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.stimulus-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stimulus-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.stimulus-label {
+  font-weight: 500;
+}
+
+.remove-stimulus-btn {
+  background-color: transparent;
+  border: none;
+  color: #6c757d;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.remove-stimulus-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.stimulus-upload {
+  border: 2px dashed #ced4da;
+  border-radius: 7px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Styling for different stimuli types */
+.stimulus-upload.video {
+  background-color: rgba(255, 107, 107, 0.05);
+}
+
+.stimulus-upload.audio {
+  background-color: rgba(105, 165, 255, 0.05);
+}
+
+.stimulus-upload.pdf {
+  background-color: rgba(255, 184, 107, 0.05);
+}
+
+.stimulus-upload:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(27, 132, 255, 0.05);
+}
+
+.stimulus-upload.has-file {
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.file-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+.file-preview-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.file-preview-name {
+  font-size: 0.875rem;
+  color: #495057;
+  text-align: center;
+  word-break: break-word;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+}
+
+.upload-text {
+  color: #6c757d;
+}
+
+.error-text {
+  color: #dc3545;
+  margin-top: 1rem;
+}
