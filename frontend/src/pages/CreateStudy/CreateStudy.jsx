@@ -38,6 +38,7 @@ const CreateStudy = () => {
       }
 
       const data = await response.json();
+      console.log(data);
       setStudy(data);
       setSuccess("Study created successfully! Now you can add comparisons.");
 
