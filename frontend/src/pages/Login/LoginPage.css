@@ -1,0 +1,76 @@
+.login-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  overflow: hidden;
+  width: 100%;
+  background-color: var(--secondary-background-color);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  margin-bottom: 1rem;
+}
+
+.login-form input {
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 400px;
+}
+
+.form-container button {
+  width: 100%;
+}
+
+.logo-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-image: url("../../assets/auth-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.logo-container img {
+  width: 70%;
+  /* object-fit: cover; */
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.775rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--secondary-text-color);
+  background-color: transparent;
+  border: 1px solid var(--secondary-text-color);
+  border-radius: 7px;
+  box-shadow: false;
+}
+
+.register a {
+  color: var(--primary-color);
+  text-decoration: none;
+}

@@ -1,91 +1,70 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
+import { IStimulus } from "./stimuli.model";
+import { IStudy } from "./study.model";
 
+// Define valid comparison types
 export type ComparisonType =
-  | "select-one"
-  | "yes-or-no"
-  | "select-multiple"
-  | "ranking";
+  | "rating"
+  | "single-select"
+  | "binary"
+  | "multi-select";
 
-export interface IComparison extends Document {
-  question: string; // The main question text shown to participants
-  instructions?: string; // Optional additional instructions/context
-  type: ComparisonType;
-  study: mongoose.Types.ObjectId;
-  stimuli: mongoose.Types.ObjectId[];
-  order: number;
-  createdAt: Date;
-  updatedAt: Date;
+// Define valid stimuli types
+export type StimuliType = "image" | "video" | "audio" | "pdf";
 
-  // Type-specific configuration
-  config?: {
-    // For select-multiple: minimum and maximum selections
-    minSelections?: number;
-    maxSelections?: number;
-    // For ranking: whether partial rankings are allowed
-    allowPartialRanking?: boolean;
-    // Any other type-specific configuration
-  };
+// Interface for an option within a comparison
+export interface IComparisonOption {
+  stimulus: Types.ObjectId | IStimulus;
+  label?: string;
 }
 
-const ComparisonSchema: Schema<IComparison> = new Schema({
-  question: {
-    type: String,
-    required: true,
-  },
-  instructions: {
-    type: String,
-    required: false,
-  },
-  type: {
-    type: String,
-    enum: ["select-one", "yes-or-no", "select-multiple", "ranking"],
-    required: true,
-  },
-  study: {
-    type: Schema.Types.ObjectId,
-    ref: "Study",
-    required: true,
-  },
-  stimuli: [
-    {
+// Main comparison interface
+export interface IComparison extends Document {
+  study: Types.ObjectId | IStudy;
+  title: string;
+  type: ComparisonType;
+  stimuliType: StimuliType;
+  order: number;
+  options: IComparisonOption[];
+  required: boolean;
+}
+
+const ComparisonSchema = new Schema<IComparison>(
+  {
+    study: {
       type: Schema.Types.ObjectId,
-      ref: "Stimulus",
+      ref: "Study",
+      required: true,
     },
-  ],
-  order: {
-    type: Number,
-    default: 0,
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    type: {
+      type: String,
+      enum: ["rating", "single-select", "binary", "multi-select"],
+      required: true,
+    },
+    stimuliType: {
+      type: String,
+      enum: ["image", "video", "audio", "pdf"],
+      required: true,
+    },
+    options: [
+      {
+        stimulus: {
+          type: Schema.Types.ObjectId,
+          ref: "Stimulus",
+          required: true,
+        },
+      },
+    ],
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  config: {
-    minSelections: { type: Number, min: 1 },
-    maxSelections: { type: Number },
-    allowPartialRanking: { type: Boolean, default: false },
-  },
-});
+  { timestamps: true }
+);
 
-// Update the updatedAt field on save
-ComparisonSchema.pre("save", function (next) {
-  this.updatedAt = new Date();
-  next();
-});
-
-// Validate that maxSelections is greater than or equal to minSelections
-ComparisonSchema.path("config.maxSelections").validate(function (value) {
-  if (this.config && this.config.minSelections && value) {
-    return value >= this.config.minSelections;
-  }
-  return true;
-}, "Maximum selections must be greater than or equal to minimum selections");
-
-ComparisonSchema.index({ study: 1, order: 1 });
+/* ComparisonSchema.index({ study: 1, order: 1 }); */
 
 export const Comparison = mongoose.model<IComparison>(
   "Comparison",

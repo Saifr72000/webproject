@@ -3,10 +3,10 @@ import { RequestHandler } from "express";
 
 export const createComparisonValidator = [
   // Validate studyId parameter
-  param("studyId").isMongoId().withMessage("Invalid study ID format"),
+  body("studyId").isMongoId().withMessage("Invalid study ID format"),
 
   // Validate required fields
-  body("question")
+  body("title")
     .notEmpty()
     .withMessage("Question is required")
     .isString()
@@ -19,17 +19,6 @@ export const createComparisonValidator = [
     .withMessage("Type must be a string"),
 
   // Validate optional fields
-  body("order")
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage("Order must be a non-negative integer"),
-
-  body("instructions")
-    .optional()
-    .isString()
-    .withMessage("Instructions must be a string"),
-
-  body("config").optional().isObject().withMessage("Config must be an object"),
 ];
 
 /* export const updateComparisonValidationRules = [

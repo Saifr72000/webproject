@@ -19,15 +19,4 @@ export const createStudyValidator = [
     .withMessage("Description must be a string")
     .isLength({ min: 10, max: 1000 })
     .withMessage("Description must be between 10 and 1000 characters"),
-
-  body("workspaceId")
-    .notEmpty()
-    .withMessage("Workspace ID is required")
-    .isMongoId()
-    .withMessage("Invalid workspace ID format"),
-
-  body("demographicsEnabled")
-    .optional()
-    .isBoolean()
-    .withMessage("Demographics enabled must be a boolean value"),
 ];
