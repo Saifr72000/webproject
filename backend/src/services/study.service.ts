@@ -36,13 +36,11 @@ export const getStudyByIdService = async (
 ): Promise<IStudy | null> => {
   return await Study.findById(id).populate({
     path: "comparisons",
-    populate: { path: "stimuli", select: "-data" },
   });
 };
 export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
   return await Study.find().populate({
     path: "comparisons",
-    populate: { path: "stimuli", select: "-data" },
   });
 };
 
