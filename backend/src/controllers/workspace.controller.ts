@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import { Workspace, IWorkspace } from "../models/workspace.model";
 import {  } from "bson";
 
-// Create Workspac
+// Create Workspace 
 export const createWorkspace = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name } = req.body;
@@ -114,7 +114,9 @@ export const deleteWorkspace = async (req: Request, res: Response): Promise<void
 };
 
 // Update Workspace
-export const updateWorkspace = async (req: Request, res: Response): Promise<void> => {
+export const updateWorkspace = async (req: Request, res: Response): Promise<void> => { 
+  // this function updates the workspace name and returns the updated workspace
+  // it checks if the user is the owner of the workspace before updating it
   try {
     const workspaceId = req.params.id;
     const userId = req.user?.userId;

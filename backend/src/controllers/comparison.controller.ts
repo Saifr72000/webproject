@@ -19,7 +19,7 @@ export const createComparison = async (
     const { question, type, order, instructions } = req.body;
     let { config } = req.body;
 
-    // ✅ Parse config if it comes as a JSON string (e.g., from multipart/form-data)
+    // Parse config if it comes as a JSON string (e.g., from multipart/form-data)
     if (typeof config === "string") {
       try {
         config = JSON.parse(config);
@@ -28,7 +28,7 @@ export const createComparison = async (
           message: "Invalid JSON in config field",
           error: e instanceof Error ? e.message : String(e),
         });
-        return; // 🛑 Stop here after sending error response
+        return; //  Stop here after sending error response
       }
     }
 

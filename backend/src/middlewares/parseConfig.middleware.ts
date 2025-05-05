@@ -10,7 +10,7 @@ export const parseConfigIfNeeded = (req: Request, res: Response, next: NextFunct
         message: "Invalid JSON in config field",
         error: e instanceof Error ? e.message : String(e),
       });
-      return; // ✅ Exit function after sending response
+      return; // Exit function after sending response
     }
   }
   next();

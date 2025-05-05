@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+            "esModuleInterop": true,
+    "module": "commonjs",
+      "target": "es5",       // Cypress supports ES5 and later, but ES6 is not supported in all browsers
+      "lib": ["es5", "dom"],
+      "sourceMap": true,
+      "types": ["cypress", "node"], // load Cypress and Node type definitions
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+    },
+    "include": [
+        "**/*.ts"
+, "../cypress.config.ts"    ]
+  }

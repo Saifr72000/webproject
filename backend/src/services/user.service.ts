@@ -64,7 +64,7 @@ export const getUserById = async (userId: string): Promise<IUser | null> => {
   return await User.findById(userId).select("-password");
 };
 
-export const getUsersByWorkspace = async (
+export const getUsersByWorkspace = async ( // This function retrieves all users in a specific workspace
   workspaceId: string
 ): Promise<IUser[]> => {
   return await User.find({ workspaces: workspaceId }).select("-password");

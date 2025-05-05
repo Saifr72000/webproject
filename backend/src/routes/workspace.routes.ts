@@ -15,7 +15,7 @@ const router = Router();
 
 router.post("/", authenticateUser, createWorkspace);
 
-router.get("/", authenticateUser, getUserWorkspaces);
+router.get("/", authenticateUser, getUserWorkspaces); // Get all workspaces for the authenticated user
 
 router.get("/:id", authenticateUser, getWorkspaceById);
 

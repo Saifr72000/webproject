@@ -41,6 +41,7 @@ export const getWorkspaceForUser = async (userId: mongoose.Types.ObjectId) => {
 
 
       export const fetchWorkspaceId = async (
+        // This function retrieves a workspace by its ID
         workspaceId: string
       ): Promise<(Document & IWorkspace) | null> => { // promise to return workspace or null
         return Workspace.findById(workspaceId);
@@ -77,12 +78,14 @@ export const updateWorkspaceById = async (
   if (!isOwner) return "forbidden";
 
   if (updates.name) {
-    workspace.name = updates.name;
+    workspace.name = updates.name; // update the name of the workspace
   }
 
   await workspace.save();
   return workspace;
 };
+
+
 
 
 export const addUserToWorkspace = async (
