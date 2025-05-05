@@ -8,6 +8,8 @@ import { rateLimiter } from "./middlewares/rateLimit.middleware";
 import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
 import workspacesRouter from "./routes/workspace.routes";
+import stimulusRouter from "./routes/stimulus.routes";
+import helmet from "helmet";
 // Load environment variables from .env
 dotenv.config();
 
@@ -16,12 +18,14 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend dev URL
-    credentials: true, // allow cookies (very important!)
+    origin: ["http://localhost:3002", "http://localhost:5173"],
+    credentials: true,
   })
 );
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
+app.use(helmet());
+app.use(rateLimiter);
 /* app.use(rateLimiter); */
 
 //Routes
@@ -29,6 +33,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/studies", studyRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
+app.use("/api/stimuli", stimulusRouter);
 
 // MongoDB Connection
 const MONGO_URI =

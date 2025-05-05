@@ -5,20 +5,16 @@ import {
 } from "../models/comparison.model";
 import mongoose, { Types } from "mongoose";
 import { Stimulus } from "../models/stimuli.model";
+import { Study } from "../models/study.model";
 
 export const createComparisonService = async (
   studyId: string | Types.ObjectId,
-  question: string,
+  title: string,
   type: string,
   stimuliIds: string[] | Types.ObjectId[],
-  order: number,
-  instructions?: string,
-  config?: any
+  stimuliType: string
 ) => {
   try {
-    // Authentication is done in the auth.middleware.ts file
-    // Validation is done in the comparison.validar.ts file
-
     // Convert string IDs to ObjectId if needed
     const studyObjectId =
       typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
@@ -30,21 +26,24 @@ export const createComparisonService = async (
     // Create the comparison
     const comparison = new Comparison({
       study: studyObjectId,
-      question,
+      title,
       type,
       stimuli: stimuliObjectIds,
-      order,
-      instructions,
-      config,
+      stimuliType,
+      options: stimuliObjectIds.map((stimulusId) => ({ stimulus: stimulusId })),
     });
 
     // Simple save without transaction management
-    await comparison.save();
+    const savedComparison = await comparison.save();
+
+    await Study.findByIdAndUpdate(studyId, {
+      $push: { comparisons: savedComparison._id },
+    });
 
     // Populate the stimuli before returning (but exclude binary data)
     await comparison.populate({
-      path: "stimuli",
-      select: "-data",
+      path: "options.stimulus",
+      select: "-data -filename -size -createdAt -updatedAt -__v",
     });
 
     return comparison;
@@ -55,23 +54,25 @@ export const createComparisonService = async (
 };
 
 export const createStimulusService = async (file: {
-  originalname: string;
+  filename: string;
   mimetype: string;
   buffer: Buffer;
   size: number;
 }) => {
   try {
     const stimulus = new Stimulus({
-      name: file.originalname,
+      filename: file.filename,
       mimetype: file.mimetype,
       size: file.size,
       data: file.buffer,
       type: file.mimetype.split("/")[0],
     });
 
-    await stimulus.save();
+    const savedStimulus = await stimulus.save();
+    savedStimulus.url = `/api/files/${savedStimulus._id}`;
+    await savedStimulus.save();
 
-    return stimulus;
+    return savedStimulus;
   } catch (error) {
     console.error("Error in createStimulus service:", error);
     throw error;

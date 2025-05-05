@@ -4,6 +4,7 @@ import { saveStimulusMetadata } from "../services/stimuli.service";
 import {
   createStudyService,
   getStudyByIdService,
+  getAllStudiesService,
 } from "../services/study.service";
 import mongoose from "mongoose";
 
@@ -69,6 +70,24 @@ export const getStudyById = async (
     console.error("Error getting study by ID:", error);
     res.status(500).json({
       message: "Failed to get study by ID",
+      error: error instanceof Error ? error.message : String(error),
+    });
+    next();
+  }
+};
+
+export const getAllStudies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const studies = await getAllStudiesService();
+    res.status(200).json(studies);
+  } catch (error) {
+    console.error("Error getting all studies:", error);
+    res.status(500).json({
+      message: "Failed to get all studies",
       error: error instanceof Error ? error.message : String(error),
     });
     next();

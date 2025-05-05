@@ -39,5 +39,11 @@ export const getStudyByIdService = async (
     populate: { path: "stimuli", select: "-data" },
   });
 };
+export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
+  return await Study.find().populate({
+    path: "comparisons",
+    populate: { path: "stimuli", select: "-data" },
+  });
+};
 
 // need to implement edit studies and update studies as well.

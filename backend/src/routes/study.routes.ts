@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createStudy, getStudyById } from "../controllers/study.controller";
+import {
+  createStudy,
+  getStudyById,
+  getAllStudies,
+} from "../controllers/study.controller";
 import { createStudyValidator } from "../validators/study.validator";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
@@ -42,9 +46,12 @@ router.post(
   authenticateUser,
   stimuliUpload.array("stimuli"),
   validateStimuliUploads,
-  createComparisonValidator,
+  /* createComparisonValidator, */
   validateRequest,
   createComparison
 );
+
+// get all studies route
+router.get("/", authenticateUser, getAllStudies);
 
 export default router;

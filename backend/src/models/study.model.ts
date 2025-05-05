@@ -11,7 +11,6 @@ export interface IStudy extends Document {
   owner: mongoose.Types.ObjectId;
   workspace: mongoose.Types.ObjectId;
   status: StudyStatus;
-  publicUrl: string;
   participantCount: number;
   responseCount: number;
 }
