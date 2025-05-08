@@ -1,7 +1,7 @@
 import React from "react";
 import "./ComparisonList.css";
 
-const ComparisonList = ({ comparisons }) => {
+const ComparisonList = ({ comparisons, onPreview }) => {
   if (!comparisons || comparisons.length === 0) {
     return null;
   }
@@ -80,7 +80,7 @@ const ComparisonList = ({ comparisons }) => {
             .map((key) => comparison[key]);
 
           return (
-            <div key={comparison._id} className="comparison-item">
+            <div key={comparison._id} className="comparison-item" onClick={() => onPreview(comparison)}>
               <div className="comparison-header">
                 <h4>{comparison.title}</h4>
                 <div className="comparison-badges">

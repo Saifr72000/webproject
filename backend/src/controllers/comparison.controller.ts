@@ -3,56 +3,64 @@ import {
   createComparisonService,
   createStimulusService,
 } from "../services/comparison.service";
-import mongoose from "mongoose";
-import { Comparison } from "../models/comparison.model";
-import { IStimulus, Stimulus } from "../models/stimuli.model";
-import multer from "multer";
+import { IStimulus } from "../models/stimuli.model";
 
-// Create a new comparison with uploaded stimuli
 export const createComparison = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  //Authentication validation is done by middleware executed prior to this controller function
   try {
     const { studyId } = req.params;
-    const { title, type, stimuliType } = req.body;
+    const {
+      title,
+      prompt,
+      type,
+      stimuliType,
+      order,
+      required = true,
+      config,
+    } = req.body;
+
     const files = req.files as Express.Multer.File[];
 
-    //Process all uploaded files and create documents out of them
-    // ensure that stimulus required fields are present, the ones we pass to service
-    const stimuliPromises = files.map((file) =>
-      createStimulusService({
-        filename: file.originalname,
-        mimetype: file.mimetype,
-        buffer: file.buffer,
-        size: file.size,
-      })
-    );
+    // Create Stimulus documents from uploaded files
+    const stimuli = (await Promise.all(
+      files.map((file) =>
+        createStimulusService({
+          filename: file.originalname,
+          mimetype: file.mimetype,
+          buffer: file.buffer,
+          size: file.size,
+        })
+      )
+    )) as IStimulus[];
 
-    // Here we wait for all stimuli to be created
-    const stimuli = (await Promise.all(stimuliPromises)) as IStimulus[];
-    const stimuliIds = stimuli.map((stimulus) => stimulus._id.toString());
+    // Build options array from uploaded stimuli
+    const options = stimuli.map((stimulus) => ({
+      stimulus: stimulus._id,
+      label: stimulus.filename, // optional fallback
+    }));
 
-    //If parsedorder is equal to NaN, then set it to 0, otherwise set it to parsedOrder
-    // Ensures that order is a number always
-
-    const comparison = await createComparisonService(
-      studyId,
+    const comparison = await createComparisonService({
+      study: studyId,
       title,
+      prompt,
       type,
-      stimuliIds,
-      stimuliType
-    );
+      stimuliType,
+      order: parseInt(order, 10) || 0,
+      required,
+      config: config || {},
+      options,
+    });
 
     res.status(201).json({
       message: "Comparison created successfully",
       comparison: comparison.toObject(),
     });
   } catch (error) {
-    console.error("Error creating study:", error);
+    console.error("Error creating comparison:", error);
     res.status(500).json({
-      message: "Failed to create study",
+      message: "Failed to create comparison",
       error: error instanceof Error ? error.message : String(error),
     });
   }

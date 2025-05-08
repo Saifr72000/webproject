@@ -9,12 +9,13 @@ const Card = ({
   author,
   participate = false,
   studyId,
+  showEdit = false,
 }) => {
   return (
     <div className="study-card">
       <div className="study-content">
         <div className="quiz-image">
-          <img src={imageSrc} alt={title} />
+          <img src={imageSrc} alt="" />
         </div>
         <div className="quiz-content-item">
           <h3>{title}</h3>
@@ -22,13 +23,18 @@ const Card = ({
           <p>{author}</p>
         </div>
 
-        {participate && (
-          <div>
+        <div className="card-buttons">
+          {participate && (
             <Link to={`/study/${studyId}`}>
               <button className="secondary-btn">View Study</button>
             </Link>
-          </div>
-        )}
+          )}
+          {showEdit && (
+            <Link to={`/edit-study/${studyId}`}>
+              <button className="primary-btn">Edit Study</button>
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
