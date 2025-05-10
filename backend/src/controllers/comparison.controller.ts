@@ -3,57 +3,102 @@ import {
   createComparisonService,
   createStimulusService,
 } from "../services/comparison.service";
-import mongoose from "mongoose";
+import { IStimulus } from "../models/stimuli.model";
 import { Comparison } from "../models/comparison.model";
-import { IStimulus, Stimulus } from "../models/stimuli.model";
-import multer from "multer";
-
-// Create a new comparison with uploaded stimuli
+import { Study } from "../models/study.model";
 export const createComparison = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  //Authentication validation is done by middleware executed prior to this controller function
   try {
     const { studyId } = req.params;
-    const { title, type, stimuliType } = req.body;
+    const {
+      title,
+      prompt,
+      type,
+      stimuliType,
+      order,
+      required = true,
+      config,
+    } = req.body;
+
     const files = req.files as Express.Multer.File[];
 
-    //Process all uploaded files and create documents out of them
-    // ensure that stimulus required fields are present, the ones we pass to service
-    const stimuliPromises = files.map((file) =>
-      createStimulusService({
-        filename: file.originalname,
-        mimetype: file.mimetype,
-        buffer: file.buffer,
-        size: file.size,
-      })
-    );
+    // Create Stimulus documents from uploaded files
+    const stimuli = (await Promise.all(
+      files.map((file) =>
+        createStimulusService({
+          filename: file.originalname,
+          mimetype: file.mimetype,
+          buffer: file.buffer,
+          size: file.size,
+        })
+      )
+    )) as IStimulus[];
 
-    // Here we wait for all stimuli to be created
-    const stimuli = (await Promise.all(stimuliPromises)) as IStimulus[];
-    const stimuliIds = stimuli.map((stimulus) => stimulus._id.toString());
+    // Build options array from uploaded stimuli
+    const options = stimuli.map((stimulus) => ({
+      stimulus: stimulus._id,
+      label: stimulus.filename, // optional fallback
+    }));
 
-    //If parsedorder is equal to NaN, then set it to 0, otherwise set it to parsedOrder
-    // Ensures that order is a number always
-
-    const comparison = await createComparisonService(
-      studyId,
+    const comparison = await createComparisonService({
+      study: studyId,
       title,
+      prompt,
       type,
-      stimuliIds,
-      stimuliType
-    );
+      stimuliType,
+      order: parseInt(order, 10) || 0,
+      required,
+      config: config || {},
+      options,
+    });
 
     res.status(201).json({
       message: "Comparison created successfully",
       comparison: comparison.toObject(),
     });
   } catch (error) {
-    console.error("Error creating study:", error);
+    console.error("Error creating comparison:", error);
     res.status(500).json({
-      message: "Failed to create study",
+      message: "Failed to create comparison",
       error: error instanceof Error ? error.message : String(error),
     });
+  }
+};
+
+export const deleteComparisonById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const comparison = await Comparison.findById(id);
+    if (!comparison) {
+      return res.status(404).json({ message: "Comparison not found" });
+    }
+
+    const study = await Study.findById(comparison.study);
+    if (!study) {
+      return res.status(404).json({ message: "Study not found" });
+    }
+
+    if (study.status === "active" || study.status === "completed") {
+      return res.status(400).json({ message: "Cannot delete active or closed study" });
+    }
+
+    const deleted = await Comparison.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Comparison not found" });
+    }
+
+    // Optional: remove from study if needed
+    await Study.updateOne(
+      { comparisons: id },
+      { $pull: { comparisons: id } }
+    );
+
+    return res.status(200).json({ message: "Comparison deleted" });
+  } catch (err) {
+    console.error("Error deleting comparison:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };

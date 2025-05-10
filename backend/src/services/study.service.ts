@@ -34,14 +34,24 @@ export const createStudyService = async (
 export const getStudyByIdService = async (
   id: string
 ): Promise<IStudy | null> => {
-  return await Study.findById(id).populate({
+  return await Study.findById(id).
+  populate("coverImage")
+  .populate({
     path: "comparisons",
+    populate: {
+      path: "options.stimulus",
+      select: "-data -__v -createdAt -updatedAt",
+    },
   });
 };
 export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
   return await Study.find().populate({
     path: "comparisons",
+    populate: {
+      path: "options.stimulus",
+      select: "-data -__v -createdAt -updatedAt",
+    },
   });
-};
+}
 
 // need to implement edit studies and update studies as well.

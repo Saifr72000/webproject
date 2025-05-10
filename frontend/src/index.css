@@ -34,6 +34,7 @@ code {
   border-radius: 7px;
   font-weight: 500;
   transition: background-color 0.2s ease;
+  width: auto;
 }
 
 .primary-btn:hover {
@@ -79,7 +80,7 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full screen height */
-  width: 100vw; /* Optional for full width */
-  background-color: #fff; /* Optional: white background */
+  height: 100vh; 
+  width: 100vw; 
+  background-color: #fff; 
 }

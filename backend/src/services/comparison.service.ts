@@ -7,48 +7,74 @@ import mongoose, { Types } from "mongoose";
 import { Stimulus } from "../models/stimuli.model";
 import { Study } from "../models/study.model";
 
+interface CreateComparisonParams {
+  study: string | Types.ObjectId;
+  title: string;
+  prompt: string;
+  type: ComparisonType;
+  stimuliType: string;
+  order: number;
+  required?: boolean;
+  config?: Record<string, any>;
+  options: {
+    stimulus: string | Types.ObjectId;
+    label?: string;
+  }[];
+}
+
 export const createComparisonService = async (
-  studyId: string | Types.ObjectId,
-  title: string,
-  type: string,
-  stimuliIds: string[] | Types.ObjectId[],
-  stimuliType: string
-) => {
+  params: CreateComparisonParams
+): Promise<IComparison> => {
   try {
-    // Convert string IDs to ObjectId if needed
+    const {
+      study,
+      title,
+      prompt,
+      type,
+      stimuliType,
+      order,
+      required = true,
+      config = {},
+      options,
+    } = params;
+
     const studyObjectId =
-      typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
+      typeof study === "string" ? new Types.ObjectId(study) : study;
 
-    const stimuliObjectIds = stimuliIds.map((id) =>
-      typeof id === "string" ? new Types.ObjectId(id) : id
-    );
+    const normalizedOptions = options.map((opt) => ({
+      stimulus:
+        typeof opt.stimulus === "string"
+          ? new Types.ObjectId(opt.stimulus)
+          : opt.stimulus,
+      label: opt.label,
+    }));
 
-    // Create the comparison
     const comparison = new Comparison({
       study: studyObjectId,
       title,
+      prompt,
       type,
-      stimuli: stimuliObjectIds,
       stimuliType,
-      options: stimuliObjectIds.map((stimulusId) => ({ stimulus: stimulusId })),
+      order,
+      required,
+      config,
+      options: normalizedOptions,
     });
 
-    // Simple save without transaction management
     const savedComparison = await comparison.save();
 
-    await Study.findByIdAndUpdate(studyId, {
+    await Study.findByIdAndUpdate(studyObjectId, {
       $push: { comparisons: savedComparison._id },
     });
 
-    // Populate the stimuli before returning (but exclude binary data)
-    await comparison.populate({
+    await savedComparison.populate({
       path: "options.stimulus",
-      select: "-data -filename -size -createdAt -updatedAt -__v",
+      select: "-data -createdAt -updatedAt -__v", // Exclude raw binary and metadata
     });
 
-    return comparison;
+    return savedComparison;
   } catch (error) {
-    console.error("Error in createComparison service:", error);
+    console.error("Error in createComparisonService:", error);
     throw error;
   }
 };
@@ -78,51 +104,3 @@ export const createStimulusService = async (file: {
     throw error;
   }
 };
-
-/* export const getComparisonsByStudy = async (
-  studyId: string
-): Promise<IComparison[]> => {
-  return await Comparison.find({ study: studyId }).sort({ order: 1 });
-};
-
-export const getComparisonById = async (
-  id: string
-): Promise<IComparison[] | null> => {
-  return await Comparison.findById(id);
-};
-
-export const updateComparison = async (
-  id: string,
-  updates: Partial<{
-    question: string;
-    instructions: string;
-    type: ComparisonType;
-    stimuli: string[];
-    order: number;
-    config: {
-      minSelections?: number;
-      maxSelections?: number;
-      allowPartialRanking?: boolean;
-    };
-  }>
-): Promise<IComparison | null> => {
-  // Convert stimuli IDs to ObjectIds if present
-  const updateData: any = { ...updates };
-  if (updates.stimuli) {
-    updateData.stimuli = updates.stimuli.map((id) => new Types.ObjectId(id));
-  }
-
-  return await Comparison.findByIdAndUpdate(
-    id,
-    { $set: updateData },
-    { new: true }
-  );
-};
-
-// Revise this function, because we need to test if for cascation.
-// I.e, it gets removed from the collection of studies.
-export const deleteComparison = async (id: string): Promise<boolean> => {
-  const result = await Comparison.findByIdAndDelete(id);
-  return !!result;
-};
- */
