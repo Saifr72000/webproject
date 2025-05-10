@@ -10,6 +10,7 @@ import {
   completeSessionValidator,
   createSessionValidator,
 } from "../validators/session.validator";
+import { authenticateUser } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -28,4 +29,7 @@ router.post(
   completeSessionValidator,
   completeSessionController
 );
+
+router.get("/get-session/:sessionId", getSessionByIdController);
+
 export default router;

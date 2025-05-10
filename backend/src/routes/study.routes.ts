@@ -41,16 +41,16 @@ router.post(
 router.get("/:id", authenticateUser, getStudyById);
 
 // create comparison route
-router.post(
+/* router.post(
   "/:studyId/comparisons",
   authenticateUser,
   stimuliUpload.array("stimuli"),
   validateStimuliUploads,
-  /* createComparisonValidator, */
+  createComparisonValidator,
   validateRequest,
   createComparison
 );
-
+ */
 // get all studies route
 router.get("/", authenticateUser, getAllStudies);
 
