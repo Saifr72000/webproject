@@ -3,7 +3,7 @@ import { RequestHandler } from "express";
 
 export const createComparisonValidator = [
   // Validate studyId parameter
-  body("studyId").isMongoId().withMessage("Invalid study ID format"),
+  param("studyId").isMongoId().withMessage("Invalid study ID format"),
 
   // Validate required fields
   body("title")

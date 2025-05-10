@@ -4,14 +4,13 @@ import { IComparison, ComparisonType } from "./comparison.model";
 
 // Base response interface
 interface IBaseResponse {
-  comparison: Types.ObjectId | IComparison;
-  answeredAt: Date;
+  comparison: Types.ObjectId;
   comparisonTitle: string;
 }
 
 // Rating response (for rating comparison type)
 interface IRatingResponse extends IBaseResponse {
-  responses: Array<{
+  ratingResponses: Array<{
     stimulus: Types.ObjectId;
     rating: number;
   }>;
@@ -19,12 +18,12 @@ interface IRatingResponse extends IBaseResponse {
 
 // Single select response (for single-select comparison type)
 interface ISingleSelectResponse extends IBaseResponse {
-  selectedStimulus: Types.ObjectId;
+  singleSelectResponses: Types.ObjectId;
 }
 
 // Binary response (for binary comparison type)
 interface IBinaryResponse extends IBaseResponse {
-  responses: Array<{
+  binaryResponses: Array<{
     stimulus: Types.ObjectId;
     selected: boolean;
   }>;
@@ -32,7 +31,7 @@ interface IBinaryResponse extends IBaseResponse {
 
 // Multi-select response (for multi-select comparison type)
 interface IMultiSelectResponse extends IBaseResponse {
-  selectedStimuli: Types.ObjectId[];
+  multiSelectResponses: Types.ObjectId[];
 }
 
 // Union type for all response types, it can either one of Interfaces defined above
@@ -48,6 +47,7 @@ export interface ISession extends Document {
   startedAt: Date;
   completedAt?: Date;
   isComplete: boolean;
+  endTime: Date;
 
   // Demographic data
   demographics?: {
@@ -74,9 +74,15 @@ const SessionSchema = new Schema<ISession>(
       type: Number,
       default: 0,
     },
+    // this might be redundant as we use timestamps true, but good to keep it for future flexibility
     startedAt: {
       type: Date,
       default: Date.now,
+    },
+    // this might be redundant as we use timestamps true, but good to keep it for future flexibility
+    endTime: {
+      type: Date,
+      default: null,
     },
     completedAt: Date,
     isComplete: {
@@ -103,6 +109,11 @@ const SessionSchema = new Schema<ISession>(
           required: true,
         },
 
+        submittedAt: {
+          type: Date,
+          default: Date.now,
+        },
+
         // Fields for rating/scale type
         ratingResponses: [
           {
@@ -114,13 +125,9 @@ const SessionSchema = new Schema<ISession>(
           },
         ],
 
-        // Field for single-select type
-        singleSelectResponse: {
-          type: Schema.Types.ObjectId,
-          ref: "Stimulus",
-        },
-
         // Field for binary type
+        // We can also have  acase where the comparison wants to present multiple stimuluses and ask for a yes or no response,
+        // but currently we are only supporting one stimulus to be passed
         binaryResponses: [
           {
             stimulus: {
@@ -138,13 +145,22 @@ const SessionSchema = new Schema<ISession>(
             ref: "Stimulus",
           },
         ],
+
+        // Field for single-select type
+        singleSelectResponses: {
+          type: Schema.Types.ObjectId,
+          ref: "Stimulus",
+        },
       },
     ],
   },
   { timestamps: true }
 );
 
-export const Session = mongoose.model<ISession>("Session", SessionSchema);
+export const StudySession = mongoose.model<ISession>(
+  "StudySession",
+  SessionSchema
+);
 
 /* // Validation to ensure the correct fields are populated based on comparison type
 SessionSchema.path("responses").validate(async function (responses) {

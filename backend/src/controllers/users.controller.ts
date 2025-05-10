@@ -56,28 +56,7 @@ export const retrieveUserById = async (
   }
 };
 
-// Retrieve user by workspace id controller
-export const retrieveUserByWorkspace = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const users = await getUsersByWorkspace(req.params.id);
-    console.log(req);
-
-    if (users.length === 0) {
-      res.status(404).json({ message: "No users found in this workspace" });
-      return;
-    }
-
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
-  }
-};
-
 //Update user by user id controller
-
 export const updateUserById = async (
   req: Request,
   res: Response
@@ -86,7 +65,6 @@ export const updateUserById = async (
     const { id } = req.params;
     const { firstName, lastName, password } = req.body;
     const updatedUser = await updateUser(id, { firstName, lastName, password });
-    console.log(req);
     if (!updatedUser) {
       res.status(404).json({ message: "User not found" });
       return;

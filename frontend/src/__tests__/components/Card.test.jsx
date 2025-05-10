@@ -73,6 +73,5 @@ describe("Card Component", () => {
   test("renders card component", () => {
     renderWithRouter(<Card title="Test Card" />);
     expect(screen.getByText("Test Card")).toBeInTheDocument();
-    // other assertions...
   });
 });
