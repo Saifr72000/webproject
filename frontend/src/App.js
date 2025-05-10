@@ -8,7 +8,6 @@ import LoginPage from "./pages/Login/LoginPage";
 import StudiesPage from "./pages/Studies/StudyOverviewPage";
 import CreateStudy from "./pages/CreateStudy/CreateStudy";
 import RegisterPage from "./pages/Register/RegisterPage";
-import EditStudyPage from "./pages/EditStudy/EditStudyPage";
 // Layout
 import AppLayout from "./layout/AppLayout";
 import ViewStudyPage from "./pages/ViewStudy/ViewStudyPage";
@@ -34,7 +33,6 @@ const App = () => {
             <Route path="studies" element={<StudiesPage />} />
             <Route path="create-study" element={<CreateStudy />} />
             <Route path="study/:studyId" element={<ViewStudyPage />} />
-            <Route path="/edit-study/:studyId" element={<EditStudyPage />} />
             {/* Optional: default to /dashboard if no sub-route is provided */}
             <Route index element={<Navigate to="/studies" />} />
           </Route>

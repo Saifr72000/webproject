@@ -1,6 +1,5 @@
 .comparison-list {
   margin-top: 2rem;
-  cursor: pointer;
 }
 
 .comparison-list h3 {
@@ -9,7 +8,7 @@
 
 .comparison-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
@@ -17,11 +16,7 @@
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem; 
-}
-.comparison-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  padding: 1.5rem;
 }
 
 .comparison-header {
@@ -160,18 +155,4 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
-}
-
-.delete-btn {
-  background: #c20202;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  color: #e8e5e6;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background: #f24141;
 }

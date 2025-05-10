@@ -22,30 +22,3 @@
     width: 100px;
     height: 100px;
   } */
-
-  .status-badge {
-    display: inline-block;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-  
-  .status-badge.draft {
-    background-color: #e0e0e0;
-    color: #333;
-  }
-  
-  .status-badge.active {
-    background-color: #20a23a;
-    color: #e4ede5;
-  }
-  
-  .status-badge.completed {
-    background-color: #cfe2ff;
-    color: #084298;
-  }
-  

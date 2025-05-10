@@ -1,10 +1,7 @@
-import React, { useState } from "react"; // <- this is what you need
+import React, { useState } from "react";
 import "./ComparisonForm.css";
 
-
-
 const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
-  const [prompt, setPrompt] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("binary"); // Default to binary comparison
   const [stimuliType, setStimuliType] = useState("image"); // Default to image
@@ -99,8 +96,6 @@ const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
       formData.append("title", title);
       formData.append("type", type);
       formData.append("stimuliType", stimuliType);
-      formData.append("prompt", prompt);
-
 
       // Append all stimuli files
       stimuli.forEach((stimulus, index) => {
@@ -158,7 +153,6 @@ const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
     <div className="comparison-form">
       <h3>Add New Comparison</h3>
       <form onSubmit={handleSubmit}>
-      {error && <p className="error-text">{error}</p>}
         <div className="form-group">
           <label htmlFor="comparison-title">Comparison Title</label>
           <input
@@ -171,19 +165,6 @@ const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
             required
           />
         </div>
-
-  <div className="form-group">
-  <label htmlFor="prompt">Prompt</label>
-  <input
-    type="text"
-    id="prompt"
-    name="prompt"
-    className="form-control"
-    value={prompt}
-    onChange={(e) => setPrompt(e.target.value)}
-    required
-  />
-</div>
 
         <div className="form-group">
           <label>Comparison Type</label>

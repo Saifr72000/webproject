@@ -4,7 +4,7 @@ export type StudyStatus = "draft" | "active" | "completed";
 
 export interface IStudy extends Document {
   _id: mongoose.Types.ObjectId;
-  coverImage: { type: Schema.Types.ObjectId, ref: "Stimulus" }
+  coverImage: mongoose.Types.ObjectId;
   comparisons: mongoose.Types.ObjectId[];
   name: string;
   description: string;
@@ -44,7 +44,7 @@ const StudySchema = new Schema<IStudy>(
     status: {
       type: String,
       enum: ["draft", "active", "completed"],
-      default: "draft",
+      default: "active",
     },
     participantCount: {
       type: Number,

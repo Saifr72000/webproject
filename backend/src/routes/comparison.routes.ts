@@ -1,10 +1,8 @@
-import express from "express";
 import { Router } from "express";
-import { body } from "express-validator";
 import { createComparison } from "../controllers/comparison.controller";
+import { createComparisonValidator } from "../validators/comparison.validator";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
-import { deleteComparisonById } from "../controllers/comparison.controller";
 import {
   stimuliUpload,
   validateStimuliUploads,
@@ -31,7 +29,5 @@ router.post(
   validateRequest,
   createComparison
 );
-
-router.delete("/:id", authenticateUser, deleteComparisonById);
 
 export default router;

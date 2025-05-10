@@ -22,13 +22,11 @@ export interface IComparisonOption {
 export interface IComparison extends Document {
   study: Types.ObjectId | IStudy;
   title: string;
-  prompt: string;
   type: ComparisonType;
   stimuliType: StimuliType;
   order: number;
   options: IComparisonOption[];
   required: boolean;
-  config: Record<string, any>;
 }
 
 const ComparisonSchema = new Schema<IComparison>(
@@ -39,11 +37,6 @@ const ComparisonSchema = new Schema<IComparison>(
       required: true,
     },
     title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    prompt: {
       type: String,
       required: true,
       trim: true,
@@ -65,25 +58,13 @@ const ComparisonSchema = new Schema<IComparison>(
           ref: "Stimulus",
           required: true,
         },
-        label: {
-          type: String,
-        },
       },
     ],
-    required:{
-      type: Boolean,
-      default: true,
-    },
-    config: {
-      type: Schema.Types.Mixed,
-      default: {},
-    }
   },
   { timestamps: true }
 );
 
-
- ComparisonSchema.index({ study: 1, order: 1 }), { unique: true };
+/* ComparisonSchema.index({ study: 1, order: 1 }); */
 
 export const Comparison = mongoose.model<IComparison>(
   "Comparison",

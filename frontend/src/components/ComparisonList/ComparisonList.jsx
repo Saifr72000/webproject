@@ -1,7 +1,7 @@
 import React from "react";
 import "./ComparisonList.css";
 
-const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
+const ComparisonList = ({ comparisons }) => {
   if (!comparisons || comparisons.length === 0) {
     return null;
   }
@@ -25,12 +25,14 @@ const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
   // Helper function to render the appropriate stimuli preview
   const renderStimuliPreview = (stimulus, index, stimuliType = "image") => {
     const label = String.fromCharCode(65 + index);
-  
-    if (!stimulus) return null;
-  
+
+    if (!stimulus) {
+      return null;
+    }
+
     if (!stimuliType || stimuliType === "image") {
       return (
-        <div className="comparison-image-container">
+        <div key={index} className="comparison-image-container">
           <img
             src={stimulus.url || ""}
             alt={`Stimulus ${label}`}
@@ -40,7 +42,8 @@ const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
         </div>
       );
     }
-  
+
+    // Get icon based on stimuli type
     const getTypeIcon = () => {
       switch (stimuliType) {
         case "video":
@@ -53,9 +56,9 @@ const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
           return "📷";
       }
     };
-  
+
     return (
-      <div className="comparison-file-container">
+      <div key={index} className="comparison-file-container">
         <div className="file-type-icon">{getTypeIcon()}</div>
         <div className="file-name">
           {stimulus.originalName || `File ${label}`}
@@ -71,61 +74,42 @@ const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
 
       <div className="comparison-grid">
         {comparisons.map((comparison) => {
-          
           // Get all stimuli from the comparison
           const stimuli = Object.keys(comparison)
             .filter((key) => key.startsWith("stimulus") && comparison[key])
             .map((key) => comparison[key]);
 
-            return (
-              <div
-                key={comparison._id}
-                className="comparison-item"
-                onClick={() => onPreview(comparison)}
-              >
-                <div className="comparison-header">
-                  <h4>{comparison.title}</h4>
-                  <div className="comparison-badges">
-                    <span className="comparison-type">
-                      {formatComparisonType(comparison.type)}
+          return (
+            <div key={comparison._id} className="comparison-item">
+              <div className="comparison-header">
+                <h4>{comparison.title}</h4>
+                <div className="comparison-badges">
+                  <span className="comparison-type">
+                    {formatComparisonType(comparison.type)}
+                  </span>
+                  {comparison.stimuliType && (
+                    <span className={`stimuli-type ${comparison.stimuliType}`}>
+                      {comparison.stimuliType}
                     </span>
-                    {comparison.stimuliType && (
-                      <span className={`stimuli-type ${comparison.stimuliType}`}>
-                        {comparison.stimuliType}
-                      </span>
-                    )}
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const confirmed = window.confirm("Are you sure you want to delete this comparison?");
-                        if (confirmed) { // prevent event from bubbling up and triggering onPreview
-                        onDelete(comparison._id);
-                        }
-                      }}
-                    >
-                      Delete Comparison
-                    </button>
-                  </div>
-                  
-                </div>
-                <div
-                  className={`comparison-files ${
-                    stimuli.length > 2 ? "multi-stimuli" : ""
-                  } ${comparison.stimuliType || "image"}-type`}
-                >
-                  {stimuli.map((stimulus, index) => (
-                    <React.Fragment key={stimulus._id || index}>
-                      {renderStimuliPreview(stimulus, index, comparison.stimuliType)}
-                      </React.Fragment>
-                    ))}
+                  )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              <div
+                className={`comparison-files ${
+                  stimuli.length > 2 ? "multi-stimuli" : ""
+                } ${comparison.stimuliType || "image"}-type`}
+              >
+                {stimuli.map((stimulus, index) =>
+                  renderStimuliPreview(stimulus, index, comparison.stimuliType)
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-    );
-  };
-  
-  export default ComparisonList;
+    </div>
+  );
+};
+
+export default ComparisonList;
