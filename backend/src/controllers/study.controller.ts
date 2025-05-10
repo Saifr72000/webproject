@@ -52,7 +52,6 @@ export const createStudy = async (
       message: "Failed to create study",
       error: error instanceof Error ? error.message : String(error),
     });
-    next();
   }
 };
 
@@ -72,7 +71,6 @@ export const getStudyById = async (
       message: "Failed to get study by ID",
       error: error instanceof Error ? error.message : String(error),
     });
-    next();
   }
 };
 
@@ -90,6 +88,5 @@ export const getAllStudies = async (
       message: "Failed to get all studies",
       error: error instanceof Error ? error.message : String(error),
     });
-    next();
   }
 };
