@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import workspacesRouter from "./routes/workspace.routes";
 import stimulusRouter from "./routes/stimulus.routes";
 import helmet from "helmet";
+import comparisonRouter from "./routes/comparison.routes";
 
 // Load environment variables from .env
 dotenv.config();
@@ -35,6 +36,7 @@ app.use("/api/studies", studyRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
 app.use("/api", stimulusRouter);
+app.use("/api/comparisons", comparisonRouter);
 
 // MongoDB Connection
 const MONGO_URI =

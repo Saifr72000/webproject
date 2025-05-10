@@ -14,6 +14,11 @@ import {
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
 import multer from "multer";
+import { deleteStudyById } from "../controllers/study.controller";
+import { activateStudy } from "../controllers/study.controller";
+import { completeStudy } from "../controllers/study.controller";
+
+
 
 const router = Router();
 
@@ -40,6 +45,9 @@ router.post(
 // in the getStudyById service
 router.get("/:id", authenticateUser, getStudyById);
 
+router.delete("/:id", authenticateUser, deleteStudyById);
+
+
 // create comparison route
 router.post(
   "/:studyId/comparisons",
@@ -53,5 +61,13 @@ router.post(
 
 // get all studies route
 router.get("/", authenticateUser, getAllStudies);
+
+// activate study route
+router.patch("/:id/activate", authenticateUser, activateStudy);
+
+// complete study route
+router.patch("/:id/complete", authenticateUser, completeStudy);
+
+
 
 export default router;

@@ -3,28 +3,37 @@ import "./previewModal.css";
 
 const PreviewModal = ({ comparison, onClose}) => {
     if (!comparison) return null;
+    console.log("Previewing comparison:", comparison);
+
+    const options = comparison.options || [];
 
     return(
         <div className="preview-modal-container" onClick={onClose}>
-            <div className = "preview-modal" onClick={(e) => e.stopPropagation()}>
+            <div className = "preview-modal" onClick={(e) => e.stopPropagation()}> 
                 <button className="close-btn" onClick={onClose}>x</button>
-                <h3>{comparison.title}</h3>
-                <p>{comparison.prompt}</p>
+                <h2 className="preview-title">{comparison.title}</h2>
+                <p className="preview-prompt">{comparison.prompt}</p>
 
                 <div className="preview-files">
-                    {comparison.options.map((opt, index) => (
-                        <div key={index} className="stimulus-preview">
-                            <img
-                            src={`${process.env.REACT_APP_BASE_URL}/api/files/${opt.stimulus._id}`}
-                            alt={opt.label || `Stimulus ${index + 1}`}
-                            className="preview-image"
-                            />
-                        </div>
-                    ))}
-                </div>
+          {options.length > 0 ? (
+            options.map((opt, index) => (
+              <div key={index} className="stimulus-preview">
+                <img
+                  src={`${process.env.REACT_APP_BASE_URL}/api/files/${opt?.stimulus?._id}`}
+                  alt={opt?.label || `Stimulus ${index + 1}`}
+                  className="preview-image"
+                />
+              </div>
+            ))
+          ) : (
+            <p className="empty-message">No stimuli added yet.</p>
+          )}
         </div>
-        </div>
-    );
+      </div>
+    </div>
+    
+  );
+  
 };
 
 export default PreviewModal;

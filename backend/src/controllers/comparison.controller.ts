@@ -4,7 +4,8 @@ import {
   createStimulusService,
 } from "../services/comparison.service";
 import { IStimulus } from "../models/stimuli.model";
-
+import { Comparison } from "../models/comparison.model";
+import { Study } from "../models/study.model";
 export const createComparison = async (
   req: Request,
   res: Response
@@ -63,5 +64,41 @@ export const createComparison = async (
       message: "Failed to create comparison",
       error: error instanceof Error ? error.message : String(error),
     });
+  }
+};
+
+export const deleteComparisonById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const comparison = await Comparison.findById(id);
+    if (!comparison) {
+      return res.status(404).json({ message: "Comparison not found" });
+    }
+
+    const study = await Study.findById(comparison.study);
+    if (!study) {
+      return res.status(404).json({ message: "Study not found" });
+    }
+
+    if (study.status === "active" || study.status === "completed") {
+      return res.status(400).json({ message: "Cannot delete active or closed study" });
+    }
+
+    const deleted = await Comparison.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Comparison not found" });
+    }
+
+    // Optional: remove from study if needed
+    await Study.updateOne(
+      { comparisons: id },
+      { $pull: { comparisons: id } }
+    );
+
+    return res.status(200).json({ message: "Comparison deleted" });
+  } catch (err) {
+    console.error("Error deleting comparison:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };

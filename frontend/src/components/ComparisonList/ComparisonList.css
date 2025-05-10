@@ -161,3 +161,17 @@
   border-radius: 4px;
   font-size: 0.75rem;
 }
+
+.delete-btn {
+  background: #c20202;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  color: #e8e5e6;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #f24141;
+}

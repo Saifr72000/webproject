@@ -1,9 +1,13 @@
 import express from "express";
+import { Router } from "express";
 import { body } from "express-validator";
 import { createComparison } from "../controllers/comparison.controller";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 
-const router = express.Router();
+import { authenticateUser } from "../middlewares/auth.middleware";
+import { deleteComparisonById } from "../controllers/comparison.controller";
+
+const router = Router();
 
 router.post(
   "/:studyId",
@@ -32,5 +36,7 @@ router.post(
   ],
   createComparison
 );
+
+router.delete("/:id", authenticateUser, deleteComparisonById);
 
 export default router;

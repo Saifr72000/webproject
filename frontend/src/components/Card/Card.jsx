@@ -9,8 +9,20 @@ const Card = ({
   author,
   participate = false,
   studyId,
+  status,
   showEdit = false,
 }) => {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "status-badge active";
+      case "completed":
+        return "status-badge completed";
+      default:
+        return "status-badge draft";
+  }
+};
+
   return (
     <div className="study-card">
       <div className="study-content">
@@ -21,6 +33,8 @@ const Card = ({
           <h3>{title}</h3>
           <p>{description}</p>
           <p>{author}</p>
+
+          {status && <span className={getStatusColor(status)}>{status}</span>}
         </div>
 
         <div className="card-buttons">
@@ -29,11 +43,15 @@ const Card = ({
               <button className="secondary-btn">View Study</button>
             </Link>
           )}
+          
           {showEdit && (
             <Link to={`/edit-study/${studyId}`}>
               <button className="primary-btn">Edit Study</button>
             </Link>
           )}
+          
+
+
         </div>
       </div>
     </div>
