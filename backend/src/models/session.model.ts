@@ -109,6 +109,11 @@ const SessionSchema = new Schema<ISession>(
           required: true,
         },
 
+        submittedAt: {
+          type: Date,
+          default: Date.now,
+        },
+
         // Fields for rating/scale type
         ratingResponses: [
           {
@@ -119,12 +124,6 @@ const SessionSchema = new Schema<ISession>(
             rating: Number,
           },
         ],
-
-        // Field for single-select type
-        singleSelectResponses: {
-          type: Schema.Types.ObjectId,
-          ref: "Stimulus",
-        },
 
         // Field for binary type
         // We can also have  acase where the comparison wants to present multiple stimuluses and ask for a yes or no response,
@@ -146,6 +145,12 @@ const SessionSchema = new Schema<ISession>(
             ref: "Stimulus",
           },
         ],
+
+        // Field for single-select type
+        singleSelectResponses: {
+          type: Schema.Types.ObjectId,
+          ref: "Stimulus",
+        },
       },
     ],
   },
