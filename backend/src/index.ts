@@ -9,6 +9,8 @@ import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
 import workspacesRouter from "./routes/workspace.routes";
 import stimulusRouter from "./routes/stimulus.routes";
+import sessionRouter from "./routes/session.routes";
+import comparisonRouter from "./routes/comparison.routes";
 import helmet from "helmet";
 // Load environment variables from .env
 dotenv.config();
@@ -29,12 +31,13 @@ app.use(rateLimiter);
 /* app.use(rateLimiter); */
 
 //Routes
+app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/studies", studyRouter);
-app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
 app.use("/api/stimuli", stimulusRouter);
-
+app.use("/api/sessions", sessionRouter);
+app.use("/api/comparisons", comparisonRouter);
 // MongoDB Connection
 const MONGO_URI =
   process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017/webproject";
