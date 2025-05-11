@@ -34,9 +34,14 @@ export const createStudyService = async (
 export const getStudyByIdService = async (
   id: string
 ): Promise<IStudy | null> => {
-  return await Study.findById(id).populate({
-    path: "comparisons",
-  });
+  return await Study.findById(id)
+    .populate({
+      path: "comparisons",
+    })
+    .populate({
+      path: "owner",
+      select: "firstName lastName",
+    });
 };
 export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
   return await Study.find().populate({

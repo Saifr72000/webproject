@@ -1,0 +1,63 @@
+.study-stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.stepper-track {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  max-width: 500px;
+  margin-bottom: 0.75rem;
+}
+
+.stepper-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  border: 2px solid #e2e8f0;
+  z-index: 2;
+}
+
+.stepper-dot.active {
+  background-color: white;
+  border: 2px solid #4a6cf7;
+}
+
+.stepper-dot.completed {
+  background-color: #4a6cf7;
+  border: 2px solid #4a6cf7;
+}
+
+.stepper-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e2e8f0;
+  z-index: 1;
+}
+
+.stepper-line.completed {
+  background-color: #4a6cf7;
+}
+
+.stepper-text {
+  font-size: 1rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .stepper-track {
+    width: 90%;
+  }
+
+  .stepper-dot {
+    width: 16px;
+    height: 16px;
+  }
+}

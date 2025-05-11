@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
         await axios.post(`${BASE_URL}/api/auth/refresh-token`);
         const response = await axios.get(`${BASE_URL}/api/users/me`);
         setUser(response.data);
-        console.log("User from /me:", response.data);
       } catch (error) {
         setUser(null);
       } finally {

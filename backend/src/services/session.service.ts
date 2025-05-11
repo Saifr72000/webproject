@@ -39,21 +39,14 @@ export const completeSession = async (
 export const getSessionById = async (
   sessionId: string | mongoose.Types.ObjectId
 ): Promise<ISession | null> => {
-  return await StudySession.findById(sessionId)
-    .populate({
-      path: "study",
-      populate: {
-        path: "owner", // Assuming Study has a `createdBy` field
-        model: "User",
-        select: "firstName lastName",
-      },
-    })
-    .populate("responses.comparison")
-    .populate("responses.ratingResponses.stimulus")
-    .populate("responses.singleSelectResponse")
-    .populate("responses.binaryResponses.stimulus")
-    .populate("responses.multiSelectResponses")
-    .exec();
+  return await StudySession.findById(sessionId).populate({
+    path: "study",
+    populate: {
+      path: "owner", // Assuming Study has a `createdBy` field
+      model: "User",
+      select: "firstName lastName",
+    },
+  });
 };
 
 export const addResponse = async (
