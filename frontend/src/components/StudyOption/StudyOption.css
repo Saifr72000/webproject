@@ -1,0 +1,110 @@
+.study-option {
+  position: relative;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.study-option:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.study-option.selected {
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+}
+
+.option-media {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+}
+
+.option-title {
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Audio specific styles */
+.audio-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f7fafc;
+  min-height: 100px;
+}
+
+audio.option-media {
+  width: 100%;
+  max-width: 300px;
+}
+
+/* PDF specific styles */
+.pdf-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.pdf-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.pdf-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.pdf-overlay span {
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Error state */
+.media-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background-color: #f7fafc;
+  color: #e53e3e;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .option-media {
+    max-height: 200px;
+  }
+
+  .pdf-container {
+    height: 150px;
+  }
+}

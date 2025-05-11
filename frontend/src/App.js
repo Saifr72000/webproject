@@ -8,10 +8,12 @@ import LoginPage from "./pages/Login/LoginPage";
 import StudiesPage from "./pages/Studies/StudyOverviewPage";
 import CreateStudy from "./pages/CreateStudy/CreateStudy";
 import RegisterPage from "./pages/Register/RegisterPage";
+import StudyFrontPage from "./pages/StudyFront/StudyFrontPage";
 // Layout
 import AppLayout from "./layout/AppLayout";
 import ViewStudyPage from "./pages/ViewStudy/ViewStudyPage";
-
+import StudySessionPage from "./pages/StudySession/StudySessionPage";
+import StudyCompletePage from "./pages/StudyComplete/StudyCompletePage";
 const App = () => {
   return (
     <AuthProvider>
@@ -20,7 +22,15 @@ const App = () => {
           {/* Public route */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
+          <Route path="/study/:studyId" element={<StudyFrontPage />} />
+          <Route
+            path="/study-session/:sessionId"
+            element={<StudySessionPage />}
+          />
+          <Route
+            path="/study-complete/:sessionId"
+            element={<StudyCompletePage />}
+          />
           {/* Protected layout and nested pages */}
           <Route
             path="/"
