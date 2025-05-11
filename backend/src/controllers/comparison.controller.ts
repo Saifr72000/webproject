@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import { Comparison } from "../models/comparison.model";
 import { IStimulus, Stimulus } from "../models/stimuli.model";
 import multer from "multer";
-
+import { getComparisonById } from "../services/comparison.service";
 // Create a new comparison with uploaded stimuli
 export const createComparison = async (
   req: Request,
@@ -52,7 +52,35 @@ export const createComparison = async (
   } catch (error) {
     console.error("Error creating study:", error);
     res.status(500).json({
-      message: "Failed to create study",
+      message: "Failed to create comparison",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+export const getComparisonByIdController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { comparisonId } = req.params;
+    const comparison = await getComparisonById(comparisonId);
+
+    if (!comparison) {
+      res.status(404).json({
+        message: "Comparison not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Comparison fetched successfully",
+      comparison: comparison,
+    });
+  } catch (error) {
+    console.error("Error fetching comparison:", error);
+    res.status(500).json({
+      message: "Failed to fetch comparison",
       error: error instanceof Error ? error.message : String(error),
     });
   }

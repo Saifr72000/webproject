@@ -43,7 +43,7 @@ type ResponseType =
 
 export interface ISession extends Document {
   study: Types.ObjectId | IStudy;
-  currentIndex: number;
+  currentComparisonIndex: number;
   startedAt: Date;
   completedAt?: Date;
   isComplete: boolean;
@@ -70,7 +70,7 @@ const SessionSchema = new Schema<ISession>(
       ref: "Study",
       required: true,
     },
-    currentIndex: {
+    currentComparisonIndex: {
       type: Number,
       default: 0,
     },

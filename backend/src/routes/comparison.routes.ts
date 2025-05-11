@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { createComparison } from "../controllers/comparison.controller";
+import {
+  createComparison,
+  getComparisonByIdController,
+} from "../controllers/comparison.controller";
 import { createComparisonValidator } from "../validators/comparison.validator";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
@@ -11,6 +14,7 @@ import {
 const router = Router();
 
 import multer from "multer";
+import { getComparisonById } from "../services/comparison.service";
 
 // Multer setup for handling file uploads in memory (MongoDB)
 const storage = multer.memoryStorage();
@@ -29,5 +33,7 @@ router.post(
   validateRequest,
   createComparison
 );
+
+router.get("/:comparisonId", getComparisonByIdController);
 
 export default router;

@@ -79,6 +79,15 @@ export const createStimulusService = async (file: {
   }
 };
 
+export const getComparisonById = async (
+  id: string
+): Promise<IComparison | null> => {
+  return await Comparison.findById(id).populate({
+    path: "options.stimulus",
+    select: "-data -filename -size -createdAt -updatedAt -__v",
+  });
+};
+
 /* export const getComparisonsByStudy = async (
   studyId: string
 ): Promise<IComparison[]> => {
