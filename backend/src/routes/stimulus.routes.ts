@@ -18,6 +18,7 @@ router.get("/files/:id", async (req: Request, res: Response): Promise<void> => {
     res.setHeader("Content-Type", file.mimetype);
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Access-Control-Allow-Origin", "*");
 
     res.send(file.data);
   } catch (error) {

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import StudyForm from "../../components/StudyForm/StudyForm";
 import ComparisonForm from "../../components/ComparisonForm/ComparisonForm";
 import ComparisonList from "../../components/ComparisonList/ComparisonList";
 import "./CreateStudy.css";
+import PreviewModal from "../../components/previewModal/previewModal";
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const CreateStudy = () => {
@@ -16,6 +18,12 @@ const CreateStudy = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [previewComparison, setPreviewComparison] = useState(null);
+  
+
+  const handlePreview = (comparison) => {
+    setPreviewComparison(comparison);
+  };
 
   // Create a new study
   const handleCreateStudy = async (formData) => {
@@ -78,7 +86,8 @@ const CreateStudy = () => {
       }
 
       const data = await response.json();
-      setComparisons([...comparisons, data]);
+      const newComparison = data.comparison || data;
+      setComparisons([...comparisons, newComparison]);
       setShowComparisonForm(false);
       setSuccess("Comparison added successfully!");
     } catch (err) {
@@ -110,7 +119,7 @@ const CreateStudy = () => {
             <p>{study.description}</p>
             {study.coverImage && (
               <img
-                src={study.coverImage.url}
+                src={`${BASE_URL}/api/files/${study.coverImage._id || study.coverImage}`}
                 alt="Study cover"
                 className="study-cover-image"
               />
@@ -141,7 +150,9 @@ const CreateStudy = () => {
               </div>
             ) : null}
 
-            <ComparisonList comparisons={comparisons} />
+            <ComparisonList comparisons={comparisons}
+              onPreview={handlePreview}
+              onDelete={() => {}} />
           </div>
 
           <div className="btn-container mt-4">
@@ -152,6 +163,11 @@ const CreateStudy = () => {
               Done - View Study
             </button>
           </div>
+          {previewComparison && (<PreviewModal
+          comparison={previewComparison}
+          onClose={() => setPreviewComparison(null)}
+          />
+          )}
         </>
       )}
     </div>

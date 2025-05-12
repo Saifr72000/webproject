@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getStimulusById } from "../services/stimuli.service";
 import mongoose from "mongoose";
 
+
 export const getStimulusByIdController = async (
   req: Request,
   res: Response

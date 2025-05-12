@@ -1,39 +1,45 @@
+import express from "express";
 import { Router } from "express";
-import {
-  createComparison,
-  getComparisonByIdController,
-} from "../controllers/comparison.controller";
-import { createComparisonValidator } from "../validators/comparison.validator";
+import { body } from "express-validator";
+import { createComparison } from "../controllers/comparison.controller";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
+import { getComparisonByIdController } from "../controllers/comparison.controller";
 import { authenticateUser } from "../middlewares/auth.middleware";
-import {
-  stimuliUpload,
-  validateStimuliUploads,
-} from "../validators/stimuli.validator";
+import { deleteComparisonById } from "../controllers/comparison.controller";
 
 const router = Router();
 
-import multer from "multer";
-import { getComparisonById } from "../services/comparison.service";
-
-// Multer setup for handling file uploads in memory (MongoDB)
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
-});
-
-// create comparison route
 router.post(
   "/:studyId",
-  authenticateUser,
-  stimuliUpload.array("stimuli"),
-  validateStimuliUploads,
-  createComparisonValidator,
-  validateRequest,
+  [
+    body("title").isString().notEmpty().withMessage("Title is required"),
+    body("prompt").isString().notEmpty().withMessage("Prompt is required"),
+    body("type")
+      .isIn(["rating", "single-select", "binary", "multi-select"])
+      .withMessage("Invalid comparison type"),
+    body("stimuliType")
+      .isIn(["image", "video", "audio", "pdf"])
+      .withMessage("Invalid stimuli type"),
+    body("order").isInt({ min: 0 }).withMessage("Order must be a non-negative integer"),
+    body("options").isArray({ min: 2 }).withMessage("At least 2 stimuli are required"),
+    body("options.*.stimulus")
+      .isString()
+      .notEmpty()
+      .withMessage("Each option must include a stimulus ID"),
+    body("options.*.label")
+      .optional()
+      .isString()
+      .withMessage("Label must be a string"),
+    body("config").optional().isObject(),
+    body("required").optional().isBoolean(),
+    validateRequest,
+  ],
   createComparison
 );
 
-router.get("/:comparisonId", getComparisonByIdController);
+router.delete("/:id", authenticateUser, deleteComparisonById);
+
+router.get("/:id", getComparisonByIdController);
+
 
 export default router;

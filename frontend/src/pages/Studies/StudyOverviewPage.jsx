@@ -5,7 +5,7 @@ import "./StudyOverViewPage.css";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const StudyOverview = () => {
-  const { data, loading, error } = useFetch(`${BASE_URL}/api/studies`);
+  const { data } = useFetch(`${BASE_URL}/api/studies`);
 
   console.log(data);
   return (
@@ -22,15 +22,17 @@ const StudyOverview = () => {
             : "Unknown Author";
  */
           return (
-            <Card
-              imageSrc={`${BASE_URL}/api/stimuli/${study?.coverImage}`}
-              participate={true}
-              studyId={study?._id}
-              key={study?._id}
-              title={study?.name}
-              description={study?.description}
-              /* author={authorName} */
-            />
+<Card
+  imageSrc={`${BASE_URL}/api/files/${study?.coverImage}`}
+  participate={true}
+  studyId={study?._id}
+  key={study?._id}
+  title={study?.name}
+  description={study?.description}
+  showEdit={true}
+  status={study?.status} 
+/>
+
           );
         })}
       </div>

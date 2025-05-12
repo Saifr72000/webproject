@@ -7,40 +7,55 @@ import mongoose, { Types } from "mongoose";
 import { Stimulus } from "../models/stimuli.model";
 import { Study } from "../models/study.model";
 
-export const createComparisonService = async (
-  studyId: string | Types.ObjectId,
-  title: string,
-  type: string,
-  stimuliIds: string[] | Types.ObjectId[],
-  stimuliType: string
-) => {
-  try {
-    // Convert string IDs to ObjectId if needed
-    const studyObjectId =
-      typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
+type CreateComparisonInput = {
+  study: string | Types.ObjectId;
+  title: string;
+  prompt?: string;
+  type: string;
+  stimuliType: string;
+  order?: number;
+  required?: boolean;
+  config?: Record<string, any>;
+  options?: { stimulus: string | Types.ObjectId }[];
+};
 
-    const stimuliObjectIds = stimuliIds.map((id) =>
-      typeof id === "string" ? new Types.ObjectId(id) : id
+export const createComparisonService = async ({
+  study,
+  title,
+  prompt,
+  type,
+  stimuliType,
+  order = 0,
+  required = false,
+  config = {},
+  options = [],
+}: CreateComparisonInput) => {
+  try {
+    const studyObjectId =
+      typeof study === "string" ? new Types.ObjectId(study) : study;
+
+    const optionStimuliIds = options.map((o) =>
+      typeof o.stimulus === "string" ? new Types.ObjectId(o.stimulus) : o.stimulus
     );
 
-    // Create the comparison
     const comparison = new Comparison({
       study: studyObjectId,
       title,
+      prompt,
       type,
-      stimuli: stimuliObjectIds,
       stimuliType,
-      options: stimuliObjectIds.map((stimulusId) => ({ stimulus: stimulusId })),
+      order,
+      required,
+      config,
+      options: optionStimuliIds.map((id) => ({ stimulus: id })),
     });
 
-    // Simple save without transaction management
     const savedComparison = await comparison.save();
 
-    await Study.findByIdAndUpdate(studyId, {
+    await Study.findByIdAndUpdate(studyObjectId, {
       $push: { comparisons: savedComparison._id },
     });
 
-    // Populate the stimuli before returning (but exclude binary data)
     await comparison.populate({
       path: "options.stimulus",
       select: "-data -filename -size -createdAt -updatedAt -__v",

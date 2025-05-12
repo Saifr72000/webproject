@@ -89,7 +89,30 @@ textarea.form-control {
 
 .btn-container {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start; /* optional */
+  gap: 1rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.btn-container button {
+  width: fit-content;
+  min-width: 160px;
+}
+
+.danger-btn{
+  padding: 2px 8px;
+  border-radius: 7px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  min-height: 40px;
+}
+.danger-btn:hover {
+  background-color: #c82333;
 }
 
 .comparison-section {

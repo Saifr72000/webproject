@@ -1,0 +1,38 @@
+[33mcommit d54c027b9e6c043e5c34534631e3151c36eaef66[m[33m ([m[1;31morigin/unit-tests-branch[m[33m, [m[1;32munit-tests-branch[m[33m)[m
+Author: Saifr72000 <saif.rana@me.com>
+Date:   Sun May 11 01:01:28 2025 +0200
+
+    Revert "Merge pull request #45 from Saifr72000/e2e-test"
+    
+    This reverts commit 2a7d7c7ac461fe9d5696606bcdb77d3f2f2982f1, reversing
+    changes made to b88d14014e63b553fa86c8c0c6287e35d210477f.
+
+M	backend/package-lock.json
+M	backend/package.json
+M	backend/src/controllers/comparison.controller.ts
+M	backend/src/controllers/study.controller.ts
+M	backend/src/index.ts
+M	backend/src/models/comparison.model.ts
+M	backend/src/models/study.model.ts
+M	backend/src/routes/comparison.routes.ts
+M	backend/src/routes/stimulus.routes.ts
+M	backend/src/routes/study.routes.ts
+M	backend/src/services/comparison.service.ts
+M	backend/src/services/study.service.ts
+M	backend/tsconfig.json
+D	backend/tsconfig.test.json
+M	frontend/cypress/e2e/frontend-login.cy.js
+D	"frontend/cypress/fixtures/DALL\302\267E 2023-11-16 00.59.51 - An illustration of the Earth with a questioning expression, suitable for a children's educational website on climate action. The Earth should have a c.png"
+M	frontend/src/App.js
+M	frontend/src/components/Card/Card.css
+M	frontend/src/components/Card/Card.jsx
+M	frontend/src/components/ComparisonForm/ComparisonForm.jsx
+M	frontend/src/components/ComparisonList/ComparisonList.css
+M	frontend/src/components/ComparisonList/ComparisonList.jsx
+D	frontend/src/components/previewModal/previewModal.css
+D	frontend/src/components/previewModal/previewModal.jsx
+M	frontend/src/index.css
+M	frontend/src/pages/CreateStudy/CreateStudy.css
+M	frontend/src/pages/CreateStudy/CreateStudy.jsx
+D	frontend/src/pages/EditStudy/EditStudyPage.jsx
+M	frontend/src/pages/Studies/StudyOverviewPage.jsx

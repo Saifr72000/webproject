@@ -144,85 +144,93 @@ const StudySessionPage = () => {
   };
 
   // Handle submitting an answer
-  const handleSubmitAnswer = async () => {
-    if (!selectedOption || !currentComparison) return;
+const handleSubmitAnswer = async () => {
+  if (!selectedOption || !currentComparison) return;
 
-    // Prepare response data based on comparison type
-    let responseData;
+  // Prepare response data based on comparison type
+  let responseData;
 
-    switch (currentComparison.type) {
-      case "binary":
-        responseData = currentComparison.stimuli.map((stimulus) => ({
-          stimulusId: stimulus._id,
-          selected: stimulus._id === selectedOption,
-        }));
-        break;
-      case "single-select":
-        responseData = { stimulusId: selectedOption };
-        break;
-      case "multi-select":
-        // For multi-select, we'd need to track multiple selections
-        responseData = [{ stimulusId: selectedOption }];
-        break;
-      case "rating":
-        // For rating, we'd need a rating value
-        responseData = currentComparison.stimuli.map((stimulus) => ({
-          stimulusId: stimulus._id,
-          rating: stimulus._id === selectedOption ? 5 : 0, // Default rating
-        }));
-        break;
-      default:
-        responseData = { stimulusId: selectedOption };
-    }
+  switch (currentComparison.type) {
+case "binary":
+  if (!currentComparison.options || !Array.isArray(currentComparison.options)) {
+    console.error("Missing options for binary comparison:", currentComparison);
+    return;
+  }
+  responseData = currentComparison.options.map((opt) => ({
+    stimulusId: opt.stimulus._id,
+    selected: opt.stimulus._id === selectedOption,
+  }));
+  break;
 
-    // Save response
-    const newResponses = [...responses];
-    newResponses[currentComparisonIndex] = {
-      comparisonId: currentComparison._id,
-      response: responseData,
-    };
-    setResponses(newResponses);
+    case "single-select":
+      responseData = { stimulusId: selectedOption };
+      break;
 
-    try {
-      // Submit to API - let the server handle incrementing the index
-      const updatedSession = await postData(
-        `${BASE_URL}/api/sessions/add-response/${sessionId}`,
-        {
-          comparisonId: currentComparison._id,
-          responseData,
-        }
-      );
+    case "multi-select":
+      responseData = [{ stimulusId: selectedOption }];
+      break;
 
-      // If server successfully processed the response
-      if (updatedSession) {
-        // Set the entire updated session data
-        setSession(updatedSession);
-
-        // Update local index based on what the server returns
-        if (
-          updatedSession.session &&
-          updatedSession.session.currentComparisonIndex !== undefined
-        ) {
-          setCurrentComparisonIndex(
-            updatedSession.session.currentComparisonIndex
-          );
-        }
-        // If server doesn't return updated index, increment locally as fallback
-        else if (currentComparisonIndex < totalQuestions - 1) {
-          setCurrentComparisonIndex(currentComparisonIndex + 1);
-        }
-
-        setSelectedOption(null);
-
-        // Show demographics at the end
-        if (currentComparisonIndex >= totalQuestions - 1) {
-          setShowDemographics(true);
-        }
+    case "rating":
+      if (!currentComparison.stimuli) {
+        console.error("Missing stimuli for rating comparison:", currentComparison);
+        return;
       }
-    } catch (error) {
-      console.error("Error submitting response:", error);
-    }
+if (!currentComparison.options || !Array.isArray(currentComparison.options)) {
+  console.error("Missing options for rating comparison:", currentComparison);
+  return;
+}
+responseData = currentComparison.options.map((opt) => ({
+  stimulusId: opt.stimulus._id,
+  rating: opt.stimulus._id === selectedOption ? 5 : 0,
+}));
+      break;
+
+    default:
+      responseData = { stimulusId: selectedOption };
+  }
+
+  // Save response locally
+  const newResponses = [...responses];
+  newResponses[currentComparisonIndex] = {
+    comparisonId: currentComparison._id,
+    response: responseData,
   };
+  setResponses(newResponses);
+
+  try {
+    const updatedSession = await postData(
+      `${BASE_URL}/api/sessions/add-response/${sessionId}`,
+      {
+        comparisonId: currentComparison._id,
+        responseData,
+      }
+    );
+
+    if (updatedSession) {
+      setSession(updatedSession);
+
+      if (
+        updatedSession.session &&
+        updatedSession.session.currentComparisonIndex !== undefined
+      ) {
+        setCurrentComparisonIndex(
+          updatedSession.session.currentComparisonIndex
+        );
+      } else if (currentComparisonIndex < totalQuestions - 1) {
+        setCurrentComparisonIndex(currentComparisonIndex + 1);
+      }
+
+      setSelectedOption(null);
+
+      if (currentComparisonIndex >= totalQuestions - 1) {
+        setShowDemographics(true);
+      }
+    }
+  } catch (error) {
+    console.error("Error submitting response:", error);
+  }
+};
+
 
   // Add a function to handle demographics submission
   const handleDemographicsSubmit = async (demographicsData) => {
@@ -275,21 +283,20 @@ const StudySessionPage = () => {
           // Show question content
           <>
             <h2 className="question-title">{currentComparison?.title}</h2>
-
             <div className="options-container">
-              {currentComparison?.stimuli?.map((stimulus) => (
+              {currentComparison?.options?.map((opt) => (
                 <StudyOption
-                  key={stimulus._id}
-                  option={{
-                    id: stimulus._id,
-                    type: stimulus.type || "image",
-                    title: stimulus.title,
-                  }}
-                  isSelected={selectedOption === stimulus._id}
-                  onSelect={handleOptionSelect}
+                key={opt.stimulus._id}
+                option={{
+                  id: opt.stimulus._id,
+                  type: opt.stimulus.type || "image",
+                  title: opt.label || opt.stimulus.title || "Option",
+                }}
+                isSelected={selectedOption === opt.stimulus._id}
+                onSelect={handleOptionSelect}
                 />
-              ))}
-            </div>
+                ))}
+              </div>
 
             <div className="navigation-buttons">
               <button

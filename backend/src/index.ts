@@ -9,9 +9,12 @@ import authRouter from "./routes/auth.routes";
 import cookieParser from "cookie-parser";
 import workspacesRouter from "./routes/workspace.routes";
 import stimulusRouter from "./routes/stimulus.routes";
-import sessionRouter from "./routes/session.routes";
-import comparisonRouter from "./routes/comparison.routes";
 import helmet from "helmet";
+import comparisonRouter from "./routes/comparison.routes";
+import sessionRoutes from "./routes/session.routes";
+import stimulusRoutes from "./routes/stimulus.routes";
+
+
 // Load environment variables from .env
 dotenv.config();
 
@@ -20,7 +23,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3002"],
+    origin: ["http://localhost:3001", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -31,13 +34,16 @@ app.use(rateLimiter);
 /* app.use(rateLimiter); */
 
 //Routes
-app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/studies", studyRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
-app.use("/api/stimuli", stimulusRouter);
-app.use("/api/sessions", sessionRouter);
+app.use("/api", stimulusRouter);
 app.use("/api/comparisons", comparisonRouter);
+app.use("/api/sessions", sessionRoutes);
+app.use("/api", stimulusRoutes);
+
+
 // MongoDB Connection
 const MONGO_URI =
   process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017/webproject";

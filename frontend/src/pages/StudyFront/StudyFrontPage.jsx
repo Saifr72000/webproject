@@ -53,7 +53,7 @@ const StudyFrontPage = () => {
         {study?.coverImage && (
           <div className="cover-image-container">
             <img
-              src={`${BASE_URL}/api/stimuli/${study.coverImage}`}
+              src={`${BASE_URL}/api/files/${study.coverImage}`}
               alt={study.title}
               className="cover-image"
             />
@@ -78,7 +78,12 @@ const StudyFrontPage = () => {
           >
             {postLoading ? "Starting..." : "Participate"}
           </button>
-          {postError && <p className="error-message">Error: {postError}</p>}
+          {postError && (
+  <p className="error-message">
+    Error: {typeof postError === "string" ? postError : postError?.message || "Unknown error"}
+  </p>
+)}
+
         </div>
       </div>
     </div>

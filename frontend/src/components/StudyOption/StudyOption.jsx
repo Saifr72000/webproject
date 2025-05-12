@@ -11,7 +11,7 @@ const StudyOption = ({ option, isSelected, onSelect }) => {
 
   const renderMedia = () => {
     // If we have a direct URL, use it, otherwise construct from BASE_URL and ID
-    const mediaUrl = option.url || `${BASE_URL}/api/stimuli/${option.id}`;
+    const mediaUrl = option.url || `${BASE_URL}/api/files/${option.id}`;
 
     switch (option.type) {
       case "image":

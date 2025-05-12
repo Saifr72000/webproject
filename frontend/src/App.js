@@ -14,6 +14,7 @@ import AppLayout from "./layout/AppLayout";
 import ViewStudyPage from "./pages/ViewStudy/ViewStudyPage";
 import StudySessionPage from "./pages/StudySession/StudySessionPage";
 import StudyCompletePage from "./pages/StudyComplete/StudyCompletePage";
+import EditStudyPage from "./pages/EditStudy/EditStudyPage";
 const App = () => {
   return (
     <AuthProvider>
@@ -43,6 +44,7 @@ const App = () => {
             <Route path="studies" element={<StudiesPage />} />
             <Route path="create-study" element={<CreateStudy />} />
             <Route path="study/:studyId" element={<ViewStudyPage />} />
+            <Route path="/edit-study/:studyId" element={<EditStudyPage />} />
             {/* Optional: default to /dashboard if no sub-route is provided */}
             <Route index element={<Navigate to="/studies" />} />
           </Route>

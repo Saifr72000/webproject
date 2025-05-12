@@ -134,7 +134,7 @@ const EditStudyPage = () => { // this is the edit study page
         <p>{study.description}</p>
         {study.coverImage && (
           <img
-          src={`${BASE_URL}/api/files/${study.coverImage._id}`} alt="Study cover" className="study-cover-image" 
+          src={`${BASE_URL}/api/files/${study.coverImage}`} alt="Study cover" className="study-cover-image" 
           />
         )}
 
