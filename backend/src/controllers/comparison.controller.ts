@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   createComparisonService,
   createStimulusService,
@@ -8,6 +8,7 @@ import { Comparison } from "../models/comparison.model";
 import { IStimulus, Stimulus } from "../models/stimuli.model";
 import multer from "multer";
 import { getComparisonById } from "../services/comparison.service";
+
 // Create a new comparison with uploaded stimuli
 export const createComparison = async (
   req: Request,
@@ -83,5 +84,50 @@ export const getComparisonByIdController = async (
       message: "Failed to fetch comparison",
       error: error instanceof Error ? error.message : String(error),
     });
+  }
+};
+
+
+
+
+export const deleteComparisonById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const comparison = await Comparison.findById(id);
+    if (!comparison) {
+      res.status(404).json({ message: "Comparison not found" });
+      return;
+    }
+
+    const study = await Study.findById(comparison.study);
+    if (!study) {
+      res.status(404).json({ message: "Study not found" });
+      return;
+    }
+
+    if (study.status === "active" || study.status === "completed") {
+      res
+        .status(400)
+        .json({ message: "Cannot delete active or closed study" });
+      return;
+    }
+
+    const deleted = await Comparison.findByIdAndDelete(id);
+    if (!deleted) {
+      res.status(404).json({ message: "Comparison not found" });
+      return;
+    }
+
+    await Study.updateOne({ comparisons: id }, { $pull: { comparisons: id } });
+
+    res.status(200).json({ message: "Comparison deleted" });
+  } catch (err) {
+    console.error("Error deleting comparison:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

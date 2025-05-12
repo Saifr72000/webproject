@@ -90,3 +90,47 @@ export const getAllStudies = async (
     });
   }
 };
+
+export const activateStudy = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const study = await Study.findById(req.params.id);
+    if (!study) {
+      res.status(404).json({ message: "Study not found" });
+      return;
+    }
+
+    study.status = "active";
+    await study.save();
+
+    res.status(200).json(study);
+  } catch (error) {
+    console.error("Failed to activate study:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const completeStudy = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const study = await Study.findById(req.params.id);
+    if (!study) {
+      res.status(404).json({ message: "Study not found" });
+      return;
+    }
+
+    study.status = "completed";
+    await study.save();
+
+    res.status(200).json({ message: "Study marked as completed" });
+  } catch (error) {
+    console.error("Failed to complete study:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
