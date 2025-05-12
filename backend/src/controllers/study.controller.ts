@@ -133,12 +133,13 @@ export const getAllStudies = async (
 export const activateStudy = async (
   req: Request,
   res: Response,
-) =>{
-  const { id } = req.params;
-  try{
-    const study = await Study.findById(id);
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const study = await Study.findById(req.params.id);
     if (!study) {
-      return res.status(404).json({ message: "Study not found" });
+      res.status(404).json({ message: "Study not found" });
+      return;
     }
 
     study.status = "active";
@@ -146,16 +147,21 @@ export const activateStudy = async (
 
     res.status(200).json(study);
   } catch (error) {
-    console.error("failed to activate study:", error);
-    res.status(500).json({ message: "server error"});
+    console.error("Failed to activate study:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-export const completeStudy = async (req: Request, res: Response) => {
+export const completeStudy = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const study = await Study.findById(req.params.id);
     if (!study) {
-      return res.status(404).json({ message: "Study not found" });
+      res.status(404).json({ message: "Study not found" });
+      return;
     }
 
     study.status = "completed";
@@ -167,4 +173,3 @@ export const completeStudy = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-

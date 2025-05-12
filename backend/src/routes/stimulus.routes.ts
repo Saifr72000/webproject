@@ -1,32 +1,32 @@
-import express from "express";
+
 import { Stimulus } from "../models/stimuli.model";
-import { Router } from "express";
 import multer from "multer";
 import { authenticateUser } from "../middlewares/auth.middleware";
 import { getStimulusByIdController } from "../controllers/stimulus.controller";
+import express, { Request, Response, Router } from "express";
 
 const router = express.Router();
 
-router.get("/files/:id", async (req, res) => {
+router.get("/files/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const file = await Stimulus.findById(req.params.id);
-    if (!file) return res.status(404).send("Not found");
+    if (!file) {
+      res.status(404).send("Not found");
+      return;
+    }
 
-    // Set correct MIME type so the browser can render the image
     res.setHeader("Content-Type", file.mimetype);
-
-    // Optional: prevent caching issues
     res.setHeader("Cache-Control", "no-store");
-
-    // Optional: CORS-safe headers for image requests
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
 
-    return res.send(file.data);
+    res.send(file.data);
   } catch (error) {
     console.error("Error serving file:", error);
-    return res.status(500).send("Server error");
+    res.status(500).send("Server error");
   }
 });
+
+
 
 const storage = multer.memoryStorage();
 

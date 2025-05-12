@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   createComparisonService,
   createStimulusService,
@@ -67,38 +67,44 @@ export const createComparison = async (
   }
 };
 
-export const deleteComparisonById = async (req: Request, res: Response) => {
+export const deleteComparisonById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { id } = req.params;
 
     const comparison = await Comparison.findById(id);
     if (!comparison) {
-      return res.status(404).json({ message: "Comparison not found" });
+      res.status(404).json({ message: "Comparison not found" });
+      return;
     }
 
     const study = await Study.findById(comparison.study);
     if (!study) {
-      return res.status(404).json({ message: "Study not found" });
+      res.status(404).json({ message: "Study not found" });
+      return;
     }
 
     if (study.status === "active" || study.status === "completed") {
-      return res.status(400).json({ message: "Cannot delete active or closed study" });
+      res
+        .status(400)
+        .json({ message: "Cannot delete active or closed study" });
+      return;
     }
 
     const deleted = await Comparison.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ message: "Comparison not found" });
+      res.status(404).json({ message: "Comparison not found" });
+      return;
     }
 
-    // Optional: remove from study if needed
-    await Study.updateOne(
-      { comparisons: id },
-      { $pull: { comparisons: id } }
-    );
+    await Study.updateOne({ comparisons: id }, { $pull: { comparisons: id } });
 
-    return res.status(200).json({ message: "Comparison deleted" });
+    res.status(200).json({ message: "Comparison deleted" });
   } catch (err) {
     console.error("Error deleting comparison:", err);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
