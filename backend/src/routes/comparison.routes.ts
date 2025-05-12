@@ -5,7 +5,7 @@ import { createComparison } from "../controllers/comparison.controller";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { getComparisonByIdController } from "../controllers/comparison.controller";
 import { authenticateUser } from "../middlewares/auth.middleware";
-import { deleteComparisonById } from "../controllers/comparison.controller";
+import { deleteComparisonByIdController } from "../controllers/comparison.controller";
 
 const router = Router();
 
@@ -37,7 +37,7 @@ router.post(
   createComparison
 );
 
-router.delete("/:id", authenticateUser, deleteComparisonById);
+router.delete("/:id", authenticateUser, deleteComparisonByIdController);
 
 router.get("/:id", getComparisonByIdController);
 

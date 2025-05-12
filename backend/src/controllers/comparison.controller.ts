@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import {
   createComparisonService,
   createStimulusService,
-  getComparisonById
+  getComparisonById,
+
 } from "../services/comparison.service";
 import { IStimulus } from "../models/stimuli.model";
 import { Comparison } from "../models/comparison.model";
 import { Study } from "../models/study.model";
+import { deleteComparisonById } from "../services/comparison.service";
 export const createComparison = async (
   req: Request,
   res: Response
@@ -68,43 +70,20 @@ export const createComparison = async (
   }
 };
 
-export const deleteComparisonById = async (req: Request, res: Response): Promise<void>  => {
+export const deleteComparisonByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-
-    const comparison = await Comparison.findById(id);
-    if (!comparison) {
-       res.status(404).json({ message: "Comparison not found" });
-       return;
+    const result = await deleteComparisonById(id);
+    res.status(200).json(result);
+  } catch (err: any) {
+    console.error("Error deleting comparison:", err.message);
+    if (err.message.includes("not found")) {
+      res.status(404).json({ message: err.message });
+    } else if (err.message.includes("Cannot delete")) {
+      res.status(400).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: "Server error" });
     }
-
-    const study = await Study.findById(comparison.study);
-    if (!study) {
-       res.status(404).json({ message: "Study not found" });
-       return;
-    }
-
-    if (study.status === "active" || study.status === "completed") {
-       res.status(400).json({ message: "Cannot delete active or closed study" });
-       return;
-    }
-
-    const deleted = await Comparison.findByIdAndDelete(id);
-    if (!deleted) {
-       res.status(404).json({ message: "Comparison not found" });
-       return;
-    }
-
-    // Optional: remove from study if needed
-    await Study.updateOne(
-      { comparisons: id },
-      { $pull: { comparisons: id } }
-    );
-
-     res.status(200).json({ message: "Comparison deleted" });
-  } catch (err) {
-    console.error("Error deleting comparison:", err);
-     res.status(500).json({ message: "Server error" });
   }
 };
 

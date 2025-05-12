@@ -103,6 +103,21 @@ export const getComparisonById = async (
   });
 };
 
+
+export const deleteComparisonById = async (id: string): Promise<void> => {
+  const comparison = await Comparison.findById(id);
+  if (!comparison) throw new Error("Comparison not found");
+
+  const study = await Study.findById(comparison.study);
+  if (!study) throw new Error("Study not found");
+
+  if (["active", "completed"].includes(study.status)) {
+    throw new Error("Cannot delete active or completed study");
+  }
+
+  await Comparison.findByIdAndDelete(id);
+};
+
 /* export const getComparisonsByStudy = async (
   studyId: string
 ): Promise<IComparison[]> => {
