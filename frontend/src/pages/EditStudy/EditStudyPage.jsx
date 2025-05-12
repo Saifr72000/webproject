@@ -7,7 +7,7 @@ import PreviewModal from "../../components/previewModal/previewModal";
 
 
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = process.env.REACT_APP_BASE_URL; // test test
 
 const EditStudyPage = () => { // this is the edit study page
   const [previewComparison, setPreviewComparison] = useState(null);
@@ -141,7 +141,6 @@ const EditStudyPage = () => { // this is the edit study page
         <div style ={{ marginTop: "1rem"}}>
         </div>
       </div>
-
       <div className="comparison-section">
         <div className="section-header">
           <h2>Comparisons</h2>
