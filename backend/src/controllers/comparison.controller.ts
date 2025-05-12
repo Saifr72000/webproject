@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {
   createComparisonService,
-  createStimulusService,
+  createStimulus,
   getComparisonById,
 
 } from "../services/comparison.service";
@@ -32,7 +32,7 @@ export const createComparison = async (
     // Create Stimulus documents from uploaded files
     const stimuli = (await Promise.all(
       files.map((file) =>
-        createStimulusService({
+        createStimulus({
           filename: file.originalname,
           mimetype: file.mimetype,
           buffer: file.buffer,

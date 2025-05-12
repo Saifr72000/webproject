@@ -68,7 +68,7 @@ export const createComparisonService = async ({
   }
 };
 
-export const createStimulusService = async (file: {
+export const createStimulus = async (file: {
   filename: string;
   mimetype: string;
   buffer: Buffer;
