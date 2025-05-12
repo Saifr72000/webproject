@@ -4,6 +4,7 @@ import {
   addResponseController,
   completeSessionController,
   getSessionByIdController,
+  findingSessions,
 } from "../controllers/session.controller";
 import {
   addResponseValidator,
@@ -32,4 +33,8 @@ router.post(
 
 router.get("/get-session/:sessionId", getSessionByIdController);
 
+router.get("/check-session-exists/:studyId", findingSessions);
+
+
 export default router;
+

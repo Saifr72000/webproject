@@ -5,6 +5,7 @@ import {
   completeSession,
   getSessionById,
 } from "../services/session.service";
+import { checkSessionExists } from "../services/session.service";
 
 export const createSessionController = async (req: Request, res: Response) => {
   try {
@@ -66,3 +67,17 @@ export const getSessionByIdController = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const findingSessions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { studyId } = req.params;
+  try {
+    const sessionExists = await checkSessionExists(studyId);
+
+  res.json({ sessionExists });
+  } catch (error) {
+    console.error("Error in controller:", error);
+    next(error);
+  }
+};
+

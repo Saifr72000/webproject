@@ -2,6 +2,10 @@ import { ISession, StudySession } from "../models/session.model";
 import mongoose from "mongoose";
 import { Study } from "../models/study.model";
 import { Comparison } from "../models/comparison.model";
+import { Types } from "mongoose";
+
+
+
 
 export const createSession = async (
   studyId: string | mongoose.Types.ObjectId
@@ -114,3 +118,14 @@ export const addResponse = async (
 
   return await session.save();
 };
+
+export const checkSessionExists = async (studyId: string) => {
+  try {
+    const sessionExists = await StudySession.exists({ study: studyId});
+    return sessionExists ? true: false; // return true if a session exists, false if not
+  } catch (error) {
+    console.error("Error checking if session exist in service:", error);
+    throw new Error("error checking session existance");
+  }
+};
+
