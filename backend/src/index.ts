@@ -38,10 +38,9 @@ app.use("/api/users", usersRouter);
 app.use("/api/studies", studyRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/workspaces", workspacesRouter);
-app.use("/api", stimulusRouter);
 app.use("/api/comparisons", comparisonRouter);
 app.use("/api/sessions", sessionRoutes);
-app.use("/api", stimulusRoutes);
+app.use("/api/stimuli", stimulusRouter);
 
 
 // MongoDB Connection

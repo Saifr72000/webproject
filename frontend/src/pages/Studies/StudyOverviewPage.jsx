@@ -23,7 +23,7 @@ const StudyOverview = () => {
  */
           return (
 <Card
-  imageSrc={`${BASE_URL}/api/files/${study?.coverImage}`}
+  imageSrc={`${BASE_URL}/api/stimuli/${study?.coverImage}`}
   participate={true}
   studyId={study?._id}
   key={study?._id}

@@ -53,7 +53,7 @@ const StudyFrontPage = () => {
         {study?.coverImage && (
           <div className="cover-image-container">
             <img
-              src={`${BASE_URL}/api/files/${study.coverImage}`}
+              src={`${BASE_URL}/api/stimuli/${study.coverImage}`}
               alt={study.title}
               className="cover-image"
             />

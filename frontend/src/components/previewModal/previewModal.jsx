@@ -17,7 +17,7 @@ const PreviewModal = ({ comparison, onClose }) => {
         <div className="preview-files">
           {options.length > 0 ? (
             options.map((opt, index) => {
-              // ✅ fallback for when stimulus is just an ID string
+              
               const stimulusId = typeof opt.stimulus === "string"
                 ? opt.stimulus
                 : opt?.stimulus?._id;
@@ -25,7 +25,7 @@ const PreviewModal = ({ comparison, onClose }) => {
               return (
                 <div key={index} className="stimulus-preview">
                   <img
-                    src={`${process.env.REACT_APP_BASE_URL}/api/files/${stimulusId}`}
+                    src={`${process.env.REACT_APP_BASE_URL}/api/stimuli/${stimulusId}`}
                     alt={opt?.label || `Stimulus ${index + 1}`}
                     className="preview-image"
                   />

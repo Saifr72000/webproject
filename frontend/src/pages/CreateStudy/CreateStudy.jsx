@@ -119,7 +119,7 @@ const CreateStudy = () => {
             <p>{study.description}</p>
             {study.coverImage && (
               <img
-                src={`${BASE_URL}/api/files/${study.coverImage._id || study.coverImage}`}
+                src={`${BASE_URL}/api/stimuli/${study.coverImage._id || study.coverImage}`}
                 alt="Study cover"
                 className="study-cover-image"
               />

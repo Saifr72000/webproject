@@ -9,6 +9,8 @@ import { IStimulus } from "../models/stimuli.model";
 import { Comparison } from "../models/comparison.model";
 import { Study } from "../models/study.model";
 import { deleteComparisonById } from "../services/comparison.service";
+
+
 export const createComparison = async (
   req: Request,
   res: Response
