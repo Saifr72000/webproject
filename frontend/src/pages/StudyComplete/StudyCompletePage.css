@@ -1,0 +1,136 @@
+.study-complete-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f5f7fa;
+}
+
+.study-complete-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 3rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.completion-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  color: var(--primary-color, #4a6cf7);
+  animation: scaleIn 0.5s ease-out 0.3s both;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.completion-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.completion-message {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+.study-name {
+  font-weight: 600;
+  color: var(--primary-color, #4a6cf7);
+}
+
+.completion-details {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #718096;
+  margin-bottom: 2rem;
+}
+
+.action-buttons {
+  margin-top: 2rem;
+}
+
+.home-button {
+  display: inline-block;
+  background-color: var(--primary-color, #4a6cf7);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(74, 108, 247, 0.2);
+}
+
+.home-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(74, 108, 247, 0.25);
+  filter: brightness(1.05);
+}
+
+.contact-info {
+  text-align: center;
+  color: #718096;
+  font-size: 0.9rem;
+  max-width: 500px;
+}
+
+.loading-message,
+.error-message {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.error-message h2 {
+  color: #e53e3e;
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .study-complete-card {
+    padding: 2rem;
+  }
+
+  .completion-title {
+    font-size: 2rem;
+  }
+
+  .completion-icon {
+    width: 60px;
+    height: 60px;
+  }
+}

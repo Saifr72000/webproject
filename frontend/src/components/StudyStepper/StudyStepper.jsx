@@ -6,13 +6,15 @@ const StudyStepper = ({
   totalSteps,
   includeDemographics = true,
 }) => {
-  // If demographics are included, add one more step to the total
+  // The total number of steps includes the questions plus demographics (if enabled)
+  // We don't need to add an extra step since demographics should replace step totalSteps + 1
   const adjustedTotalSteps = includeDemographics ? totalSteps + 1 : totalSteps;
 
   return (
     <div className="study-stepper">
       <div className="stepper-track">
-        {Array(adjustedTotalSteps)
+        {/* Create dots for all steps (questions + demographics if enabled) */}
+        {Array(totalSteps + (includeDemographics ? 1 : 0))
           .fill()
           .map((_, index) => {
             const stepNumber = index + 1;
