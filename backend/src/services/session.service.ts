@@ -64,6 +64,9 @@ export const addResponse = async (
   const comparison = await Comparison.findById(comparisonId);
   if (!comparison) throw new Error("Comparison not found");
 
+  const study = await Study.findById(session?.study?._id);
+  if (!study) throw new Error("Study not found");
+
   const baseResponse = {
     comparison: comparison._id as mongoose.Types.ObjectId, // Convert string to ObjectId
     comparisonTitle: comparison.title,
@@ -114,6 +117,14 @@ export const addResponse = async (
       break;
     default:
       throw new Error("Invalid comparison type");
+  }
+
+  // Increment the currentQuestionIndex if there are more comparisons
+  if (
+    study.comparisons &&
+    session.currentComparisonIndex < study.comparisons.length - 1
+  ) {
+    session.currentComparisonIndex += 1;
   }
 
   return await session.save();

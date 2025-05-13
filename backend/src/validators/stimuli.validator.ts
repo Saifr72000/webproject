@@ -9,7 +9,7 @@ const ALLOWED_MIME_TYPES = [
   "video/mp4",
   "audio/mpeg",
   "audio/wav",
-  // Add other allowed types as needed
+  "application/pdf",
 ];
 
 // File size limits (in bytes)
