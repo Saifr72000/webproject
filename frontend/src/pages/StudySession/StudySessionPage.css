@@ -83,6 +83,11 @@
   cursor: not-allowed;
 }
 
+.submit-button.submitted {
+  background-color: #4caf50;
+  cursor: default;
+}
+
 .loading-container,
 .error-container {
   display: flex;
@@ -106,4 +111,94 @@
   .question-title {
     font-size: 1.3rem;
   }
+}
+
+.comparison-instructions {
+  margin: 10px 0 20px;
+  padding: 8px 15px;
+  background-color: #f0f7ff;
+  border-left: 4px solid #4285f4;
+  border-radius: 4px;
+  color: #333;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Enhanced styles for the answer status indicator */
+.answer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #e6f7e6;
+  color: #2e7d32;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #4caf50;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.answer-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #4caf50;
+}
+
+.answer-status p {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Submit/Next button styles */
+.submit-button.submitted {
+  background-color: #4caf50;
+  cursor: default;
+}
+
+/* Style for the Next Question button */
+.submit-button.submitted:not(:disabled) {
+  cursor: pointer;
+  background-color: #4a6cf7;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 108, 247, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(74, 108, 247, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 108, 247, 0);
+  }
+}
+
+/* Additional styles for previously answered options */
+.options-container.previously-answered {
+  position: relative;
+}
+
+.options-container.previously-answered::before {
+  content: "Your previous response";
+  position: absolute;
+  top: -25px;
+  left: 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #4caf50;
 }
