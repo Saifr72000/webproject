@@ -2,6 +2,8 @@ import { Study, IStudy } from "../models/study.model";
 import { IComparison, ComparisonType } from "../models/comparison.model";
 import { createComparisonService } from "./comparison.service";
 import mongoose, { Types } from "mongoose";
+import { Comparison } from "../models/comparison.model";
+import { Stimulus } from "../models/stimuli.model";
 
 // To get the complete study with comparisons and stimuli populated,
 // remember we need to add pagination to the comparisons.
@@ -49,4 +51,51 @@ export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
   });
 };
 
+/* export const deleteStudyByIdService = async (
+  studyId: string
+): Promise<void> => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find the study to get its comparisons before deletion
+    const study = await mongoose.model("Study").findById(studyId);
+
+    if (!study) {
+      throw new Error("Study not found");
+    }
+
+    // Delete all associated comparisons
+    const comparisons = await Comparison.find({ study: studyId });
+
+    // Get all stimuli IDs from all comparisons
+    const stimuliIds: Types.ObjectId[] = [];
+
+    // Safely extract stimuli IDs
+    comparisons.forEach((comparison) => {
+      if (comparison.stimuli && Array.isArray(comparison.stimuli)) {
+        stimuliIds.push(...comparison.stimuli);
+      }
+    });
+
+    // Delete all associated stimuli if there are any
+    if (stimuliIds.length > 0) {
+      await Stimulus.deleteMany({ _id: { $in: stimuliIds } }).session(session);
+    }
+
+    // Delete all comparisons
+    await Comparison.deleteMany({ study: studyId }).session(session);
+
+    // Delete the study itself
+    await mongoose.model("Study").findByIdAndDelete(studyId).session(session);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+ */
 // need to implement edit studies and update studies as well.
