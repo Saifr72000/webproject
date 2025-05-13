@@ -20,7 +20,10 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3002"],
+    origin: [
+      "http://localhost:3002",
+      "https://group7.sustainability.it.ntnu.no",
+    ],
     credentials: true,
   })
 );
