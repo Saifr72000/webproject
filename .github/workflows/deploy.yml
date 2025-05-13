@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main] # or 'master' if that's your default
+    branches: [main]
 
 jobs:
   build-and-push:
@@ -34,3 +34,27 @@ jobs:
           context: ./frontend
           push: true
           tags: saifr7/webproject-frontend:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: SSH into server and deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no group7@sustainability.it.ntnu.no << 'EOF'
+            set -e
+            cd ~/webproject
+            echo "Pulling latest Docker images..."
+            docker compose pull
+            echo "Stopping current containers..."
+            docker compose down
+            echo "Starting updated containers..."
+            docker compose up -d --build
+            echo "✅ Deployment complete!"
+          EOF
