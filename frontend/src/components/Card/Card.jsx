@@ -9,14 +9,21 @@ const Card = ({
   author,
   participate = false,
   studyId,
+  status,
+  showEditButton = false
 }) => {
   return (
     <div className="study-card">
       <div className="study-content">
         <div className="quiz-image">
-          <img src={imageSrc} alt={title} />
+          <img src={imageSrc} alt="" />
         </div>
         <div className="quiz-content-item">
+          {status && (
+          <span className={`status-badge ${status}`}>
+          {status.charAt(0).toUpperCase() + status.slice(1)}
+          </span>
+        )}
           <h3>{title}</h3>
           <p>{description}</p>
           <p>{author}</p>
@@ -29,6 +36,13 @@ const Card = ({
             </Link>
           </div>
         )}
+        {showEditButton && (
+        <div style={{ marginTop: "0.5rem" }}>
+        <Link to={`/edit-study/${studyId}`}>
+        <button className="secondary-btn">✏️ Edit Study</button>
+        </Link>
+        </div>
+)}
       </div>
     </div>
   );

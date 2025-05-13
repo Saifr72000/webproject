@@ -1,12 +1,11 @@
 import React from "react";
 import "./ComparisonList.css";
 
-const ComparisonList = ({ comparisons }) => {
+const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
   if (!comparisons || comparisons.length === 0) {
     return null;
   }
 
-  // Helper function to format comparison type for display
   const formatComparisonType = (type) => {
     switch (type) {
       case "binary":
@@ -22,13 +21,9 @@ const ComparisonList = ({ comparisons }) => {
     }
   };
 
-  // Helper function to render the appropriate stimuli preview
   const renderStimuliPreview = (stimulus, index, stimuliType = "image") => {
     const label = String.fromCharCode(65 + index);
-
-    if (!stimulus) {
-      return null;
-    }
+    if (!stimulus) return null;
 
     if (!stimuliType || stimuliType === "image") {
       return (
@@ -43,7 +38,6 @@ const ComparisonList = ({ comparisons }) => {
       );
     }
 
-    // Get icon based on stimuli type
     const getTypeIcon = () => {
       switch (stimuliType) {
         case "video":
@@ -74,13 +68,16 @@ const ComparisonList = ({ comparisons }) => {
 
       <div className="comparison-grid">
         {comparisons.map((comparison) => {
-          // Get all stimuli from the comparison
           const stimuli = Object.keys(comparison)
             .filter((key) => key.startsWith("stimulus") && comparison[key])
             .map((key) => comparison[key]);
 
           return (
-            <div key={comparison._id} className="comparison-item">
+            <div
+              key={comparison._id}
+              className="comparison-item"
+              onClick={() => onPreview(comparison)}
+            >
               <div className="comparison-header">
                 <h4>{comparison.title}</h4>
                 <div className="comparison-badges">
@@ -92,6 +89,15 @@ const ComparisonList = ({ comparisons }) => {
                       {comparison.stimuliType}
                     </span>
                   )}
+                  <span
+                    className="delete-badge"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent preview trigger
+                      onDelete(comparison._id);
+                    }}
+                  >
+                    Delete
+                  </span>
                 </div>
               </div>
 

@@ -1,0 +1,63 @@
+.edit-study-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.edit-study-header h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.study-summary img.study-cover-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.comparison-section {
+  margin-top: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.primary-btn,
+.danger-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.primary-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.danger-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.error-text {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 1rem;
+}
+
+.btn-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}

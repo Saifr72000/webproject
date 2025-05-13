@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 import { Comparison } from "../models/comparison.model";
 import { IStimulus, Stimulus } from "../models/stimuli.model";
 import multer from "multer";
-import { getComparisonById } from "../services/comparison.service";
+import { getComparisonById, deleteComparisonById } from "../services/comparison.service";
+import { StudySession } from "../models/session.model";
 // Create a new comparison with uploaded stimuli
 export const createComparison = async (
   req: Request,
@@ -83,5 +84,28 @@ export const getComparisonByIdController = async (
       message: "Failed to fetch comparison",
       error: error instanceof Error ? error.message : String(error),
     });
+  }
+};
+
+// delete comparison by Id controller
+export const deleteComparisonByIdController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    await deleteComparisonById(req.params.id);
+    res.status(200).json({ message: "Comparison deleted" });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
+export const checkSessionExists = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const session = await StudySession.findOne({ study: req.params.id });
+    res.status(200).json({ sessionExists: !!session });
+  } catch (err) {
+    res.status(500).json({ message: "Error checking session" });
   }
 };
