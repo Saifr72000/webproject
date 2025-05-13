@@ -40,7 +40,7 @@ app.use("/api/sessions", sessionRouter);
 app.use("/api/comparisons", comparisonRouter);
 // MongoDB Connection
 const MONGO_URI =
-  process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017/webproject";
+  process.env.MONGO_DB_URL || "mongodb://database:27017/webprojectdb";
 
 const connectDB = async () => {
   try {
@@ -64,7 +64,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Start the Server
-const PORT = process.env.PORT || 5000;
+const PORT = 2000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });

@@ -1,0 +1,25 @@
+services:
+  backend:
+    image: saifr7/webproject-backend
+    ports:
+      - "8187:2000" # host:container
+    environment:
+      - MONGO_DB_URL=mongodb://database:27017/webprojectdb
+    depends_on:
+      - database
+
+  frontend:
+    image: saifr7/webproject-frontend
+    ports:
+      - "3000:80"
+
+  database:
+    image: mongo:6
+    container_name: database
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

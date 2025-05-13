@@ -88,6 +88,53 @@ export const getComparisonById = async (
   });
 };
 
+// ... existing code ...
+
+export const deleteComparisonByIdService = async (
+  comparisonId: string
+): Promise<void> => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find the comparison to get its studyId before deletion
+    const comparison = await Comparison.findById(comparisonId);
+
+    if (!comparison) {
+      throw new Error("Comparison not found");
+    }
+
+    const studyId = comparison.study;
+
+    // Extract stimulus IDs from the options array
+    const stimulusIds = comparison.options.map((option) => option.stimulus);
+
+    // Delete the comparison
+    await Comparison.findByIdAndDelete(comparisonId).session(session);
+
+    // Remove the comparison from the study's comparisons array
+    await mongoose
+      .model("Study")
+      .findByIdAndUpdate(
+        studyId,
+        { $pull: { comparisons: comparisonId } },
+        { session }
+      );
+
+    // Delete any associated stimuli if needed
+    if (stimulusIds.length > 0) {
+      await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
+    }
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 /* export const getComparisonsByStudy = async (
   studyId: string
 ): Promise<IComparison[]> => {
