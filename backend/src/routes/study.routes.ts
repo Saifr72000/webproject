@@ -11,6 +11,7 @@ import { authenticateUser } from "../middlewares/auth.middleware";
 import { createComparisonValidator } from "../validators/comparison.validator";
 import { createComparison } from "../controllers/comparison.controller";
 import { deleteStudyById } from "../controllers/study.controller";
+import { activateStudy } from "../controllers/study.controller";
 import {
   stimuliUpload,
   validateStimuliUploads,
@@ -58,6 +59,8 @@ router.get("/:id", authenticateUser, getStudyById);
 
 // get all studies route
 router.get("/", authenticateUser, getAllStudies);
-router.delete("/:id", deleteStudyById);
+router.delete("/:id", authenticateUser, deleteStudyById);
+
+router.patch("/:id/activate", authenticateUser, activateStudy)
 
 export default router;

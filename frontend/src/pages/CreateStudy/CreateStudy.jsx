@@ -84,7 +84,7 @@ const CreateStudy = () => {
       }
 
       const data = await response.json();
-      setComparisons([...comparisons, data]);
+      setComparisons([...comparisons, data.comparison]);
       setShowComparisonForm(false);
       setSuccess("Comparison added successfully!");
     } catch (err) {
@@ -94,18 +94,21 @@ const CreateStudy = () => {
     }
   };
 
-  const handleDeleteComparison = async (id) => {
+const handleDeleteComparison = async (id) => {
   const confirm = window.confirm("Are you sure you want to delete this comparison?");
   if (!confirm) return;
 
   try {
+    console.log("Attempting to delete comparison with ID:", id);
     await deleteComparison(id);
     setComparisons((prev) => prev.filter((c) => c._id !== id));
     setSuccess("Comparison deleted.");
   } catch (err) {
+    console.error("Delete failed:", err);
     setError(err.message || "Failed to delete comparison.");
   }
 };
+
 
   return (
     <div className="create-study-container">
