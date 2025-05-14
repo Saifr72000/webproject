@@ -311,3 +311,16 @@ audio.option-media {
   background-color: #4caf50;
   cursor: default;
 }
+
+
+.pdf-overlay-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.pdf-overlay-link:hover {
+  text-decoration: underline;
+  color:#02f002
+}

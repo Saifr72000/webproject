@@ -137,7 +137,14 @@ const StudyOption = ({
               </div>
             </object>
             <div className="pdf-overlay">
-              <span>View PDF</span>
+          <a
+          href={mediaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="pdf-overlay-link"
+        >
+          View PDF
+        </a>
             </div>
           </div>
         );

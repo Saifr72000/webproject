@@ -3,17 +3,16 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export const addComparisonToStudy = async (studyId, formData) => {
   const res = await fetch(`${BASE_URL}/api/studies/${studyId}/comparisons`, {
     method: "POST",
-    credentials: "include",
     body: formData,
+    credentials: "include",
   });
 
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Failed to add comparison");
+    const error = await res.json();
+    throw new Error(error.message || "Failed to create comparison");
   }
 
-  const data = await res.json();
-  return data.comparison;
+  return await res.json(); // This includes `.comparison`
 };
 
 export const deleteComparison = async (comparisonId) => {

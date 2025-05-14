@@ -53,8 +53,8 @@ const EditStudyPage = () => {
     setSuccess("");
 
     try {
-      const newComparison = await addComparisonToStudy(studyId, formData);
-      setComparisons((prev) => [...prev, newComparison]);
+     const response = await addComparisonToStudy(studyId, formData);
+     setComparisons((prev) => [...prev, response.comparison]);
       setShowComparisonForm(false);
       setSuccess("Comparison added successfully!");
     } catch (err) {
@@ -97,7 +97,7 @@ const handleDeleteStudy = async () => {
   if (!confirm) return;
 
   try {
-    await deleteStudy(studyId); // <== this calls your service
+    await deleteStudy(studyId);
     alert("Study deleted.");
     navigate("/studies");
   } catch (err) {
@@ -156,7 +156,8 @@ const handleDeleteStudy = async () => {
 
         <ComparisonList
           comparisons={comparisons}
-          onPreview={(comparison) => setPreviewComparison(comparison)}
+          onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
+
           onDelete={handleDeleteComparison}
         />
       </div>
@@ -171,7 +172,7 @@ const handleDeleteStudy = async () => {
 
         {study.status !== "active" && !sessionExists && (
           <button className="primary-btn" onClick={handlePublishStudy}>
-            🚀 Publish Study
+            Publish Study
           </button>
         )}
 
@@ -179,8 +180,6 @@ const handleDeleteStudy = async () => {
           <button
             className="danger-btn"
             onClick={handleDeleteStudy}
-            
-            style={{ marginLeft: "1rem" }}
           >
             Delete Study
           </button>
