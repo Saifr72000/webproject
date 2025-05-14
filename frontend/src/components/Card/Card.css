@@ -44,18 +44,22 @@
 }
 
 .status-badge.active {
-  background-color: #1fca47;
-  color: #090909;
+    background-color: #99cca5;
+    color: #286a39;
+    border: #205b2f 1px solid;
 }
+
 
 .status-badge.draft {
   background-color: #fff3cd;
   color: #856404;
+  border: #6c5204 1px solid;
 }
 
 .status-badge.completed {
   background-color: #3ab8ce;
-  color: #0b0b0b;
+  color: #1b3d43;
+  border: #172c30 1px solid;
 }
 
 .secondary-btn {

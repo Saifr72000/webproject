@@ -42,7 +42,7 @@ const CreateStudy = () => {
       }
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setStudy(data);
       setSuccess("Study created successfully! Now you can add comparisons.");
 
@@ -99,7 +99,7 @@ const handleDeleteComparison = async (id) => {
   if (!confirm) return;
 
   try {
-    console.log("Attempting to delete comparison with ID:", id);
+    // console.log("Attempting to delete comparison with ID:", id);
     await deleteComparison(id);
     setComparisons((prev) => prev.filter((c) => c._id !== id));
     setSuccess("Comparison deleted.");

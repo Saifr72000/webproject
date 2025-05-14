@@ -12,7 +12,7 @@ export const addComparisonToStudy = async (studyId, formData) => {
     throw new Error(error.message || "Failed to create comparison");
   }
 
-  return await res.json(); // This includes `.comparison`
+  return await res.json();
 };
 
 export const deleteComparison = async (comparisonId) => {
@@ -23,20 +23,20 @@ export const deleteComparison = async (comparisonId) => {
     });
 
     if (!res.ok) {
-      // Attempt to extract error message from response JSON
+      
       let errorMessage = "Failed to delete comparison";
       try {
         const err = await res.json();
         errorMessage = err.message || errorMessage;
       } catch {
-        // if parsing JSON fails, keep the default error message
+      
       }
       throw new Error(errorMessage);
     }
 
     return true;
   } catch (error) {
-    // Optional: You could log or report the error here
+    
     throw error;
   }
 };

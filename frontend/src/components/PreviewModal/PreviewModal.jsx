@@ -13,9 +13,9 @@ const PreviewModal = ({ comparison, onClose }) => {
     );
   }
 
-  console.log("Previewing comparison:", comparison);
+  // console.log("Previewing comparison:", comparison);
   const options = comparison.options || [];
-  console.log("Options array received in modal:", options);
+  // console.log("Options array received in modal:", options);
 
   return (
     <div className="preview-modal-container" onClick={onClose}>
@@ -27,8 +27,8 @@ const PreviewModal = ({ comparison, onClose }) => {
         <div className="preview-files">
           {options.map((opt, index) => {
             const rawStimulus = opt.stimulus;
-            console.log(` Option [${index}]`, opt);
-            console.log(" Stimulus raw:", opt.stimulus);
+            // console.log(` Option [${index}]`, opt);
+            // console.log(" Stimulus raw:", opt.stimulus);
 
             const stimulus = typeof rawStimulus === "string"
               ? { _id: rawStimulus, mimetype: "" }
@@ -65,11 +65,11 @@ const PreviewModal = ({ comparison, onClose }) => {
               ? mimetype.split("/")[0]
               : "unknown";
 
-            console.log(`\n Stimulus [${index}]`);
+            /*console.log(`\n Stimulus [${index}]`);
             console.log("Stimulus object:", stimulus);
             console.log("Mimetype:", mimetype);
             console.log("MediaType:", mediaType);
-            console.log("File URL:", src);
+            console.log("File URL:", src); */
 
             const supportedTypes = ["image", "video", "audio", "pdf"];
             if (!supportedTypes.includes(mediaType)) {
