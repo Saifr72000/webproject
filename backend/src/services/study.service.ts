@@ -51,6 +51,50 @@ export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
   });
 };
 
+export const deleteStudyByIdService = async (
+  studyId: string
+): Promise<void> => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const study = await Study.findById(studyId);
+
+    if (!study) {
+      throw new Error("Study not found");
+    }
+
+    // Find all comparisons for the study
+    const comparisons = await Comparison.find({ study: studyId });
+
+    // Collect all stimuli IDs
+    const stimulusIds = comparisons
+      .flatMap((c) =>
+        c.options?.map((opt) => opt.stimulus)
+      )
+      .filter(Boolean);
+
+    // Delete all associated stimuli
+    if (stimulusIds.length > 0) {
+      await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
+    }
+
+    // Delete comparisons
+    await Comparison.deleteMany({ study: studyId }).session(session);
+
+    // Finally delete the study
+    await Study.findByIdAndDelete(studyId).session(session);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
+
 /* export const deleteStudyByIdService = async (
   studyId: string
 ): Promise<void> => {

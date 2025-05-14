@@ -10,11 +10,13 @@ import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
 import { createComparisonValidator } from "../validators/comparison.validator";
 import { createComparison } from "../controllers/comparison.controller";
+import { deleteStudyById } from "../controllers/study.controller";
 import {
   stimuliUpload,
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
 import multer from "multer";
+
 
 const router = Router();
 
@@ -56,5 +58,6 @@ router.get("/:id", authenticateUser, getStudyById);
 
 // get all studies route
 router.get("/", authenticateUser, getAllStudies);
+router.delete("/:id", deleteStudyById);
 
 export default router;

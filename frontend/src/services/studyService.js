@@ -27,14 +27,15 @@ export const publishStudy = async (studyId) => {
 };
 
 export const deleteStudy = async (studyId) => {
-  const res = await fetch(`${BASE_URL}/api/studies/${studyId}`, {
+  const res = await fetch(`${process.env.REACT_APP_BASE_URL}/api/studies/${studyId}`, {
     method: "DELETE",
     credentials: "include",
   });
 
   if (!res.ok) {
-    throw new Error("Failed to delete study");
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to delete study");
   }
 
-  return await res.json();
+  return true;
 };

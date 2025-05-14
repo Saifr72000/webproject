@@ -5,6 +5,7 @@ import {
   createStudyService,
   getStudyByIdService,
   getAllStudiesService,
+  deleteStudyByIdService
 } from "../services/study.service";
 import mongoose from "mongoose";
 import { StudySession } from "../models/session.model";
@@ -129,22 +130,26 @@ export const deleteStudyById = async (
     }
 
     if (study.status === "completed") {
+      console.log("Blocked: completed study");
       res.status(400).json({ message: "cannot delete a completed study"});
       return;
     }
 
     if (study.participantCount >0) {
+      console.log("blocked: participants more than 0")
       res.status(400).json({message: "cannot delete a study with participants"});
       return;
     }
 
-    const existingSession = await StudySession.findOne({ study: id });
+    /* st existingSession = await StudySession.findOne({ study: id });
     if (existingSession) {
+      console.log("blocked: active session")
       res.status(400).json({ message: "Cannot delete a study with active sessions" });
       return;
-    }
+    } */ 
 
-    await Study.findByIdAndDelete(id);
+    await deleteStudyByIdService(id);
+
 
     res.status(204).json({ message: "Study deleted successfully" });
   } catch (error) {

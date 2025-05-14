@@ -10,6 +10,7 @@ import {
   stimuliUpload,
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
+import { deleteComparisonByIdController } from "../controllers/comparison.controller";
 
 const router = Router();
 
@@ -35,5 +36,7 @@ router.post(
 );
 
 router.get("/:comparisonId", getComparisonByIdController);
+
+router.delete("/:id", deleteComparisonByIdController);
 
 export default router;

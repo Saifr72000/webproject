@@ -34,8 +34,12 @@
 
 .preview-files {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .preview-image {
@@ -59,9 +63,68 @@
 }
 
 .stimulus-preview {
-  max-height: 100%;
-  width: 100%;
+  flex: 0 1 45%;
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
+}
+
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.preview-files {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stimulus-preview {
+  max-width: 160px;
+  max-height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.stimulus-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 8px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.stimulus-icon {
+  font-size: 2.5rem;
+}
+
+.stimulus-label {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #444;
 }

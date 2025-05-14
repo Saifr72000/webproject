@@ -29,19 +29,19 @@ const Card = ({
           <p>{author}</p>
         </div>
 
-        {participate && (
-          <div>
-            <Link to={`/study/${studyId}`}>
-              <button className="secondary-btn">View Study</button>
-            </Link>
-          </div>
-        )}
-        {showEditButton && (
-        <div style={{ marginTop: "0.5rem" }}>
-        <Link to={`/edit-study/${studyId}`}>
-        <button className="secondary-btn">✏️ Edit Study</button>
-        </Link>
-        </div>
+{(participate || showEditButton) && (
+  <div className="button-row">
+    {participate && (
+      <Link to={`/study/${studyId}`}>
+        <button className="secondary-btn">View Study</button>
+      </Link>
+    )}
+    {showEditButton && (
+      <Link to={`/edit-study/${studyId}`}>
+        <button className="edit-btn">Edit Study</button>
+      </Link>
+    )}
+  </div>
 )}
       </div>
     </div>

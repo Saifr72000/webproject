@@ -92,18 +92,19 @@ const EditStudyPage = () => {
     }
   };
 
-  const handleDeleteStudy = async () => {
-    const confirm = window.confirm("Are you sure you want to delete this study?");
-    if (!confirm) return;
+const handleDeleteStudy = async () => {
+  const confirm = window.confirm("Are you sure you want to delete this study?");
+  if (!confirm) return;
 
-    try {
-      await deleteStudy(studyId);
-      alert("Study deleted.");
-      navigate("/studies");
-    } catch (err) {
-      alert("Failed to delete study.");
-    }
-  };
+  try {
+    await deleteStudy(studyId); // <== this calls your service
+    alert("Study deleted.");
+    navigate("/studies");
+  } catch (err) {
+    alert(err.message || "Failed to delete study.");
+  }
+};
+
 
   if (loading) return <p>Loading...</p>;
 
@@ -178,6 +179,7 @@ const EditStudyPage = () => {
           <button
             className="danger-btn"
             onClick={handleDeleteStudy}
+            
             style={{ marginLeft: "1rem" }}
           >
             Delete Study
@@ -191,6 +193,7 @@ const EditStudyPage = () => {
           onClose={() => setPreviewComparison(null)}
         />
       )}
+      
     </div>
   );
 };

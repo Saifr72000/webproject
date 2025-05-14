@@ -10,13 +10,22 @@
   display: block; /* Removes any inline element spacing issues */
 }
 
+
 .study-content {
   background-color: var(--secondary-background-color);
   flex-direction: row;
   align-items: center;
   padding: 20px;
   border-radius: 10px;
+  height: 100%
 }
+
+.button-row {
+  display: flex;
+  gap: 1rem; /* space between buttons */
+  margin-top: 1rem;
+}
+
 
 /* .quiz-image {
     width: 100px;
@@ -57,3 +66,25 @@
   background-color: #e0e0e0;
 }
 
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.edit-btn {
+  background-color: #007bff; /* Bootstrap blue */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}

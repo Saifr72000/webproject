@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import StudyForm from "../../components/StudyForm/StudyForm";
 import ComparisonForm from "../../components/ComparisonForm/ComparisonForm";
 import ComparisonList from "../../components/ComparisonList/ComparisonList";
+import PreviewModal from "../../components/PreviewModal/PreviewModal";
+import { deleteComparison } from "../../services/comparisonService";
+
+
 import "./CreateStudy.css";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -16,6 +20,8 @@ const CreateStudy = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [previewComparison, setPreviewComparison] = useState(null);
+
 
   // Create a new study
   const handleCreateStudy = async (formData) => {
@@ -88,6 +94,19 @@ const CreateStudy = () => {
     }
   };
 
+  const handleDeleteComparison = async (id) => {
+  const confirm = window.confirm("Are you sure you want to delete this comparison?");
+  if (!confirm) return;
+
+  try {
+    await deleteComparison(id);
+    setComparisons((prev) => prev.filter((c) => c._id !== id));
+    setSuccess("Comparison deleted.");
+  } catch (err) {
+    setError(err.message || "Failed to delete comparison.");
+  }
+};
+
   return (
     <div className="create-study-container">
       <div className="create-study-header">
@@ -109,11 +128,11 @@ const CreateStudy = () => {
             <h2>{study.name}</h2>
             <p>{study.description}</p>
             {study.coverImage && (
-              <img
-                src={study.coverImage.url}
-                alt="Study cover"
-                className="study-cover-image"
-              />
+            <img
+            src={`${process.env.REACT_APP_BASE_URL}/api/stimuli/${study.coverImage}`}
+            alt="Study cover"
+            className="study-cover-image"
+            />
             )}
           </div>
 
@@ -141,7 +160,17 @@ const CreateStudy = () => {
               </div>
             ) : null}
 
-            <ComparisonList comparisons={comparisons} />
+            <ComparisonList
+            comparisons={comparisons}
+            onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
+            onDelete={handleDeleteComparison}
+            />
+            {previewComparison && (
+              <PreviewModal
+              comparison={previewComparison}
+              onClose={() => setPreviewComparison(null)}
+              />
+              )}
           </div>
 
           <div className="btn-container mt-4">
