@@ -12,12 +12,14 @@
 }
 
 .preview-modal {
+  align-items: center;
   background: white;
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
-  height: 65%;
-  max-width: 700px;
+  max-width: 800px;
+  max-height: 90vh; /* Limit total modal height */
+  overflow-y: auto; /* Allow scroll inside modal if needed */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -32,15 +34,9 @@
   cursor: pointer;
 }
 
-.preview-files {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  max-height: 100%;
-  overflow-y: auto;
-}
+
+
+
 
 .preview-image {
   max-width: 100%;
@@ -72,40 +68,57 @@
 
 
 .preview-image {
-  max-width: 100%;
-  max-height: 300px;
-  width: auto;
+  width: 100%;
   height: auto;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 }
 
-
 .preview-files {
-  display: flex;
+  display: grid;
   gap: 1rem;
+  justify-content: center;
   margin-top: 1rem;
-  flex-wrap: wrap;
+  width: 100%;
+
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+}
+
+.preview-files:has(.stimulus-preview:nth-child(4):nth-last-child(1)) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.preview-files:has(.stimulus-preview:nth-child(1):nth-last-child(1)) {
+  display: flex;
   justify-content: center;
 }
 
+.preview-files:has(.stimulus-preview:nth-child(1):nth-last-child(1)) .preview-image {
+  max-height: 300px;
+  width: auto;
+}
+
+
 .stimulus-preview {
-  max-width: 160px;
-  max-height: 160px;
+
+
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  border-radius: 8px;
+
   background-color: #f9f9f9;
 }
 
 .preview-image {
-  max-width: 100%;
-  max-height: 100%;
+
+    width: 100%;
+  height: auto;
+  max-height: 200px;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .stimulus-icon-wrapper {
