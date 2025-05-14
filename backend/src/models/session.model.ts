@@ -53,7 +53,8 @@ export interface ISession extends Document {
   demographics?: {
     age?: string;
     gender?: string;
-    nationality?: string;
+    educationLevel?: string;
+    deviceType?: string;
   };
 
   // User agent for analytics
@@ -92,7 +93,8 @@ const SessionSchema = new Schema<ISession>(
     demographics: {
       age: String,
       gender: String,
-      nationality: String,
+      educationLevel: String,
+      deviceType: String,
     },
     userAgent: String,
     responses: [

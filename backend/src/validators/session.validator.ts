@@ -32,7 +32,7 @@ export const completeSessionValidator = [
     .trim(),
 
   // can add more specific validation the respective fields within demographics object
-  body("demographics")
+  body("demographicsData")
     .isObject()
     .withMessage("Demographics data must be an object"),
 

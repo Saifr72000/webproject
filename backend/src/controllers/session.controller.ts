@@ -43,8 +43,14 @@ export const completeSessionController = async (
 ) => {
   try {
     const { sessionId } = req.params;
-    const { demographicsData } = req.body;
+    const { demographicsData, isComplete } = req.body;
+
+    // Log the received data for debugging
+    console.log("Received data:", req.body);
+
+    // Pass the demographics data to the service function
     const completedSession = await completeSession(sessionId, demographicsData);
+
     res.status(200).json({ completedSession });
   } catch (error) {
     res.status(400).json({
