@@ -45,7 +45,6 @@ const App = () => {
             <Route path="studies" element={<StudiesPage />} />
             <Route path="create-study" element={<CreateStudy />} />
 
-            <Route path="study/:studyId" element={<ViewStudyPage />} />
             <Route path="/edit-study/:studyId" element={<EditStudyPage />} />
 
             <Route
