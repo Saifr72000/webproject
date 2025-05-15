@@ -3,10 +3,9 @@ import rateLimit from "express-rate-limit";
 //Rate limiter function for testing.
 export const rateLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 100000,
+  max: 100,
   message: { message: "Too many requests, please try again later" },
-  headers: true,
-  standardHeaders: "draft-8",
+  standardHeaders: true,
   legacyHeaders: false,
 });
 

@@ -14,15 +14,9 @@ import { deleteComparisonByIdController } from "../controllers/comparison.contro
 
 const router = Router();
 
-import multer from "multer";
 import { getComparisonById } from "../services/comparison.service";
 
-// Multer setup for handling file uploads in memory (MongoDB)
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
-});
+
 
 // create comparison route
 router.post(
