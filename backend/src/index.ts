@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,6 +11,8 @@ import workspacesRouter from "./routes/workspace.routes";
 import stimulusRouter from "./routes/stimulus.routes";
 import sessionRouter from "./routes/session.routes";
 import comparisonRouter from "./routes/comparison.routes";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
+
 import helmet from "helmet";
 
 // Load environment variables from .env
@@ -34,7 +36,6 @@ app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimiter);
-/* app.use(rateLimiter); */
 
 //Routes
 app.use("/api/auth", authRouter);
@@ -72,6 +73,8 @@ connectDB();
 app.get("/", (req: Request, res: Response) => {
   res.send("🚀 Server is running, and MongoDB is connected!");
 });
+
+app.use(errorHandler);
 
 // Start the Server
 const PORT = 2000;

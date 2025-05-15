@@ -1,13 +1,37 @@
 import React, { useState } from "react";
 import "./ComparisonForm.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("binary"); // Default to binary comparison
-  const [stimuliType, setStimuliType] = useState("image"); // Default to image
-  const [stimuli, setStimuli] = useState([
-    { id: "stimulus-0", file: null, preview: null },
-  ]);
+const ComparisonForm = ({ studyId, onSaveComparison, onUpdateComparison, onCancel, loading, initialData = null }) => {
+const [title, setTitle] = useState(initialData?.title || "");
+const [type, setType] = useState(initialData?.type || "binary");
+const [stimuliType, setStimuliType] = useState(initialData?.stimuliType || "image");
+const [removedStimuli, setRemovedStimuli] = useState([]);
+
+
+const [stimuli, setStimuli] = useState(() => {
+  if (initialData?.stimuli && Array.isArray(initialData.stimuli)) {
+    return initialData.stimuli.map((stim, index) => {
+      const previewUrl =
+        stim.preview || // fallback if it already has preview
+        (stim.originalId ? `${BASE_URL}/api/files/${stim.originalId}` : null);
+
+      return {
+        id: `stimulus-${index}`,
+        file: null,
+        preview: previewUrl,
+        fileName: stim.fileName || `Stimulus ${index + 1}`,
+        originalId: stim.originalId,
+        persisted: true,
+      };
+    });
+  }
+  return [{ id: "stimulus-0", file: null, preview: null }];
+});
+
+
+
+
   const [error, setError] = useState("");
 
   const handleStimulusChange = (e, id) => {
@@ -56,66 +80,95 @@ const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
     setStimuli([...stimuli, { id: newId, file: null, preview: null }]);
   };
 
+
+
   const removeStimulus = (id) => {
-    // Don't allow removing all stimuli - at least one must remain
-    if (stimuli.length <= 1) {
-      return;
-    }
+  if (stimuli.length <= 1) return;
 
-    // Remove the stimulus with the given id
-    const newStimuli = stimuli.filter((stim) => stim.id !== id);
+  const stimulusToRemove = stimuli.find((stim) => stim.id === id);
 
-    // Clean up any object URLs to prevent memory leaks
-    const stimulusToRemove = stimuli.find((stim) => stim.id === id);
-    if (stimulusToRemove && stimulusToRemove.preview) {
-      URL.revokeObjectURL(stimulusToRemove.preview);
-    }
+  if (stimulusToRemove?.persisted && stimulusToRemove?.originalId) {
+    setRemovedStimuli((prev) => [...prev, stimulusToRemove.originalId]);
+  }
 
-    setStimuli(newStimuli);
-  };
+  if (stimulusToRemove?.preview?.startsWith("blob:")) {
+    URL.revokeObjectURL(stimulusToRemove.preview);
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  setStimuli((prev) => prev.filter((stim) => stim.id !== id));
+};
 
-    if (!title.trim()) {
-      setError("Comparison title is required");
-      return;
-    }
 
-    // Check if at least one stimulus has been uploaded
-    const hasStimulus = stimuli.some((stim) => stim.file !== null);
-    if (!hasStimulus) {
-      setError(`At least one ${stimuliType} file is required`);
-      return;
-    }
 
-    try {
-      // Prepare form data for API call
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("type", type);
-      formData.append("stimuliType", stimuliType);
 
-      // Append all stimuli files
-      stimuli.forEach((stimulus, index) => {
-        if (stimulus.file) {
-          formData.append("stimuli", stimulus.file);
-        }
-      });
 
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+
+  if (!title.trim()) {
+    setError("Comparison title is required");
+    return;
+  }
+
+  // Check if at least one stimulus has been uploaded
+  const hasStimulus = stimuli.some((stim) => stim.file !== null || stim.preview !== null);
+  if (!hasStimulus) {
+    setError(`At least one ${stimuliType} file is required`);
+    return;
+  }
+  
+
+  try {
+    // Prepare form data for API call
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("type", type);
+    formData.append("stimuliType", stimuliType);
+
+  if (removedStimuli.length > 0) {
+
+  removedStimuli.forEach((id) => formData.append("removedStimuli[]", id));
+}
+
+    // Append all stimuli files
+    stimuli.forEach((stimulus) => {
+      if (stimulus.file) {
+        formData.append("stimuli", stimulus.file);
+      }
+    });
+
+
+  for (let pair of formData.entries()) {
+    console.log("  ", pair[0], "=>", pair[1]);
+  }
+
+
+for (let [key, value] of formData.entries()) {
+  console.log(`  ${key} =>`, value);
+}
+
+
+    if (initialData && initialData._id) {
+      await onUpdateComparison(initialData._id, formData);
+    } else {
       await onSaveComparison(formData);
 
-      // Reset form after successful save
       setTitle("");
       setType("binary");
       setStimuliType("image");
       setStimuli([{ id: "stimulus-0", file: null, preview: null }]);
-    } catch (err) {
-      console.error("Error in ComparisonForm:", err);
-      setError("Failed to create comparison. Please try again.");
     }
-  };
+  } catch (err) {
+    console.error("Error in ComparisonForm:", err);
+    setError("Failed to save comparison. Please try again.");
+  }
+};
+
+
+
 
   // Get the appropriate accept attribute for file input based on stimuli type
   const getAcceptAttribute = () => {
@@ -263,69 +316,69 @@ const ComparisonForm = ({ studyId, onSaveComparison, onCancel, loading }) => {
             )}
           </div>
 
-          <div className="stimulus-upload-container">
-            {stimuli.map((stimulus, index) => (
-              <div key={stimulus.id} className="stimulus-item">
-                <div className="stimulus-label-container">
-                  <div className="stimulus-label">
-                    Stimulus {String.fromCharCode(65 + index)}
-                  </div>
-                  {stimuli.length > 1 && (
-                    <button
-                      type="button"
-                      className="remove-stimulus-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeStimulus(stimulus.id);
-                      }}
-                      aria-label="Remove stimulus"
-                    >
-                      &times;
-                    </button>
-                  )}
-                </div>
-                <div
-                  className={`stimulus-upload ${
-                    stimulus.file ? "has-file" : ""
-                  } ${stimuliType}`}
-                  onClick={() => document.getElementById(stimulus.id).click()}
-                >
-                  {stimulus.file ? (
-                    stimuliType === "image" ? (
-                      <img
-                        src={stimulus.preview}
-                        alt={`Stimulus ${String.fromCharCode(
-                          65 + index
-                        )} preview`}
-                        className="uploaded-image"
-                      />
-                    ) : (
-                      <div className="file-preview">
-                        <div className="file-preview-icon">
-                          {getStimuliIcon()}
-                        </div>
-                        <div className="file-preview-name">
-                          {stimulus.fileName}
-                        </div>
-                      </div>
-                    )
-                  ) : (
-                    <>
-                      <div className="upload-icon">{getStimuliIcon()}</div>
-                      <div className="upload-text">Upload {stimuliType}</div>
-                    </>
-                  )}
-                  <input
-                    type="file"
-                    id={stimulus.id}
-                    accept={getAcceptAttribute()}
-                    onChange={(e) => handleStimulusChange(e, stimulus.id)}
-                    style={{ display: "none" }}
-                  />
-                </div>
+
+<div className="stimulus-upload-container">
+  {stimuli.map((stimulus, index) => (
+
+    <div key={stimulus.id} className="stimulus-item">
+      <div className="stimulus-label-container">
+        <div className="stimulus-label">
+          Stimulus {String.fromCharCode(65 + index)}
+        </div>
+        {stimuli.length > 1 && (
+          <button
+            type="button"
+            className="remove-stimulus-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              removeStimulus(stimulus.id);
+            }}
+            aria-label="Remove stimulus"
+          >
+            &times;
+          </button>
+        )}
+      </div>
+
+      <div
+        className={`stimulus-upload ${
+          stimulus.file || stimulus.preview ? "has-file" : ""
+        } ${stimuliType}`}
+        onClick={() => document.getElementById(stimulus.id).click()}
+      >
+        {(stimulus.file || stimulus.preview) ? (
+          stimuliType === "image" && stimulus.preview ? (
+            <img
+              src={stimulus.preview}
+              alt={`Stimulus ${String.fromCharCode(65 + index)} preview`}
+              className="uploaded-image"
+            />
+          ) : (
+            <div className="file-preview">
+              <div className="file-preview-icon">{getStimuliIcon()}</div>
+              <div className="file-preview-name">
+                {stimulus.fileName || `Stimulus ${String.fromCharCode(65 + index)}`}
               </div>
-            ))}
-          </div>
+            </div>
+          )
+        ) : (
+          <>
+            <div className="upload-icon">{getStimuliIcon()}</div>
+            <div className="upload-text">Upload {stimuliType}</div>
+          </>
+        )}
+
+        <input
+          type="file"
+          id={stimulus.id}
+          accept={getAcceptAttribute()}
+          onChange={(e) => handleStimulusChange(e, stimulus.id)}
+          style={{ display: "none" }}
+        />
+      </div>
+    </div>
+  ))}
+</div>
         </div>
 
         {error && <div className="error-text">{error}</div>}

@@ -1,15 +1,21 @@
 .comparison-list {
   margin-top: 2rem;
+   display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
 }
+
 
 .comparison-list h3 {
   margin-bottom: 1.5rem;
 }
 
 .comparison-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .comparison-item {
@@ -17,17 +23,33 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
 }
+
+.comparison-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
 
 .comparison-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
+  flex-direction: column
 }
 
 .comparison-header h4 {
   margin: 0;
+}
+
+.comparison-compiler{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .comparison-badges {
@@ -35,6 +57,14 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
+}
+
+.button-badges {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  gap: 0.5rem;
+  flex-direction: row;
 }
 
 .comparison-type {
@@ -138,6 +168,7 @@
   color: #495057;
 }
 
+
 .comparison-vs {
   margin: 0 1rem;
   font-weight: bold;
@@ -155,4 +186,38 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
+}
+
+.delete-badge {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 35px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: background-color 0.2s ease;
+  padding: 5px 35px;
+  display: flex;
+  align-items: center;
+
+}
+
+.delete-badge:hover {
+  background-color: #c0392b;
+}
+
+.edit-badge {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 35px;
+    border-radius: 8px;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+
+}
+
+.edit-badge:hover{
+  background-color: #20568b;
 }

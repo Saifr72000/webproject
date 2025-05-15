@@ -29,6 +29,8 @@ const StudyOverview = () => {
               key={study?._id}
               title={study?.name}
               description={study?.description}
+              status={study?.status}
+              showEditButton={true}
               /* author={authorName} */
             />
           );

@@ -5,15 +5,19 @@ import {
   getAllStudies,
 } from "../controllers/study.controller";
 import { createStudyValidator } from "../validators/study.validator";
+import { checkSessionExists } from "../controllers/study.controller";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
 import { createComparisonValidator } from "../validators/comparison.validator";
 import { createComparison } from "../controllers/comparison.controller";
+import { deleteStudyById } from "../controllers/study.controller";
+import { activateStudy } from "../controllers/study.controller";
 import {
   stimuliUpload,
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
 import multer from "multer";
+
 
 const router = Router();
 
@@ -34,6 +38,8 @@ router.post(
   createStudy
 );
 
+router.get("/:id/check-session-exists", checkSessionExists);
+
 // get study by id route
 // this is currently giving error because we havent handled the case of
 // fetching studies that does not contain comparisons because we populate comparisons
@@ -41,7 +47,7 @@ router.post(
 router.get("/:id", authenticateUser, getStudyById);
 
 // create comparison route
-/* router.post(
+ router.post(
   "/:studyId/comparisons",
   authenticateUser,
   stimuliUpload.array("stimuli"),
@@ -50,8 +56,11 @@ router.get("/:id", authenticateUser, getStudyById);
   validateRequest,
   createComparison
 );
- */
+
 // get all studies route
 router.get("/", authenticateUser, getAllStudies);
+router.delete("/:id", authenticateUser, deleteStudyById);
+
+router.patch("/:id/activate", authenticateUser, activateStudy)
 
 export default router;

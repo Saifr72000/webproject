@@ -1,0 +1,230 @@
+.preview-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.preview-modal {
+  align-items: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh; /* Limit total modal height */
+  overflow-y: auto; /* Allow scroll inside modal if needed */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+
+
+
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.preview-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.preview-prompt {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.stimulus-preview {
+  flex: 0 1 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+
+
+.preview-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.preview-files {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  width: 100%;
+
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+}
+
+.preview-files:has(.stimulus-preview:nth-child(4):nth-last-child(1)) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.preview-files:has(.stimulus-preview:nth-child(1):nth-last-child(1)) {
+  display: flex;
+  justify-content: center;
+}
+
+.preview-files:has(.stimulus-preview:nth-child(1):nth-last-child(1)) .preview-image {
+  max-height: 300px;
+  width: auto;
+}
+
+
+.stimulus-preview {
+
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #f9f9f9;
+}
+
+.preview-image {
+
+    width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.stimulus-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 8px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.stimulus-icon {
+  font-size: 2.5rem;
+}
+
+.stimulus-label {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.preview-media {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.preview-pdf {
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+.preview-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+
+.preview-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.preview-modal {
+  background: white;
+  padding: 20px;
+  max-width: 800px;
+  width: 90%;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 90vh;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.preview-title {
+  margin-bottom: 0.5rem;
+}
+
+.preview-prompt {
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.preview-files {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.preview-image,
+.preview-media {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.preview-pdf {
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+.empty-message {
+  text-align: center;
+  color: gray;
+  font-style: italic;
+}
+

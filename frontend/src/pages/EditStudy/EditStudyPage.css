@@ -1,0 +1,124 @@
+.edit-study-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.edit-study-header h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.study-summary img.study-cover-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.comparison-section {
+  margin-top: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
+.error-text {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 1rem;
+}
+
+
+.primary-btn,
+.danger-btn {
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+
+.primary-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.primary-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+
+.danger-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.danger-btn:hover {
+  background-color: #b02a37;
+  transform: translateY(-1px);
+}
+
+
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.preview-media,
+.preview-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.preview-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-modal {
+  background: white;
+  padding: 1rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+}
