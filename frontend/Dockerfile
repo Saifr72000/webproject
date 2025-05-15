@@ -9,6 +9,6 @@ COPY . .
 
 EXPOSE 8187
 
-RUN npm install-g serve
+RUN npm install -g serve
 
 CMD npm run build && serve -s dist -l 8187
