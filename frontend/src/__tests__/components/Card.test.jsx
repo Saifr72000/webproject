@@ -58,7 +58,7 @@ describe("Card Component", () => {
 
     // Button should be wrapped in a Link with correct path
     const linkElement = button.closest("a");
-    expect(linkElement).toHaveAttribute("href", "/study/123");
+    expect(linkElement).toHaveAttribute("href", "/study-details/123");
   });
 
   test("renders with default participate value (false) when not provided", () => {

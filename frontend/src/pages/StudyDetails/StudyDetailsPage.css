@@ -1,0 +1,477 @@
+.study-details-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: #333;
+}
+
+/* Study Overview Section */
+.study-overview-section {
+  margin-bottom: 3rem;
+}
+
+.study-header {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.study-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.study-description {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+.study-stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.study-stat-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.study-stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.study-stat-card h3 {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #3498db;
+}
+
+.study-cover-image {
+  margin-top: 2rem;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 400px;
+}
+
+.study-cover-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Comparison Section */
+.study-comparisons-section {
+  margin-bottom: 3rem;
+}
+
+.study-comparisons-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f1f1f1;
+}
+
+.comparisons-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.comparison-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.comparison-card:hover {
+  transform: translateY(-5px);
+  border-color: #e2e8f0;
+}
+
+.comparison-card.selected {
+  border-color: #3498db;
+  background-color: #f8fafc;
+}
+
+.comparison-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.comparison-card p {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.comparison-stats {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.response-tag {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  background-color: #edf2f7;
+  color: #4a5568;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Statistics Section */
+.study-statistics-section {
+  margin-bottom: 3rem;
+}
+
+.study-statistics-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f1f1f1;
+}
+
+.statistics-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.control-group select {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  min-width: 200px;
+  background-color: #f9f9f9;
+}
+
+.export-csv-button {
+  margin-left: auto;
+  align-self: flex-end;
+  padding: 0.6rem 1.2rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 40px;
+}
+
+.export-csv-button:hover {
+  background-color: #2980b9;
+}
+
+.statistics-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+/* Table styles */
+.statistics-container h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-size: 1.4rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.stats-table th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.stats-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.stats-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Bar visualization */
+.bar-visualization {
+  width: 100%;
+  background-color: #eee;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background-color: #3498db;
+  transition: width 0.5s ease;
+}
+
+/* No data message */
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #7f8c8d;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  font-size: 1.5rem;
+  color: #666;
+}
+
+.error-container {
+  color: #e74c3c;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .study-header h1 {
+    font-size: 2rem;
+  }
+
+  .study-description {
+    font-size: 1rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .statistics-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .export-csv-button {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .control-group select {
+    width: 100%;
+  }
+
+  .stats-table th,
+  .stats-table td {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+.page-navigation {
+  margin-bottom: 1.5rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  color: #4a5568;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #e2e8f0;
+  transform: translateX(-3px);
+}
+
+/* Styles for response distribution section */
+.response-distribution {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.response-distribution h4 {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.response-count {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.distribution-note {
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 5px;
+  color: #718096;
+  font-style: italic;
+}
+
+/* Response visualization styles */
+.response-visualization {
+  margin-top: 1.5rem;
+}
+
+.response-visualization h5 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+/* Binary response visualization */
+.binary-distribution,
+.rating-distribution,
+.selection-distribution {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.option-bars,
+.rating-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.option-bar-container,
+.rating-bar-container {
+  display: grid;
+  grid-template-columns: 80px 1fr 60px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.option-label,
+.rating-label {
+  font-weight: 500;
+  text-align: right;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.option-bar-wrapper,
+.rating-bar-wrapper {
+  height: 24px;
+  background-color: #edf2f7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.option-bar,
+.rating-bar {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.yes-bar {
+  background-color: #48bb78;
+}
+
+.no-bar {
+  background-color: #f56565;
+}
+
+.rating-bar {
+  background-color: #f6ad55;
+}
+
+.option-value,
+.rating-value {
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Responsive adjustments for visualizations */
+@media (max-width: 768px) {
+  .option-bar-container,
+  .rating-bar-container {
+    grid-template-columns: 60px 1fr 50px;
+    gap: 0.8rem;
+  }
+
+  .option-label,
+  .rating-label {
+    font-size: 0.8rem;
+  }
+
+  .option-value,
+  .rating-value {
+    font-size: 0.8rem;
+  }
+}

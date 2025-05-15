@@ -24,7 +24,7 @@ const Card = ({
 
         {participate && (
           <div>
-            <Link to={`/study/${studyId}`}>
+            <Link to={`/study-details/${studyId}`}>
               <button className="secondary-btn">View Study</button>
             </Link>
           </div>
