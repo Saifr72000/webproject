@@ -100,7 +100,6 @@ const DemographicsForm = ({ onSubmit, onBack }) => {
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="non-binary">Non-binary</option>
-            <option value="prefer-not-to-say">Prefer not to say</option>
           </select>
           {errors.gender && <p className="simple-error">{errors.gender}</p>}
         </div>
@@ -166,7 +165,7 @@ const DemographicsForm = ({ onSubmit, onBack }) => {
           </div>
         </div> */}
 
-        <div className="form-group">
+        {/*  <div className="form-group">
           <label htmlFor="deviceType">Device Type</label>
           <select
             id="deviceType"
@@ -178,7 +177,7 @@ const DemographicsForm = ({ onSubmit, onBack }) => {
             <option value="Tablet">Tablet</option>
             <option value="Mobile">Mobile</option>
           </select>
-        </div>
+        </div> */}
 
         <div className="button-group">
           <button type="button" className="back-button" onClick={onBack}>

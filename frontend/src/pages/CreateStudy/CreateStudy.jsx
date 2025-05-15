@@ -147,7 +147,7 @@ const CreateStudy = () => {
           <div className="btn-container mt-4">
             <button
               className="primary-btn"
-              onClick={() => navigate(`/studies/${study._id}`)}
+              onClick={() => navigate(`/study-details/${study._id}`)}
             >
               Done - View Study
             </button>

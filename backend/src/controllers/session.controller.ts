@@ -4,6 +4,7 @@ import {
   addResponse,
   completeSession,
   getSessionById,
+  getSessionStatsByStudyId,
 } from "../services/session.service";
 
 export const createSessionController = async (req: Request, res: Response) => {
@@ -43,8 +44,14 @@ export const completeSessionController = async (
 ) => {
   try {
     const { sessionId } = req.params;
-    const { demographicsData } = req.body;
+    const { demographicsData, isComplete } = req.body;
+
+    // Log the received data for debugging
+    console.log("Received data:", req.body);
+
+    // Pass the demographics data to the service function
     const completedSession = await completeSession(sessionId, demographicsData);
+
     res.status(200).json({ completedSession });
   } catch (error) {
     res.status(400).json({
@@ -62,6 +69,26 @@ export const getSessionByIdController = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "Failed to get session",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+/**
+ * Controller to get statistics for sessions associated with a specific study
+ */
+export const getStudySessionStatsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { studyId } = req.params;
+    const statistics = await getSessionStatsByStudyId(studyId);
+
+    res.status(200).json(statistics);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get session statistics",
       error: error instanceof Error ? error.message : String(error),
     });
   }

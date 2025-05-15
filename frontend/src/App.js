@@ -11,9 +11,10 @@ import RegisterPage from "./pages/Register/RegisterPage";
 import StudyFrontPage from "./pages/StudyFront/StudyFrontPage";
 // Layout
 import AppLayout from "./layout/AppLayout";
-import ViewStudyPage from "./pages/ViewStudy/ViewStudyPage";
+import StudyDetailsPage from "./pages/StudyDetails/StudyDetailsPage";
 import StudySessionPage from "./pages/StudySession/StudySessionPage";
 import StudyCompletePage from "./pages/StudyComplete/StudyCompletePage";
+
 const App = () => {
   return (
     <AuthProvider>
@@ -42,7 +43,10 @@ const App = () => {
           >
             <Route path="studies" element={<StudiesPage />} />
             <Route path="create-study" element={<CreateStudy />} />
-            <Route path="study/:studyId" element={<ViewStudyPage />} />
+            <Route
+              path="study-details/:studyId"
+              element={<StudyDetailsPage />}
+            />
             {/* Optional: default to /dashboard if no sub-route is provided */}
             <Route index element={<Navigate to="/studies" />} />
           </Route>
