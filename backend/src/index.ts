@@ -28,6 +28,9 @@ app.use(
     origin: [
       "http://localhost:3001",
       "https://group7.sustainability.it.ntnu.no",
+      "http://group7.sustainability.it.ntnu.no",
+      "https://group7-api.sustainability.it.ntnu.no",
+      "http://group7-api.sustainability.it.ntnu.no",
     ],
     credentials: true,
   })
