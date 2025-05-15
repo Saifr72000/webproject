@@ -12,16 +12,19 @@ import stimulusRouter from "./routes/stimulus.routes";
 import sessionRouter from "./routes/session.routes";
 import comparisonRouter from "./routes/comparison.routes";
 import helmet from "helmet";
+
 // Load environment variables from .env
 dotenv.config();
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Middleware
 app.use(
   cors({
     origin: [
-      "http://localhost:3002",
+      "http://localhost:3001",
       "https://group7.sustainability.it.ntnu.no",
     ],
     credentials: true,
@@ -41,6 +44,10 @@ app.use("/api/workspaces", workspacesRouter);
 app.use("/api/stimuli", stimulusRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/comparisons", comparisonRouter);
+
+app.get("/debug/ip", (req, res) => {
+  res.send({ ip: req.ip, forwarded: req.headers["x-forwarded-for"] });
+});
 // MongoDB Connection
 const MONGO_URI =
   process.env.MONGO_DB_URL || "mongodb://database:27017/webprojectdb";

@@ -138,6 +138,29 @@ export const getSessionStatsByStudyId = async (
     throw new Error("Study not found");
   }
 
+  // Fetch all completed sessions for diagnostics
+  const diagCompletedSessions = await StudySession.find({
+    study: studyId,
+    isComplete: true,
+  });
+
+  // Log detailed demographic data for debugging
+  console.log(
+    `Found ${
+      diagCompletedSessions.length
+    } completed sessions for study ${studyId.toString()}`
+  );
+  diagCompletedSessions.forEach((session) => {
+    console.log(
+      `Session ${session._id} complete: ${session.isComplete}, demographics:`,
+      JSON.stringify({
+        gender: session.demographics?.gender || "MISSING",
+        age: session.demographics?.age || "MISSING",
+        educationLevel: session.demographics?.educationLevel || "MISSING",
+      })
+    );
+  });
+
   // Get basic statistics using MongoDB aggregation
   const sessionStats = await StudySession.aggregate([
     {
@@ -194,7 +217,26 @@ export const getSessionStatsByStudyId = async (
         genderDistribution: [
           {
             $group: {
-              _id: { $ifNull: ["$demographics.gender", "Not Specified"] },
+              _id: {
+                $cond: {
+                  if: { $eq: [{ $type: "$demographics.gender" }, "missing"] },
+                  then: "Not Specified",
+                  else: {
+                    $cond: {
+                      if: {
+                        $or: [
+                          { $eq: ["$demographics.gender", null] },
+                          { $eq: ["$demographics.gender", ""] },
+                          { $eq: ["$demographics.gender", "undefined"] },
+                          { $eq: ["$demographics.gender", "null"] },
+                        ],
+                      },
+                      then: "Not Specified",
+                      else: "$demographics.gender",
+                    },
+                  },
+                },
+              },
               count: { $sum: 1 },
             },
           },
@@ -211,7 +253,26 @@ export const getSessionStatsByStudyId = async (
         ageGroupDistribution: [
           {
             $group: {
-              _id: { $ifNull: ["$demographics.age", "Not Specified"] },
+              _id: {
+                $cond: {
+                  if: { $eq: [{ $type: "$demographics.age" }, "missing"] },
+                  then: "Not Specified",
+                  else: {
+                    $cond: {
+                      if: {
+                        $or: [
+                          { $eq: ["$demographics.age", null] },
+                          { $eq: ["$demographics.age", ""] },
+                          { $eq: ["$demographics.age", "undefined"] },
+                          { $eq: ["$demographics.age", "null"] },
+                        ],
+                      },
+                      then: "Not Specified",
+                      else: "$demographics.age",
+                    },
+                  },
+                },
+              },
               count: { $sum: 1 },
             },
           },
@@ -229,7 +290,28 @@ export const getSessionStatsByStudyId = async (
           {
             $group: {
               _id: {
-                $ifNull: ["$demographics.educationLevel", "Not Specified"],
+                $cond: {
+                  if: {
+                    $eq: [{ $type: "$demographics.educationLevel" }, "missing"],
+                  },
+                  then: "Not Specified",
+                  else: {
+                    $cond: {
+                      if: {
+                        $or: [
+                          { $eq: ["$demographics.educationLevel", null] },
+                          { $eq: ["$demographics.educationLevel", ""] },
+                          {
+                            $eq: ["$demographics.educationLevel", "undefined"],
+                          },
+                          { $eq: ["$demographics.educationLevel", "null"] },
+                        ],
+                      },
+                      then: "Not Specified",
+                      else: "$demographics.educationLevel",
+                    },
+                  },
+                },
               },
               count: { $sum: 1 },
             },
@@ -249,7 +331,16 @@ export const getSessionStatsByStudyId = async (
   // Convert array results to objects for easier consumption
   const genderData = demographicData[0].genderDistribution.reduce(
     (acc: any, curr: any) => {
-      acc[curr.gender] = curr.count;
+      // Normalize demographic key
+      const key =
+        curr.gender === undefined ||
+        curr.gender === null ||
+        curr.gender === "undefined" ||
+        curr.gender === "null" ||
+        curr.gender === ""
+          ? "Not Specified"
+          : curr.gender;
+      acc[key] = curr.count;
       return acc;
     },
     {}
@@ -257,7 +348,16 @@ export const getSessionStatsByStudyId = async (
 
   const ageGroupData = demographicData[0].ageGroupDistribution.reduce(
     (acc: any, curr: any) => {
-      acc[curr.ageGroup] = curr.count;
+      // Normalize demographic key
+      const key =
+        curr.ageGroup === undefined ||
+        curr.ageGroup === null ||
+        curr.ageGroup === "undefined" ||
+        curr.ageGroup === "null" ||
+        curr.ageGroup === ""
+          ? "Not Specified"
+          : curr.ageGroup;
+      acc[key] = curr.count;
       return acc;
     },
     {}
@@ -266,7 +366,16 @@ export const getSessionStatsByStudyId = async (
   const educationLevelData =
     demographicData[0].educationLevelDistribution.reduce(
       (acc: any, curr: any) => {
-        acc[curr.educationLevel] = curr.count;
+        // Normalize demographic key
+        const key =
+          curr.educationLevel === undefined ||
+          curr.educationLevel === null ||
+          curr.educationLevel === "undefined" ||
+          curr.educationLevel === "null" ||
+          curr.educationLevel === ""
+            ? "Not Specified"
+            : curr.educationLevel;
+        acc[key] = curr.count;
         return acc;
       },
       {}
@@ -317,14 +426,80 @@ export const getSessionStatsByStudyId = async (
                 $group: {
                   _id: {
                     gender: {
-                      $ifNull: ["$demographics.gender", "Not Specified"],
+                      $cond: {
+                        if: {
+                          $eq: [{ $type: "$demographics.gender" }, "missing"],
+                        },
+                        then: "Not Specified",
+                        else: {
+                          $cond: {
+                            if: {
+                              $or: [
+                                { $eq: ["$demographics.gender", null] },
+                                { $eq: ["$demographics.gender", ""] },
+                                { $eq: ["$demographics.gender", "undefined"] },
+                                { $eq: ["$demographics.gender", "null"] },
+                              ],
+                            },
+                            then: "Not Specified",
+                            else: "$demographics.gender",
+                          },
+                        },
+                      },
                     },
-                    age: { $ifNull: ["$demographics.age", "Not Specified"] },
+                    age: {
+                      $cond: {
+                        if: {
+                          $eq: [{ $type: "$demographics.age" }, "missing"],
+                        },
+                        then: "Not Specified",
+                        else: {
+                          $cond: {
+                            if: {
+                              $or: [
+                                { $eq: ["$demographics.age", null] },
+                                { $eq: ["$demographics.age", ""] },
+                                { $eq: ["$demographics.age", "undefined"] },
+                                { $eq: ["$demographics.age", "null"] },
+                              ],
+                            },
+                            then: "Not Specified",
+                            else: "$demographics.age",
+                          },
+                        },
+                      },
+                    },
                     education: {
-                      $ifNull: [
-                        "$demographics.educationLevel",
-                        "Not Specified",
-                      ],
+                      $cond: {
+                        if: {
+                          $eq: [
+                            { $type: "$demographics.educationLevel" },
+                            "missing",
+                          ],
+                        },
+                        then: "Not Specified",
+                        else: {
+                          $cond: {
+                            if: {
+                              $or: [
+                                { $eq: ["$demographics.educationLevel", null] },
+                                { $eq: ["$demographics.educationLevel", ""] },
+                                {
+                                  $eq: [
+                                    "$demographics.educationLevel",
+                                    "undefined",
+                                  ],
+                                },
+                                {
+                                  $eq: ["$demographics.educationLevel", "null"],
+                                },
+                              ],
+                            },
+                            then: "Not Specified",
+                            else: "$demographics.educationLevel",
+                          },
+                        },
+                      },
                     },
                   },
                   count: { $sum: 1 },
@@ -365,12 +540,78 @@ export const getSessionStatsByStudyId = async (
               },
               {
                 $project: {
+                  // Extract demographics directly without intermediate steps
                   gender: {
-                    $ifNull: ["$demographics.gender", "Not Specified"],
+                    $cond: {
+                      if: {
+                        $eq: [{ $type: "$demographics.gender" }, "missing"],
+                      },
+                      then: "Not Specified",
+                      else: {
+                        $cond: {
+                          if: {
+                            $or: [
+                              { $eq: ["$demographics.gender", null] },
+                              { $eq: ["$demographics.gender", ""] },
+                              { $eq: ["$demographics.gender", "undefined"] },
+                              { $eq: ["$demographics.gender", "null"] },
+                            ],
+                          },
+                          then: "Not Specified",
+                          else: "$demographics.gender",
+                        },
+                      },
+                    },
                   },
-                  age: { $ifNull: ["$demographics.age", "Not Specified"] },
+                  age: {
+                    $cond: {
+                      if: { $eq: [{ $type: "$demographics.age" }, "missing"] },
+                      then: "Not Specified",
+                      else: {
+                        $cond: {
+                          if: {
+                            $or: [
+                              { $eq: ["$demographics.age", null] },
+                              { $eq: ["$demographics.age", ""] },
+                              { $eq: ["$demographics.age", "undefined"] },
+                              { $eq: ["$demographics.age", "null"] },
+                            ],
+                          },
+                          then: "Not Specified",
+                          else: "$demographics.age",
+                        },
+                      },
+                    },
+                  },
                   education: {
-                    $ifNull: ["$demographics.educationLevel", "Not Specified"],
+                    $cond: {
+                      if: {
+                        $eq: [
+                          { $type: "$demographics.educationLevel" },
+                          "missing",
+                        ],
+                      },
+                      then: "Not Specified",
+                      else: {
+                        $cond: {
+                          if: {
+                            $or: [
+                              { $eq: ["$demographics.educationLevel", null] },
+                              { $eq: ["$demographics.educationLevel", ""] },
+                              {
+                                $eq: [
+                                  "$demographics.educationLevel",
+                                  "undefined",
+                                ],
+                              },
+                              { $eq: ["$demographics.educationLevel", "null"] },
+                            ],
+                          },
+                          then: "Not Specified",
+                          else: "$demographics.educationLevel",
+                        },
+                      },
+                    },
                   },
                   // Extract response details based on comparison type
                   binaryResponses: "$response.binaryResponses",
@@ -391,10 +632,12 @@ export const getSessionStatsByStudyId = async (
       // Process demographic breakdown
       const genderBreakdown =
         results.demographicBreakdown.length > 0 &&
-        results.demographicBreakdown[0]
+        results.demographicBreakdown[0]?.genderBreakdown
           ? results.demographicBreakdown[0].genderBreakdown.reduce(
               (acc: any, curr: any) => {
-                acc[curr._id] = curr.count;
+                // Make sure to access the property correctly
+                const key = curr.gender;
+                acc[key] = curr.count;
                 return acc;
               },
               {}
@@ -403,10 +646,12 @@ export const getSessionStatsByStudyId = async (
 
       const ageBreakdown =
         results.demographicBreakdown.length > 0 &&
-        results.demographicBreakdown[0]
+        results.demographicBreakdown[0]?.ageBreakdown
           ? results.demographicBreakdown[0].ageBreakdown.reduce(
               (acc: any, curr: any) => {
-                acc[curr._id] = curr.count;
+                // Make sure to access the property correctly
+                const key = curr.age;
+                acc[key] = curr.count;
                 return acc;
               },
               {}
@@ -415,10 +660,12 @@ export const getSessionStatsByStudyId = async (
 
       const educationBreakdown =
         results.demographicBreakdown.length > 0 &&
-        results.demographicBreakdown[0]
+        results.demographicBreakdown[0]?.educationBreakdown
           ? results.demographicBreakdown[0].educationBreakdown.reduce(
               (acc: any, curr: any) => {
-                acc[curr._id] = curr.count;
+                // Make sure to access the property correctly
+                const key = curr.education;
+                acc[key] = curr.count;
                 return acc;
               },
               {}
@@ -475,9 +722,54 @@ const processResponseDistribution = (
 ) => {
   const distribution: Record<string, any> = {};
 
+  // Log responses data for debugging
+  console.log(
+    `Processing ${responses.length} responses for ${comparisonType} comparison`
+  );
+
+  // Early return if no responses are provided
+  if (!responses || responses.length === 0) {
+    return distribution;
+  }
+
   // Initialize the structure based on demographic categories
   for (const response of responses) {
-    const { gender, age, education } = response;
+    // Debug log to check raw demographic data
+    console.log("Raw demographic data from response:", {
+      gender: response.gender,
+      age: response.age,
+      education: response.education,
+    });
+
+    // Normalize demographic values to handle undefined, null, or empty values consistently
+    // Also handle string representations of 'undefined' and 'null' as they might be stored that way
+    const gender =
+      !response.gender ||
+      response.gender === "undefined" ||
+      response.gender === "null"
+        ? "Not Specified"
+        : response.gender;
+
+    const age =
+      !response.age || response.age === "undefined" || response.age === "null"
+        ? "Not Specified"
+        : response.age;
+
+    const education =
+      !response.education ||
+      response.education === "undefined" ||
+      response.education === "null"
+        ? "Not Specified"
+        : response.education;
+
+    // Log normalized demographic values
+    console.log("Normalized demographic values:", { gender, age, education });
+
+    // Skip this response if we couldn't extract demographic values
+    if (!gender || !age || !education) {
+      console.log("Skipping response due to missing demographic data");
+      continue;
+    }
 
     // Initialize demographic categories if they don't exist
     if (!distribution[gender]) distribution[gender] = {};
@@ -523,6 +815,17 @@ const processResponseDistribution = (
             "5": 0,
           };
         }
+
+        // Initialize mappings for stimulus-specific ratings
+        if (!distribution[gender].stimulusRatings) {
+          distribution[gender].stimulusRatings = {};
+        }
+        if (!distribution[age].stimulusRatings) {
+          distribution[age].stimulusRatings = {};
+        }
+        if (!distribution[education].stimulusRatings) {
+          distribution[education].stimulusRatings = {};
+        }
         break;
 
       case "multi-select":
@@ -563,12 +866,57 @@ const processResponseDistribution = (
 
       case "rating":
         if (response.ratingResponses && response.ratingResponses.length > 0) {
-          const rating = response.ratingResponses[0]?.rating || 3;
-          const ratingKey = rating.toString();
+          // Process each rating response separately to maintain stimulus-specific data
+          for (const ratingResponse of response.ratingResponses) {
+            if (
+              ratingResponse &&
+              ratingResponse.stimulus &&
+              ratingResponse.rating
+            ) {
+              const stimulusId = ratingResponse.stimulus.toString();
+              const rating = ratingResponse.rating;
+              const ratingKey = rating.toString();
 
-          distribution[gender].ratings[ratingKey]++;
-          distribution[age].ratings[ratingKey]++;
-          distribution[education].ratings[ratingKey]++;
+              // Update aggregated ratings (for backward compatibility)
+              distribution[gender].ratings[ratingKey]++;
+              distribution[age].ratings[ratingKey]++;
+              distribution[education].ratings[ratingKey]++;
+
+              // Initialize stimulus-specific rating objects if they don't exist
+              if (!distribution[gender].stimulusRatings[stimulusId]) {
+                distribution[gender].stimulusRatings[stimulusId] = {
+                  "1": 0,
+                  "2": 0,
+                  "3": 0,
+                  "4": 0,
+                  "5": 0,
+                };
+              }
+              if (!distribution[age].stimulusRatings[stimulusId]) {
+                distribution[age].stimulusRatings[stimulusId] = {
+                  "1": 0,
+                  "2": 0,
+                  "3": 0,
+                  "4": 0,
+                  "5": 0,
+                };
+              }
+              if (!distribution[education].stimulusRatings[stimulusId]) {
+                distribution[education].stimulusRatings[stimulusId] = {
+                  "1": 0,
+                  "2": 0,
+                  "3": 0,
+                  "4": 0,
+                  "5": 0,
+                };
+              }
+
+              // Update stimulus-specific rating counts
+              distribution[gender].stimulusRatings[stimulusId][ratingKey]++;
+              distribution[age].stimulusRatings[stimulusId][ratingKey]++;
+              distribution[education].stimulusRatings[stimulusId][ratingKey]++;
+            }
+          }
         }
         break;
 
