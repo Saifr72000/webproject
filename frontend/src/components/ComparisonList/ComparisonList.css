@@ -37,10 +37,19 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
+  flex-direction: column
 }
 
 .comparison-header h4 {
   margin: 0;
+}
+
+.comparison-compiler{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .comparison-badges {
@@ -48,6 +57,14 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
+}
+
+.button-badges {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  gap: 0.5rem;
+  flex-direction: row;
 }
 
 .comparison-type {
@@ -174,12 +191,16 @@
 .delete-badge {
   background-color: #e74c3c;
   color: white;
-  padding: 0.25rem 0.6rem;
+  padding: 5px 35px;
   border-radius: 8px;
   font-size: 0.75rem;
   cursor: pointer;
   margin-left: 0.5rem;
   transition: background-color 0.2s ease;
+  padding: 5px 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
 }
 
 .delete-badge:hover {
@@ -187,11 +208,16 @@
 }
 
 .edit-badge {
-  background-color: #1976d2;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-right: 8px;
-  cursor: pointer;
-  font-size: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 35px;
+    border-radius: 8px;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    border: 1px solid black;
+}
+
+.edit-badge:hover{
+  background-color: #20568b;
 }

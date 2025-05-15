@@ -79,7 +79,10 @@ const ComparisonList = ({ comparisons, onPreview, onDelete, onEdit }) => {
               onClick={() => onPreview(comparison)}
             >
               <div className="comparison-header">
+                <div className="comparison-compiler">
+
                 <h4>{comparison.title}</h4>
+                
                 <div className="comparison-badges">
                   <span className="comparison-type">
                     {formatComparisonType(comparison.type)}
@@ -89,27 +92,28 @@ const ComparisonList = ({ comparisons, onPreview, onDelete, onEdit }) => {
                       {comparison.stimuliType}
                     </span>
                   )}
-                  
-<span
-  className="edit-badge"
-  onClick={(e) => {
-    e.stopPropagation();
-    onEdit(comparison);
-  }}
->
-  Edit
-</span>
+                  </div>
+                </div>
+                <div className="button-badges">
+                  <span
+                    className="edit-badge"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(comparison);
+                    }}
+                  >
+                    Edit
+                  </span>
 
-<span
-  className="delete-badge"
-  onClick={(e) => {
-    e.stopPropagation();
-    onDelete(comparison._id);
-  }}
->
-  Delete
-</span>
-
+                  <span
+                    className="delete-badge"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(comparison._id);
+                    }}
+                  >
+                    Delete
+                  </span>
                 </div>
               </div>
 
