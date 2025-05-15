@@ -14,10 +14,13 @@ import comparisonRouter from "./routes/comparison.routes";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 import helmet from "helmet";
+
 // Load environment variables from .env
 dotenv.config();
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 // Middleware
 app.use(
@@ -42,6 +45,10 @@ app.use("/api/workspaces", workspacesRouter);
 app.use("/api/stimuli", stimulusRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/comparisons", comparisonRouter);
+
+app.get("/debug/ip", (req, res) => {
+  res.send({ ip: req.ip, forwarded: req.headers["x-forwarded-for"] });
+});
 // MongoDB Connection
 const MONGO_URI =
   process.env.MONGO_DB_URL || "mongodb://database:27017/webprojectdb";

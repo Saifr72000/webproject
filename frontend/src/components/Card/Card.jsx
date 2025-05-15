@@ -32,7 +32,8 @@ const Card = ({
       {(participate || showEditButton) && (
         <div className="button-row">
         {participate && (
-        <Link to={`/study/${studyId}`}>
+
+        <Link to={`/study-details/${studyId}`}>
         <button className="secondary-btn">View Study</button>
         </Link>
       )}
@@ -43,6 +44,7 @@ const Card = ({
     )}
   </div>
       )}
+
       </div>
     </div>
   );
