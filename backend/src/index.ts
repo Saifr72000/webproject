@@ -11,7 +11,7 @@ import workspacesRouter from "./routes/workspace.routes";
 import stimulusRouter from "./routes/stimulus.routes";
 import sessionRouter from "./routes/session.routes";
 import comparisonRouter from "./routes/comparison.routes";
-import { errorHandler } from "./middlewares/errorHandler.middleware"; 
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 import helmet from "helmet";
 // Load environment variables from .env
@@ -23,7 +23,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3002",
+      "http://localhost:3001",
       "https://group7.sustainability.it.ntnu.no",
     ],
     credentials: true,
@@ -33,7 +33,6 @@ app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimiter);
-
 
 //Routes
 app.use("/api/auth", authRouter);
