@@ -3,12 +3,19 @@ import {
   createComparisonService,
   createStimulusService,
 } from "../services/comparison.service";
-import mongoose from "mongoose";
-import { Comparison } from "../models/comparison.model";
+
+import { Comparison, IComparison } from "../models/comparison.model";
 import { IStimulus, Stimulus } from "../models/stimuli.model";
 import multer from "multer";
 import { getComparisonById, deleteComparisonById } from "../services/comparison.service";
 import { StudySession } from "../models/session.model";
+import mongoose, { Types } from "mongoose";
+import { IComparisonOption } from "../models/comparison.model";
+import { createStimulusFromFile } from "../services/stimuli.service";
+import { updateComparisonService } from "../services/comparison.service";
+
+
+
 // Create a new comparison with uploaded stimuli
 export const createComparison = async (
   req: Request,
@@ -107,5 +114,27 @@ export const checkSessionExists = async (
     res.status(200).json({ sessionExists: !!session });
   } catch (err) {
     res.status(500).json({ message: "Error checking session" });
+  }
+};
+
+
+export const updateComparisonController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const comparison = await updateComparisonService({
+      comparisonId: req.params.id,
+      body: req.body,
+      files: req.files as Express.Multer.File[],
+    });
+
+    res.status(200).json({ comparison });
+  } catch (err: any) {
+    console.error("Update comparison error:", err);
+    res.status(500).json({
+      message: "Failed to update comparison",
+      error: err.message,
+    });
   }
 };

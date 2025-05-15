@@ -7,8 +7,14 @@ export const getStimulusByIdController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const fileId = new mongoose.Types.ObjectId(req.params.id);
-    // Fetch file from database
+    const id = req.params.id;
+
+    if (!id || typeof id !== "string" || id.length !== 24) {
+      res.status(400).send("Invalid file ID");
+      return;
+    }
+
+    const fileId = new mongoose.Types.ObjectId(id);
     const file = await getStimulusById(fileId);
 
     if (!file) {
@@ -16,11 +22,8 @@ export const getStimulusByIdController = async (
       return;
     }
 
-    // Set appropriate content type
     res.set("Content-Type", file.mimetype);
-    // Add Cross-Origin Resource Policy header
     res.set("Cross-Origin-Resource-Policy", "cross-origin");
-    // Send the file data
     res.send(file.data);
   } catch (error) {
     console.error("Error fetching file:", error);

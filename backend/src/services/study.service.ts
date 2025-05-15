@@ -39,6 +39,11 @@ export const getStudyByIdService = async (
   return await Study.findById(id)
     .populate({
       path: "comparisons",
+      populate: {
+        path: "options.stimulus",
+        model: "Stimulus",
+        select: "filename mimetype url",
+      },
     })
     .populate({
       path: "owner",

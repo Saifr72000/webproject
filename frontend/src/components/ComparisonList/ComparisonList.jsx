@@ -1,7 +1,7 @@
 import React from "react";
 import "./ComparisonList.css";
 
-const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
+const ComparisonList = ({ comparisons, onPreview, onDelete, onEdit }) => {
   if (!comparisons || comparisons.length === 0) {
     return null;
   }
@@ -89,15 +89,27 @@ const ComparisonList = ({ comparisons, onPreview, onDelete }) => {
                       {comparison.stimuliType}
                     </span>
                   )}
-                  <span
-                    className="delete-badge"
-                    onClick={(e) => {
-                      e.stopPropagation(); // prevent preview trigger
-                      onDelete(comparison._id);
-                    }}
-                  >
-                    Delete
-                  </span>
+                  
+<span
+  className="edit-badge"
+  onClick={(e) => {
+    e.stopPropagation();
+    onEdit(comparison);
+  }}
+>
+  Edit
+</span>
+
+<span
+  className="delete-badge"
+  onClick={(e) => {
+    e.stopPropagation();
+    onDelete(comparison._id);
+  }}
+>
+  Delete
+</span>
+
                 </div>
               </div>
 

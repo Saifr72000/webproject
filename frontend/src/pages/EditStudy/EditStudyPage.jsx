@@ -9,6 +9,8 @@ import PreviewModal from "../../components/PreviewModal/PreviewModal";
 import { getStudyById, publishStudy, deleteStudy } from "../../services/studyService";
 import { checkSessionExists } from "../../services/sessionService";
 import { addComparisonToStudy, deleteComparison } from "../../services/comparisonService";
+import { updateComparison } from "../../services/comparisonService";
+
 
 import "../EditStudy/EditStudyPage.css";
 
@@ -26,6 +28,9 @@ const EditStudyPage = () => {
   const [success, setSuccess] = useState("");
   const [showComparisonForm, setShowComparisonForm] = useState(false);
   const [sessionExists, setSessionExists] = useState(false);
+  const [comparisonToEdit, setComparisonToEdit] = useState(null);
+  
+
 
   // Fetch study and session existence on mount
   useEffect(() => {
@@ -105,6 +110,29 @@ const handleDeleteStudy = async () => {
   }
 };
 
+const handleUpdateComparison = async (comparisonId, formData) => {
+  setLoading(true);
+  setError("");
+  setSuccess("");
+
+  try {
+    await updateComparison(comparisonId, formData);
+
+
+    const updatedStudy = await getStudyById(studyId);
+    setComparisons(updatedStudy.comparisons || []);
+
+    setSuccess("Comparison updated successfully!");
+    setShowComparisonForm(false);
+    setComparisonToEdit(null);
+  } catch (err) {
+    console.error("Update failed:", err);
+    setError(err.message || "Failed to update comparison.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (loading) return <p>Loading...</p>;
 
@@ -138,28 +166,65 @@ const handleDeleteStudy = async () => {
           className="primary-btn"
           onClick={() => setShowComparisonForm(true)}
           >
-          ➕ Add Comparison
+          <span style={{ color: 'white' }}>+</span> Add Comparison
         </button>
         )}
         </div>
 
-        {showComparisonForm && (
-          <div className="comparison-card">
-            <ComparisonForm
-              studyId={studyId}
-              onSaveComparison={handleAddComparison}
-              onCancel={() => setShowComparisonForm(false)}
-              loading={loading}
-            />
-          </div>
-        )}
+{showComparisonForm && (
+  <div className="comparison-card">
+    <ComparisonForm
+      studyId={studyId}
+      initialData={comparisonToEdit}
+      onSaveComparison={handleAddComparison}
+      onUpdateComparison={handleUpdateComparison}
+      onCancel={() => {
+        setShowComparisonForm(false);
+        setComparisonToEdit(null);
+      }}
+      loading={loading}
+    />
+  </div>
+)}
 
-        <ComparisonList
-          comparisons={comparisons}
-          onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
+<ComparisonList
+  comparisons={comparisons}
+  onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
+  onDelete={handleDeleteComparison}
+onEdit={(comparison) => {
+  const transformed = {
+    ...comparison,
+    stimuli: (comparison.options || []).map((opt, index) => {
+      const s = opt.stimulus;
 
-          onDelete={handleDeleteComparison}
-        />
+      // Safely determine the preview URL (based on either s.url or fallback to s._id)
+const previewUrl = s?._id
+  ? `${BASE_URL}/api/stimuli/${s._id}` 
+  : null;
+
+      const fileName =
+        s?.originalname || s?.filename || `Stimulus ${index + 1}`;
+
+      const originalId =
+        typeof s === "string" ? s : s?._id?.toString();
+
+      return {
+        id: `stimulus-${index}`,
+        file: null,
+        preview: previewUrl,
+        fileName,
+        originalId,
+        persisted: !!originalId,
+      };
+    }),
+  };
+
+
+  setComparisonToEdit(transformed);
+  setShowComparisonForm(true);
+}}
+
+/>
       </div>
 
       <div className="btn-container mt-4">

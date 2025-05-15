@@ -4,8 +4,7 @@ import StudyForm from "../../components/StudyForm/StudyForm";
 import ComparisonForm from "../../components/ComparisonForm/ComparisonForm";
 import ComparisonList from "../../components/ComparisonList/ComparisonList";
 import PreviewModal from "../../components/PreviewModal/PreviewModal";
-import { deleteComparison } from "../../services/comparisonService";
-
+import { deleteComparison, updateComparison } from "../../services/comparisonService";
 
 import "./CreateStudy.css";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -21,16 +20,14 @@ const CreateStudy = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [previewComparison, setPreviewComparison] = useState(null);
+  const [comparisonToEdit, setComparisonToEdit] = useState(null);
 
-
-  // Create a new study
   const handleCreateStudy = async (formData) => {
     setLoading(true);
     setError("");
     setSuccess("");
 
     try {
-      // Example API call - replace with your actual implementation
       const response = await fetch(`${BASE_URL}/api/studies/register/study`, {
         method: "POST",
         body: formData,
@@ -42,11 +39,9 @@ const CreateStudy = () => {
       }
 
       const data = await response.json();
-      // console.log(data);
       setStudy(data);
       setSuccess("Study created successfully! Now you can add comparisons.");
 
-      // Fetch comparisons if study already existed and was just retrieved
       if (data.comparisons && data.comparisons.length > 0) {
         setComparisons(data.comparisons);
       }
@@ -57,7 +52,6 @@ const CreateStudy = () => {
     }
   };
 
-  // Add a new comparison
   const handleAddComparison = async (formData) => {
     if (!study) {
       setError("Please create a study first before adding comparisons.");
@@ -69,7 +63,6 @@ const CreateStudy = () => {
     setSuccess("");
 
     try {
-      // Example API call - replace with your actual implementation
       const response = await fetch(
         `${BASE_URL}/api/studies/${study._id}/comparisons`,
         {
@@ -94,21 +87,69 @@ const CreateStudy = () => {
     }
   };
 
-const handleDeleteComparison = async (id) => {
-  const confirm = window.confirm("Are you sure you want to delete this comparison?");
-  if (!confirm) return;
+  const handleUpdateComparison = async (comparisonId, formData) => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-  try {
-    // console.log("Attempting to delete comparison with ID:", id);
-    await deleteComparison(id);
-    setComparisons((prev) => prev.filter((c) => c._id !== id));
-    setSuccess("Comparison deleted.");
-  } catch (err) {
-    console.error("Delete failed:", err);
-    setError(err.message || "Failed to delete comparison.");
-  }
-};
+    try {
+      const updated = await updateComparison(comparisonId, formData);
+      setComparisons((prev) =>
+        prev.map((c) => (c._id === updated._id ? updated : c))
+      );
+      setComparisonToEdit(null);
+      setShowComparisonForm(false);
+      setSuccess("Comparison updated successfully!");
+    } catch (err) {
+      console.error("Update failed:", err);
+      setError(err.message || "Failed to update comparison.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleDeleteComparison = async (id) => {
+    const confirm = window.confirm("Are you sure you want to delete this comparison?");
+    if (!confirm) return;
+
+    try {
+      await deleteComparison(id);
+      setComparisons((prev) => prev.filter((c) => c._id !== id));
+      setSuccess("Comparison deleted.");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setError(err.message || "Failed to delete comparison.");
+    }
+  };
+
+  const handleEditComparison = (comparison) => {
+    const transformed = {
+      ...comparison,
+      stimuli: (comparison.options || []).map((opt, index) => {
+        const s = opt.stimulus;
+        const previewUrl = s?._id
+          ? `${BASE_URL}/api/stimuli/${s._id}`
+          : null;
+
+        const fileName =
+          s?.originalname || s?.filename || `Stimulus ${index + 1}`;
+
+        const originalId = typeof s === "string" ? s : s?._id?.toString();
+
+        return {
+          id: `stimulus-${index}`,
+          file: null,
+          preview: previewUrl,
+          fileName,
+          originalId,
+          persisted: !!originalId,
+        };
+      }),
+    };
+
+    setComparisonToEdit(transformed);
+    setShowComparisonForm(true);
+  };
 
   return (
     <div className="create-study-container">
@@ -117,12 +158,10 @@ const handleDeleteComparison = async (id) => {
       </div>
 
       {!study ? (
-        // Step 1: Create the study
         <div className="create-study-form">
           <StudyForm onSaveStudy={handleCreateStudy} loading={loading} />
         </div>
       ) : (
-        // Step 2: Add comparisons
         <>
           {success && <div className="success-message">{success}</div>}
           {error && <div className="error-text">{error}</div>}
@@ -131,11 +170,11 @@ const handleDeleteComparison = async (id) => {
             <h2>{study.name}</h2>
             <p>{study.description}</p>
             {study.coverImage && (
-            <img
-            src={`${process.env.REACT_APP_BASE_URL}/api/stimuli/${study.coverImage}`}
-            alt="Study cover"
-            className="study-cover-image"
-            />
+              <img
+                src={`${process.env.REACT_APP_BASE_URL}/api/stimuli/${study.coverImage}`}
+                alt="Study cover"
+                className="study-cover-image"
+              />
             )}
           </div>
 
@@ -145,7 +184,10 @@ const handleDeleteComparison = async (id) => {
               {!showComparisonForm && (
                 <button
                   className="primary-btn"
-                  onClick={() => setShowComparisonForm(true)}
+                  onClick={() => {
+                    setShowComparisonForm(true);
+                    setComparisonToEdit(null);
+                  }}
                 >
                   Create Comparison
                 </button>
@@ -156,24 +198,33 @@ const handleDeleteComparison = async (id) => {
               <div className="comparison-card">
                 <ComparisonForm
                   studyId={study._id}
+                  initialData={comparisonToEdit}
                   onSaveComparison={handleAddComparison}
-                  onCancel={() => setShowComparisonForm(false)}
+                  onUpdateComparison={handleUpdateComparison}
+                  onCancel={() => {
+                    setShowComparisonForm(false);
+                    setComparisonToEdit(null);
+                  }}
                   loading={loading}
                 />
               </div>
             ) : null}
 
             <ComparisonList
-            comparisons={comparisons}
-            onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
-            onDelete={handleDeleteComparison}
+              comparisons={comparisons}
+              onPreview={(comparison) =>
+                setPreviewComparison(comparison.comparison || comparison)
+              }
+              onDelete={handleDeleteComparison}
+              onEdit={handleEditComparison}
             />
+
             {previewComparison && (
               <PreviewModal
-              comparison={previewComparison}
-              onClose={() => setPreviewComparison(null)}
+                comparison={previewComparison}
+                onClose={() => setPreviewComparison(null)}
               />
-              )}
+            )}
           </div>
 
           <div className="btn-container mt-4">

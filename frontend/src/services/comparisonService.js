@@ -40,3 +40,32 @@ export const deleteComparison = async (comparisonId) => {
     throw error;
   }
 };
+
+
+export const updateComparison = async (comparisonId, formData) => {
+  try {
+    const res = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/api/comparisons/${comparisonId}`,
+      {
+        method: "PUT",
+        body: formData,
+        credentials: "include",
+      }
+    );
+
+    if (!res.ok) {
+      let errorMessage = "Failed to update comparison";
+      try {
+        const err = await res.json();
+        errorMessage = err.message || errorMessage;
+      } catch {
+
+      }
+      throw new Error(errorMessage);
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};

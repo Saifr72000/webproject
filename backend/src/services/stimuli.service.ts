@@ -1,5 +1,6 @@
 import { Stimulus } from "../models/stimuli.model";
 import { Types } from "mongoose";
+import mongoose from "mongoose";
 
 // Define an interface for incoming file data
 interface StimulusInput {
@@ -58,4 +59,22 @@ export const getStimulusById = async (
   id: Types.ObjectId
 ): Promise<IStimulusDocument | null> => {
   return await Stimulus.findById(id);
+};
+
+
+export const createStimulusFromFile = async (
+  file: Express.Multer.File,
+  comparisonId: Types.ObjectId
+) => {
+  const stimulus = new Stimulus({
+    filename: file.originalname,
+    mimetype: file.mimetype,
+    size: file.size,
+    data: file.buffer,
+    comparison: comparisonId,
+    url: `/api/files/${new mongoose.Types.ObjectId()}`
+  });
+
+  await stimulus.save();
+  return stimulus._id;
 };

@@ -2,10 +2,21 @@ import {
   Comparison,
   IComparison,
   ComparisonType,
+   IComparisonOption
 } from "../models/comparison.model";
 import mongoose, { Types } from "mongoose";
 import { Stimulus } from "../models/stimuli.model";
 import { Study } from "../models/study.model";
+
+import { createStimulusFromFile } from "./stimuli.service";
+
+
+interface UpdateComparisonParams {
+  comparisonId: string;
+  body: any;
+  files?: Express.Multer.File[];
+}
+
 
 export const createComparisonService = async (
   studyId: string | Types.ObjectId,
@@ -135,53 +146,68 @@ export const deleteComparisonByIdService = async (
   }
 };
 
-/* export const getComparisonsByStudy = async (
-  studyId: string
-): Promise<IComparison[]> => {
-  return await Comparison.find({ study: studyId }).sort({ order: 1 });
-};
 
-export const getComparisonById = async (
-  id: string
-): Promise<IComparison[] | null> => {
-  return await Comparison.findById(id);
-};
 
-export const updateComparison = async (
-  id: string,
-  updates: Partial<{
-    question: string;
-    instructions: string;
-    type: ComparisonType;
-    stimuli: string[];
-    order: number;
-    config: {
-      minSelections?: number;
-      maxSelections?: number;
-      allowPartialRanking?: boolean;
-    };
-  }>
-): Promise<IComparison | null> => {
-  // Convert stimuli IDs to ObjectIds if present
-  const updateData: any = { ...updates };
-  if (updates.stimuli) {
-    updateData.stimuli = updates.stimuli.map((id) => new Types.ObjectId(id));
+export const updateComparisonService = async ({
+  comparisonId,
+  body,
+  files,
+}: UpdateComparisonParams): Promise<IComparison> => {
+  const comparisonDoc = await Comparison.findById(comparisonId);
+  if (!comparisonDoc) throw new Error("Comparison not found");
+
+  const removedIds = body["removedStimuli[]"] || body.removedStimuli;
+  const removedArray: string[] = Array.isArray(removedIds)
+    ? removedIds
+    : removedIds ? [removedIds] : [];
+
+  const comparison = comparisonDoc as mongoose.Document<unknown, {}, IComparison> & IComparison;
+
+  // Update fields
+  if (body.title) comparison.title = body.title;
+  if (body.type) comparison.type = body.type;
+  if (body.stimuliType) comparison.stimuliType = body.stimuliType;
+
+  // Remove old stimuli
+  if (removedArray.length > 0) {
+    comparison.options = comparison.options.filter((opt) => {
+      const idStr =
+        typeof opt.stimulus === "string"
+          ? opt.stimulus
+          : (opt.stimulus as Types.ObjectId).toString();
+      return !removedArray.includes(idStr);
+    });
   }
 
-  return await Comparison.findByIdAndUpdate(
-    id,
-    { $set: updateData },
-    { new: true }
-  );
+  // Add new stimuli
+  if (files && files.length > 0) {
+    const newOptions: IComparisonOption[] = [];
+
+    for (const file of files) {
+      if (!file || !file.buffer) {
+        console.warn("Skipping file without buffer:", file?.originalname);
+        continue;
+      }
+
+      const stimulusId = await createStimulusFromFile(file, comparison._id as Types.ObjectId);
+      newOptions.push({ stimulus: stimulusId as Types.ObjectId });
+    }
+
+    const existingOptions: IComparisonOption[] = comparison.options || [];
+    comparison.options = [...existingOptions, ...newOptions];
+  }
+
+  await comparison.save();
+
+  await comparison.populate({
+    path: "options.stimulus",
+    model: "Stimulus",
+    select: "filename mimetype url",
+  });
+
+  return comparison;
 };
 
-// Revise this function, because we need to test if for cascation.
-// I.e, it gets removed from the collection of studies.
-export const deleteComparison = async (id: string): Promise<boolean> => {
-  const result = await Comparison.findByIdAndDelete(id);
-  return !!result;
-};
- */
 
 export const deleteComparisonById = async (id: string): Promise<void> => {
   const comparison = await Comparison.findById(id);

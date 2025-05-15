@@ -11,10 +11,19 @@ import {
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
 import { deleteComparisonByIdController } from "../controllers/comparison.controller";
+import { updateComparisonController } from "../controllers/comparison.controller";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
 
 const router = Router();
 
 import { getComparisonById } from "../services/comparison.service";
+
+router.put("/:id", upload.array("stimuli"), updateComparisonController);
 
 
 
@@ -32,5 +41,7 @@ router.post(
 router.get("/:comparisonId", getComparisonByIdController);
 
 router.delete("/:id", deleteComparisonByIdController);
+
+
 
 export default router;
