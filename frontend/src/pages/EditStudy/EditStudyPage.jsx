@@ -197,7 +197,7 @@ onEdit={(comparison) => {
     stimuli: (comparison.options || []).map((opt, index) => {
       const s = opt.stimulus;
 
-      // Safely determine the preview URL (based on either s.url or fallback to s._id)
+
 const previewUrl = s?._id
   ? `${BASE_URL}/api/stimuli/${s._id}` 
   : null;

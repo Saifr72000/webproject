@@ -200,7 +200,7 @@
   padding: 5px 35px;
   display: flex;
   align-items: center;
-  border: 1px solid black;
+
 }
 
 .delete-badge:hover {
@@ -215,7 +215,7 @@
     margin-right: 8px;
     cursor: pointer;
     font-size: 0.8rem;
-    border: 1px solid black;
+
 }
 
 .edit-badge:hover{
