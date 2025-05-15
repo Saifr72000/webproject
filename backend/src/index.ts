@@ -37,7 +37,12 @@ app.use(
 );
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
 app.use(rateLimiter);
 
 //Routes
