@@ -1,4 +1,4 @@
-FROM node:20.18.0 
+FROM node:20.18.0
 
 WORKDIR /app
 
@@ -7,8 +7,10 @@ RUN npm install --no-optional
 
 COPY . .
 
-EXPOSE 8187
+RUN npm run build
 
 RUN npm install -g serve
 
-CMD npm run build && serve -s dist -l 8187
+EXPOSE 8187
+
+CMD ["serve", "-s", "build", "-l", "8187"]
