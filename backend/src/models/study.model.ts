@@ -44,7 +44,7 @@ const StudySchema = new Schema<IStudy>(
     status: {
       type: String,
       enum: ["draft", "active", "completed"],
-      default: "draft",
+      default: "active",
     },
     participantCount: {
       type: Number,
