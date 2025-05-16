@@ -11,4 +11,4 @@ EXPOSE 8187
 
 RUN npm install -g serve
 
-CMD npm run build && serve -s dist -l 0.0.0.0:8187
+CMD npm run build && serve -s dist -l 8187
