@@ -95,6 +95,8 @@ const SessionSchema = new Schema<ISession>(
       educationLevel: String,
     },
     userAgent: String,
+
+    /*  */
     responses: [
       {
         // Common fields for all response types
