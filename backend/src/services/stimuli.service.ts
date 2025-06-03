@@ -61,7 +61,6 @@ export const getStimulusById = async (
   return await Stimulus.findById(id);
 };
 
-
 export const createStimulusFromFile = async (
   file: Express.Multer.File,
   comparisonId: Types.ObjectId
@@ -72,7 +71,7 @@ export const createStimulusFromFile = async (
     size: file.size,
     data: file.buffer,
     comparison: comparisonId,
-    url: `/api/files/${new mongoose.Types.ObjectId()}`
+    url: `/api/files/${new mongoose.Types.ObjectId()}`,
   });
 
   await stimulus.save();

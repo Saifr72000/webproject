@@ -28,13 +28,21 @@ app.use(
     origin: [
       "http://localhost:3001",
       "https://group7.sustainability.it.ntnu.no",
+      "http://group7.sustainability.it.ntnu.no",
+      "https://group7-api.sustainability.it.ntnu.no",
+      "http://group7-api.sustainability.it.ntnu.no",
     ],
     credentials: true,
   })
 );
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser());
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
 app.use(rateLimiter);
 
 //Routes

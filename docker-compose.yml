@@ -2,7 +2,7 @@ services:
   backend:
     image: saifr7/webproject-backend
     ports:
-      - "8187:2000" # host:container
+      - "8287:2000" # host:container
     environment:
       - MONGO_DB_URL=mongodb://database:27017/webprojectdb
     depends_on:
@@ -11,7 +11,7 @@ services:
   frontend:
     image: saifr7/webproject-frontend
     ports:
-      - "3000:80"
+      - "8187:8187"
 
   database:
     image: mongo:6
