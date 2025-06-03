@@ -197,7 +197,7 @@ if (!isEditable) {
         )}
         </div>
 
-{showComparisonForm && !isEditable && (
+{showComparisonForm && isEditable && (
   <div className="comparison-card">
     <ComparisonForm
       studyId={studyId}
@@ -262,7 +262,7 @@ const previewUrl = s?._id
       <div className="btn-container mt-4">
         <button
           className="primary-btn"
-          onClick={() => navigate(`/studies/${study._id}`)}
+          onClick={() => navigate(`/study-details/${study._id}`)}
         >
           View Study
         </button>
