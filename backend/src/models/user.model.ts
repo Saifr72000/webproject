@@ -17,7 +17,7 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
-    auto: true, // ✅ Ensures MongoDB generates an _id automatically
+    auto: true,
   },
   firstName: {
     type: String,

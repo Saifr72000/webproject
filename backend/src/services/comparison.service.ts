@@ -26,7 +26,7 @@ export const createComparisonService = async (
   stimuliType: string
 ) => {
   try {
-    // Convert string IDs to ObjectId if needed
+
     const studyObjectId =
       typeof studyId === "string" ? new Types.ObjectId(studyId) : studyId;
 
@@ -34,7 +34,6 @@ export const createComparisonService = async (
       typeof id === "string" ? new Types.ObjectId(id) : id
     );
 
-    // Create the comparison
     const comparison = new Comparison({
       study: studyObjectId,
       title,
@@ -44,7 +43,7 @@ export const createComparisonService = async (
       options: stimuliObjectIds.map((stimulusId) => ({ stimulus: stimulusId })),
     });
 
-    // Simple save without transaction management
+
     const savedComparison = await comparison.save();
 
     await Study.findByIdAndUpdate(studyId, {
@@ -99,7 +98,6 @@ export const getComparisonById = async (
   });
 };
 
-// ... existing code ...
 
 export const deleteComparisonByIdService = async (
   comparisonId: string
@@ -107,14 +105,17 @@ export const deleteComparisonByIdService = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
+  
+
   try {
-    // Find the comparison to get its studyId before deletion
+
     const comparison = await Comparison.findById(comparisonId);
 
     if (!comparison) {
       throw new Error("Comparison not found");
     }
 
+    
     const studyId = comparison.study;
 
     // Extract stimulus IDs from the options array
@@ -132,7 +133,7 @@ export const deleteComparisonByIdService = async (
         { session }
       );
 
-    // Delete any associated stimuli if needed
+
     if (stimulusIds.length > 0) {
       await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
     }
@@ -179,7 +180,7 @@ export const updateComparisonService = async ({
     });
   }
 
-  // Add new stimuli
+
   if (files && files.length > 0) {
     const newOptions: IComparisonOption[] = [];
 
