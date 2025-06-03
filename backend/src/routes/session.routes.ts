@@ -4,6 +4,7 @@ import {
   addResponseController,
   completeSessionController,
   getSessionByIdController,
+  getStudySessionStatsController,
 } from "../controllers/session.controller";
 import {
   addResponseValidator,
@@ -31,5 +32,8 @@ router.post(
 );
 
 router.get("/get-session/:sessionId", getSessionByIdController);
+
+// New route to get session statistics for a study
+router.get("/stats/:studyId", getStudySessionStatsController);
 
 export default router;

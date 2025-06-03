@@ -446,11 +446,25 @@ const StudySessionPage = () => {
   // Add a function to handle demographics submission
   const handleDemographicsSubmit = async (demographicsData) => {
     try {
-      // Just submit the demographics data, let server handle the session state
+      // Format the data to match the backend's expected structure
+      const formattedData = {
+        demographicsData: {
+          age: demographicsData.ageGroup,
+          gender: demographicsData.gender,
+          educationLevel: demographicsData.educationLevel,
+          deviceType: demographicsData.deviceType,
+        },
+        isComplete: true,
+      };
+
+      console.log("Submitting demographics data:", formattedData);
+
+      // Submit the formatted demographics data
       await postData(
         `${BASE_URL}/api/sessions/complete-session/${sessionId}`,
-        demographicsData
+        formattedData
       );
+
       // Navigate to completion page after demographics are submitted
       navigate(`/study-complete/${sessionId}`);
     } catch (error) {
