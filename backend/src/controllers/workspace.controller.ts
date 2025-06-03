@@ -153,7 +153,7 @@ export const updateWorkspace = async (req: Request, res: Response): Promise<void
   }
 };
 
-// Add User to Workspace
+
 export const addUserToWorkspaceController = async (req: Request, res: Response): Promise<void> => {
   try {
     const workspaceId = req.params.id;

@@ -29,6 +29,6 @@ export const authenticateUser = async (
     next(); // Move to next middleware or route
   } catch (error) {
     res.status(403).json({ message: "Invalid token" });
-    return; // Ensure function exits
+    return;
   }
 };

@@ -141,12 +141,6 @@ export const deleteStudyById = async (
       return;
     }
 
-    /* st existingSession = await StudySession.findOne({ study: id });
-    if (existingSession) {
-      console.log("blocked: active session")
-      res.status(400).json({ message: "Cannot delete a study with active sessions" });
-      return;
-    } */ 
 
     await deleteStudyByIdService(id);
 
