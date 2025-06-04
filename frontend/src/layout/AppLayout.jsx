@@ -15,9 +15,6 @@ const AppLayout = () => {
             <NavLink to="/create-study" className="nav-link">
               Create Study
             </NavLink>
-            <NavLink to="/users" className="nav-link">
-              User Management
-            </NavLink>
           </div>
           <div className="nav-container">
             <button onClick={logout} className="primary-btn">

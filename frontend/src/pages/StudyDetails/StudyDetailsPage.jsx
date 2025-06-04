@@ -41,15 +41,6 @@ const StudyDetailsPage = () => {
   useEffect(() => {
     // Update session statistics when data is available
     if (sessionData) {
-      // Log session data for debugging
-      console.log("Session data received from API:", sessionData);
-      console.log(
-        "Comparison stats keys:",
-        sessionData.comparisonStats
-          ? Object.keys(sessionData.comparisonStats)
-          : "No comparison stats"
-      );
-
       setSessionStats({
         total: sessionData.totalSessions || 0,
         completed: sessionData.completedSessions || 0,
@@ -165,14 +156,6 @@ const StudyDetailsPage = () => {
     }
 
     const stats = comparisonStats[comparisonId];
-    // Log the response distribution for debugging
-    console.log("Response distribution for comparison:", comparisonId);
-    console.log(
-      "Distribution keys:",
-      stats.responseDistribution
-        ? Object.keys(stats.responseDistribution)
-        : "No distribution data"
-    );
 
     const selectedDemographicData =
       stats.demographicBreakdown?.[
@@ -316,18 +299,8 @@ const StudyDetailsPage = () => {
         ? "Not Specified"
         : demographicKey;
 
-    // Log the normalized key and available keys for debugging
-    console.log("Looking for demographic key:", normalizedKey);
-    console.log(
-      "Available keys in response distribution:",
-      responseDistribution
-        ? Object.keys(responseDistribution)
-        : "No response distribution"
-    );
-
     // Check if the demographic data exists for the normalized key
     if (!responseDistribution) {
-      console.log("No response distribution data available");
       return { summary: "No data", details: null };
     }
 
@@ -353,7 +326,6 @@ const StudyDetailsPage = () => {
       if (matchingKey) {
         data = responseDistribution[matchingKey];
       } else {
-        console.log(`No data found for key "${normalizedKey}"`);
         return { summary: `No data for ${normalizedKey}`, details: null };
       }
     }
@@ -912,12 +884,6 @@ const StudyDetailsPage = () => {
                                 "binary",
                                 row.label,
                                 selectedComparisonStats.responseDistribution
-                              );
-
-                              // Log the response data for debugging
-                              console.log(
-                                `Binary data for "${row.label}":`,
-                                responseData
                               );
 
                               // Calculate Yes/No counts and percentages

@@ -3,6 +3,7 @@ import {
   createStudy,
   getStudyById,
   getAllStudies,
+  getStudyByIdSession,
 } from "../controllers/study.controller";
 import { createStudyValidator } from "../validators/study.validator";
 import { checkSessionExists } from "../controllers/study.controller";
@@ -17,7 +18,6 @@ import {
   validateStimuliUploads,
 } from "../validators/stimuli.validator";
 import multer from "multer";
-
 
 const router = Router();
 
@@ -40,14 +40,20 @@ router.post(
 
 router.get("/:id/check-session-exists", checkSessionExists);
 
-// get study by id route
-// this is currently giving error because we havent handled the case of
-// fetching studies that does not contain comparisons because we populate comparisons
 // in the getStudyById service
 router.get("/:id", authenticateUser, getStudyById);
 
+// For public access to participate in study
+router.get("/study-session/:id", getStudyByIdSession);
+
+// Get all studies for user
+/* router.get("/user", authenticateUser, getAllUserStudies); */
+
+//Get study by id for user
+/* router.get("/user/:id", authenticateUser, getUserStudyById); */
+
 // create comparison route
- router.post(
+router.post(
   "/:studyId/comparisons",
   authenticateUser,
   stimuliUpload.array("stimuli"),
@@ -61,6 +67,6 @@ router.get("/:id", authenticateUser, getStudyById);
 router.get("/", authenticateUser, getAllStudies);
 router.delete("/:id", authenticateUser, deleteStudyById);
 
-router.patch("/:id/activate", authenticateUser, activateStudy)
+router.patch("/:id/activate", authenticateUser, activateStudy);
 
 export default router;

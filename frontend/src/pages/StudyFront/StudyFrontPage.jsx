@@ -14,7 +14,7 @@ const StudyFrontPage = () => {
     data: study,
     loading: fetchLoading,
     error: fetchError,
-  } = useFetch(`${BASE_URL}/api/studies/${studyId}`);
+  } = useFetch(`${BASE_URL}/api/studies/study-session/${studyId}`);
 
   /* console.log(study); */
 

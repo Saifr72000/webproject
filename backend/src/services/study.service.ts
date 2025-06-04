@@ -34,9 +34,32 @@ export const createStudyService = async (
 };
 
 export const getStudyByIdService = async (
+  id: string,
+  userId: string
+): Promise<IStudy | null> => {
+  return await Study.findOne({
+    _id: id,
+    owner: userId,
+  })
+    .populate({
+      path: "comparisons",
+      populate: {
+        path: "options.stimulus",
+        model: "Stimulus",
+        select: "filename mimetype url",
+      },
+    })
+    .populate({
+      path: "owner",
+      select: "firstName lastName email",
+    });
+};
+export const getStudyByIdSessionService = async (
   id: string
 ): Promise<IStudy | null> => {
-  return await Study.findById(id)
+  return await Study.findOne({
+    _id: id,
+  })
     .populate({
       path: "comparisons",
       populate: {
@@ -50,8 +73,11 @@ export const getStudyByIdService = async (
       select: "firstName lastName",
     });
 };
-export const getAllStudiesService = async (): Promise<IStudy[] | null> => {
-  return await Study.find().populate({
+
+export const getAllStudiesService = async (
+  userId: string
+): Promise<IStudy[] | null> => {
+  return await Study.find({ owner: userId }).populate({
     path: "comparisons",
   });
 };
@@ -74,9 +100,7 @@ export const deleteStudyByIdService = async (
 
     // Collect all stimuli IDs
     const stimulusIds = comparisons
-      .flatMap((c) =>
-        c.options?.map((opt) => opt.stimulus)
-      )
+      .flatMap((c) => c.options?.map((opt) => opt.stimulus))
       .filter(Boolean);
 
     // Delete all associated stimuli
@@ -98,7 +122,6 @@ export const deleteStudyByIdService = async (
     session.endSession();
   }
 };
-
 
 /* export const deleteStudyByIdService = async (
   studyId: string

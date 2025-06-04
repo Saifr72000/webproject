@@ -5,7 +5,8 @@ import {
   createStudyService,
   getStudyByIdService,
   getAllStudiesService,
-  deleteStudyByIdService
+  deleteStudyByIdService,
+  getStudyByIdSessionService,
 } from "../services/study.service";
 import mongoose from "mongoose";
 import { StudySession } from "../models/session.model";
@@ -64,7 +65,26 @@ export const getStudyById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const study = await getStudyByIdService(id);
+    const userId = req.user?.userId;
+    const study = await getStudyByIdService(id, userId);
+
+    res.status(200).json(study);
+  } catch (error) {
+    console.error("Error getting study by ID:", error);
+    res.status(500).json({
+      message: "Failed to get study by ID",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+export const getStudyByIdSession = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const study = await getStudyByIdSessionService(id);
 
     res.status(200).json(study);
   } catch (error) {
@@ -82,7 +102,8 @@ export const getAllStudies = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const studies = await getAllStudiesService();
+    const userId = req.user?.userId;
+    const studies = await getAllStudiesService(userId);
     res.status(200).json(studies);
   } catch (error) {
     console.error("Error getting all studies:", error);
@@ -92,7 +113,6 @@ export const getAllStudies = async (
     });
   }
 };
-
 
 export const activateStudy = async (
   req: Request,
@@ -115,7 +135,6 @@ export const activateStudy = async (
   }
 };
 
-
 export const deleteStudyById = async (
   req: Request,
   res: Response
@@ -125,19 +144,21 @@ export const deleteStudyById = async (
 
     const study = await Study.findById(id);
     if (!study) {
-      res.status(404).json({ message: "study not found"});
+      res.status(404).json({ message: "study not found" });
       return;
     }
 
     if (study.status === "completed") {
       console.log("Blocked: completed study");
-      res.status(400).json({ message: "cannot delete a completed study"});
+      res.status(400).json({ message: "cannot delete a completed study" });
       return;
     }
 
-    if (study.participantCount >0) {
-      console.log("blocked: participants more than 0")
-      res.status(400).json({message: "cannot delete a study with participants"});
+    if (study.participantCount > 0) {
+      console.log("blocked: participants more than 0");
+      res
+        .status(400)
+        .json({ message: "cannot delete a study with participants" });
       return;
     }
 
@@ -146,10 +167,9 @@ export const deleteStudyById = async (
       console.log("blocked: active session")
       res.status(400).json({ message: "Cannot delete a study with active sessions" });
       return;
-    } */ 
+    } */
 
     await deleteStudyByIdService(id);
-
 
     res.status(204).json({ message: "Study deleted successfully" });
   } catch (error) {
@@ -160,7 +180,6 @@ export const deleteStudyById = async (
     });
   }
 };
-
 
 export const checkSessionExists = async (
   req: Request,
