@@ -16,6 +16,10 @@ export const createSession = async (
     currentQuestionIndex: 0,
   });
 
+  await Study.findByIdAndUpdate(studyId, {
+    $inc: {participantCount: 1},
+  });
+
   return session._id;
 };
 
