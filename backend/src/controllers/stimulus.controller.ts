@@ -7,26 +7,50 @@ export const getStimulusByIdController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
 
-    if (!id || typeof id !== "string" || id.length !== 24) {
-      res.status(400).send("Invalid file ID");
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ message: "Invalid file ID format" });
       return;
     }
 
-    const fileId = new mongoose.Types.ObjectId(id);
-    const file = await getStimulusById(fileId);
+    // Check if client has cached version
+    const clientETag = req.headers["if-none-match"];
+    if (clientETag === id) {
+      res.status(304).end();
+      return;
+    }
+
+    const file = await getStimulusById(new mongoose.Types.ObjectId(id));
 
     if (!file) {
-      res.status(404).send("File not found");
+      res.status(404).json({ message: "File not found" });
       return;
     }
 
-    res.set("Content-Type", file.mimetype);
-    res.set("Cross-Origin-Resource-Policy", "cross-origin");
+    // Set content type
+    res.setHeader("Content-Type", file.mimetype);
+
+    // Set CORS headers for cross-origin requests
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+
+    // Set moderate caching headers (1 hour instead of 1 year)
+    res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
+
+    // Use file ID as ETag for cache validation
+    res.setHeader("ETag", id);
+
+    // Add Last-Modified header for better cache validation (using createdAt from timestamps)
+    res.setHeader(
+      "Last-Modified",
+      (file as any).createdAt?.toUTCString() || new Date().toUTCString()
+    );
+
+    // Send the file data
     res.send(file.data);
   } catch (error) {
-    console.error("Error fetching file:", error);
-    res.status(500).send("Error fetching file");
+    console.error("Error serving stimulus:", error);
+    res.status(500).json({ message: "Error retrieving file" });
   }
 };
