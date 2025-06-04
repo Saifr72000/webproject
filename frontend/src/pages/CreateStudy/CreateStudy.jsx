@@ -93,12 +93,23 @@ const CreateStudy = () => {
     setSuccess("");
 
     try {
-      const updated = await updateComparison(comparisonId, formData);
-      setComparisons((prev) =>
-        prev.map((c) => (c._id === updated._id ? updated : c))
-      );
+
+      await updateComparison(comparisonId, formData);
+
+
+      const response = await fetch(`${BASE_URL}/api/studies/${study._id}`, {
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to refresh study data");
+      }
+
+      const updatedStudy = await response.json();
+      setComparisons(updatedStudy.comparisons || []);
       setComparisonToEdit(null);
       setShowComparisonForm(false);
+      setPreviewComparison(null);
       setSuccess("Comparison updated successfully!");
     } catch (err) {
       console.error("Update failed:", err);
