@@ -32,7 +32,7 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
-      "http://localhost:3001",
+      "http://localhost:3000",
       "http://localhost:3002",
       "https://group7.sustainability.it.ntnu.no",
       "http://group7.sustainability.it.ntnu.no",
