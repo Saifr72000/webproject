@@ -30,9 +30,10 @@ const EditStudyPage = () => {
   const [sessionExists, setSessionExists] = useState(false);
   const [comparisonToEdit, setComparisonToEdit] = useState(null);
   
+  
+const isEditable = study?.status !== "active";
 
 
-  // Fetch study and session existence on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,6 +54,11 @@ const EditStudyPage = () => {
   }, [studyId]);
 
   const handleAddComparison = async (formData) => {
+    
+  if (!isEditable) {
+  alert("You cannot update comparisons in a published study.");
+  return;
+}
     setLoading(true);
     setError("");
     setSuccess("");
@@ -70,6 +76,10 @@ const EditStudyPage = () => {
   };
 
   const handleDeleteComparison = async (id) => {
+      if (!isEditable) {
+  alert("You cannot update comparisons in a published study.");
+  return;
+}
     const confirm = window.confirm("Are you sure you want to delete this comparison?");
     if (!confirm) return;
 
@@ -83,6 +93,10 @@ const EditStudyPage = () => {
   };
 
   const handlePublishStudy = async () => {
+    if (study.status === "active") {
+    alert("You cannot update comparisons from a published study.");
+    return;
+  }
     const confirm = window.confirm(
       "Publish study? You won't be able to edit it after."
     );
@@ -98,6 +112,14 @@ const EditStudyPage = () => {
   };
 
 const handleDeleteStudy = async () => {
+      if (study.status === "active" && study.participantCount > 0) {
+    alert("You cannot delete comparisons from a active study with participants study.");
+    return;
+  }
+    if (study.status === "active") {
+    alert("You cannot delete comparisons from a published study.");
+    return;
+  }
   const confirm = window.confirm("Are you sure you want to delete this study?");
   if (!confirm) return;
 
@@ -111,6 +133,10 @@ const handleDeleteStudy = async () => {
 };
 
 const handleUpdateComparison = async (comparisonId, formData) => {
+if (!isEditable) {
+  alert("You cannot update comparisons in a published study.");
+  return;
+}
   setLoading(true);
   setError("");
   setSuccess("");
@@ -171,7 +197,7 @@ const handleUpdateComparison = async (comparisonId, formData) => {
         )}
         </div>
 
-{showComparisonForm && (
+{showComparisonForm && isEditable && (
   <div className="comparison-card">
     <ComparisonForm
       studyId={studyId}
@@ -190,8 +216,14 @@ const handleUpdateComparison = async (comparisonId, formData) => {
 <ComparisonList
   comparisons={comparisons}
   onPreview={(comparison) => setPreviewComparison(comparison.comparison || comparison)}
+
   onDelete={handleDeleteComparison}
+
 onEdit={(comparison) => {
+  if (study?.status === "active") {
+    alert("You cannot update comparisons from a published study");
+    return;
+  }
   const transformed = {
     ...comparison,
     stimuli: (comparison.options || []).map((opt, index) => {
@@ -230,18 +262,18 @@ const previewUrl = s?._id
       <div className="btn-container mt-4">
         <button
           className="primary-btn"
-          onClick={() => navigate(`/studies/${study._id}`)}
+          onClick={() => navigate(`/study-details/${study._id}`)}
         >
           View Study
         </button>
 
-        {study.status !== "active" && !sessionExists && (
+        {study.status !== "active" && (
           <button className="primary-btn" onClick={handlePublishStudy}>
             Publish Study
           </button>
         )}
 
-        {!(study.status === "completed" || study.participantCount > 0) && (
+        {!(study.status === "completed" || study.participantCount > 0 && study.status === "active") && (
           <button
             className="danger-btn"
             onClick={handleDeleteStudy}

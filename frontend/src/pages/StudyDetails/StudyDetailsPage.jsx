@@ -694,21 +694,44 @@ const StudyDetailsPage = () => {
         </Link>
       </div>
 
-      {/* Study Overview Section */}
+ {/* Study Overview Section */}
       <section className="study-overview-section">
         <div className="study-header">
           <h1>{studyData?.name}</h1>
           <p className="study-description">{studyData?.description}</p>
-          <p className="study-description">
-            Study url:{" "}
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`${FRONTEND_URL}/study/${studyData?._id}`}
+          {studyData?.status === "active" ? (
+            <p className="study-description">
+              Study url:{" "}
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`${FRONTEND_URL}/study/${studyData?._id}`}
+              >
+                {`${FRONTEND_URL}/study/${studyData?._id}`}
+              </a>
+            </p>
+          ) : studyData?.status === "draft" ? (
+            <p
+              className="study-description"
+              style={{ fontStyle: "italic", color: "gray" }}
             >
-              {`${FRONTEND_URL}/study/${studyData?._id}`}
-            </a>
-          </p>
+              Publish the study from the{" "}
+              <Link
+                to={`/edit-study/${studyData._id}`}
+                style={{ color: "#007BFF" }}
+              >
+                edit page
+              </Link>{" "}
+              before sharing the URL.
+            </p>
+          ) : studyData?.status === "completed" ? (
+            <p
+              className="study-description"
+              style={{ fontStyle: "italic", color: "gray" }}
+            >
+              This study is completed and is no longer accepting responses.
+            </p>
+          ) : null}
         </div>
 
         <div className="study-stats-summary">
