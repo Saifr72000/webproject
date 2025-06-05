@@ -108,10 +108,10 @@ export const deleteStudyByIdService = async (
       await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
     }
 
-    // Delete comparisons
+   
     await Comparison.deleteMany({ study: studyId }).session(session);
 
-    // Finally delete the study
+    // delete the study
     await Study.findByIdAndDelete(studyId).session(session);
 
     await session.commitTransaction();
@@ -122,6 +122,30 @@ export const deleteStudyByIdService = async (
     session.endSession();
   }
 };
+
+
+
+export const activateStudyService = async (studyId: string): Promise<IStudy> => {
+  const study = await Study.findById(studyId);
+  if (!study) {
+    throw new Error("Study not found");
+  }
+
+  study.status = "active";
+  return await study.save();
+};
+
+export const deactivateStudyService = async (studyId: string): Promise<IStudy> => {
+  const study = await Study.findById(studyId);
+  if (!study) {
+    throw new Error("Study not found");
+  }
+
+  study.status = "draft";
+  return await study.save();
+};
+
+
 
 /* export const deleteStudyByIdService = async (
   studyId: string
