@@ -4,15 +4,16 @@ import {
   getStudyById,
   getAllStudies,
   getStudyByIdSession,
+  activateStudy,
+  deactivateStudy,
+  checkSessionExists,
+  deleteStudyById,
 } from "../controllers/study.controller";
 import { createStudyValidator } from "../validators/study.validator";
-import { checkSessionExists } from "../controllers/study.controller";
 import { validateRequest } from "../middlewares/validateRequest.middleware";
 import { authenticateUser } from "../middlewares/auth.middleware";
 import { createComparisonValidator } from "../validators/comparison.validator";
 import { createComparison } from "../controllers/comparison.controller";
-import { deleteStudyById } from "../controllers/study.controller";
-import { activateStudy } from "../controllers/study.controller";
 import {
   stimuliUpload,
   validateStimuliUploads,
@@ -68,5 +69,6 @@ router.get("/", authenticateUser, getAllStudies);
 router.delete("/:id", authenticateUser, deleteStudyById);
 
 router.patch("/:id/activate", authenticateUser, activateStudy);
+router.patch("/:id/deactivate", authenticateUser, deactivateStudy);
 
 export default router;

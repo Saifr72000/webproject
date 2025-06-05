@@ -5,8 +5,7 @@ import ComparisonForm from "../../components/ComparisonForm/ComparisonForm";
 import ComparisonList from "../../components/ComparisonList/ComparisonList";
 import PreviewModal from "../../components/PreviewModal/PreviewModal";
 
-
-import { getStudyById, publishStudy, deleteStudy } from "../../services/studyService";
+import { getStudyById, publishStudy, deleteStudy, unpublishStudy } from "../../services/studyService";
 import { checkSessionExists } from "../../services/sessionService";
 import { addComparisonToStudy, deleteComparison } from "../../services/comparisonService";
 import { updateComparison } from "../../services/comparisonService";
@@ -108,6 +107,21 @@ const isEditable = study?.status !== "active";
       setSuccess("Study published successfully!");
     } catch (err) {
       setError("Could not publish study.");
+    }
+  };
+
+const handleUnpublishStudy = async () => {
+    const confirm = window.confirm(
+      "Unpublish study? This will make it inaccessible to participants."
+    );
+    if (!confirm) return;
+
+    try {
+      await unpublishStudy(studyId);
+      setStudy((prev) => ({ ...prev, status: "draft" }));
+      setSuccess("Study unpublished successfully!");
+    } catch (err) {
+      setError("Could not unpublish study.");
     }
   };
 
@@ -267,9 +281,13 @@ const previewUrl = s?._id
           View Study
         </button>
 
-        {study.status !== "active" && (
+        {study.status !== "active" ? (
           <button className="primary-btn" onClick={handlePublishStudy}>
             Publish Study
+          </button>
+        ) : (
+          <button className="primary-btn" onClick={handleUnpublishStudy}>
+            Unpublish Study
           </button>
         )}
 

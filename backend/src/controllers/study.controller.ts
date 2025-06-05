@@ -135,6 +135,27 @@ export const activateStudy = async (
   }
 };
 
+export const deactivateStudy = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const study = await Study.findById(req.params.id);
+    if (!study) {
+      res.status(404).json({ message: "Study not found" });
+      return;
+    }
+
+    study.status = "draft";
+    await study.save();
+
+    res.status(200).json(study);
+  } catch (err) {
+    console.error("Failed to deactivate study:", err);
+    res.status(500).json({ message: "Failed to unpublish study" });
+  }
+};
+
 export const deleteStudyById = async (
   req: Request,
   res: Response
