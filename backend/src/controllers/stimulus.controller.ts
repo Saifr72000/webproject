@@ -29,25 +29,19 @@ export const getStimulusByIdController = async (
       return;
     }
 
-    // Set content type
     res.setHeader("Content-Type", file.mimetype);
 
-    // Set CORS headers for cross-origin requests
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
 
-    // Set moderate caching headers (1 hour instead of 1 year)
     res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
 
-    // Use file ID as ETag for cache validation
     res.setHeader("ETag", id);
 
-    // Add Last-Modified header for better cache validation (using createdAt from timestamps)
     res.setHeader(
       "Last-Modified",
       (file as any).createdAt?.toUTCString() || new Date().toUTCString()
     );
 
-    // Send the file data
     res.send(file.data);
   } catch (error) {
     console.error("Error serving stimulus:", error);
