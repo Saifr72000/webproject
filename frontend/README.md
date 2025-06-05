@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# Webproject Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based frontend application for a research study platform that allows researchers to create, manage, and conduct studies with participant tracking and data collection.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- **Node.js** (v18.0.0 or higher)
+- **npm** or **yarn**
+- **Backend API** running on configured URL
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Clone the repository
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+git clone https://github.com/Saifr72000/webproject/
+cd frontend
+```
 
-### `npm test`
+### 2. Install dependencies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+```
 
-### `npm run build`
+### 3. Environment Configuration
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create a `.env` file in the frontend directory at root level
+Review the .env.example file to see the env variables (also listed below)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```env
+# Backend API URL
+# For local environement:
+REACT_APP_BASE_URL=http://localhost:2000
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# For deployed environment:
+REACT_APP_BASE_URL = https://group7-api.sustainability.it.ntnu.no
+(remember to enable this before pushing for deployment purposes)
 
-### `npm run eject`
+# Frontend URL (for sharing links)
+# For local environement:
+REACT_APP_FRONTEND_URL=http://localhost:3000
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# For deployed environment:
+# REACT_APP_FRONTEND_URL = https://group7.sustainability.it.ntnu.no
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Running the Application
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Development Mode
 
-## Learn More
+```bash
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Application will start on `http://localhost:3000` with hot reload.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Production Mode
 
-### Code Splitting
+```bash
+# Build for production
+npm run build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Serve build locally (optional)
+npx serve -s build
+```

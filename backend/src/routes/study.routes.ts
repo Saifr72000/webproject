@@ -39,19 +39,18 @@ router.post(
   createStudy
 );
 
+
 router.get("/study-session/:id", getStudyByIdSession);
 router.get("/:id/check-session-exists", checkSessionExists);
 router.get("/:id", authenticateUser, getStudyById);
 
 // For public access to participate in study
 
-// Get all studies for user
-/* router.get("/user", authenticateUser, getAllUserStudies); */
 
-//Get study by id for user
-/* router.get("/user/:id", authenticateUser, getUserStudyById); */
+router.get("/study-session/:id", getStudyByIdSession);
 
-// create comparison route
+router.get("/:id", authenticateUser, getStudyById);
+
 router.post(
   "/:studyId/comparisons",
   authenticateUser,
@@ -62,7 +61,6 @@ router.post(
   createComparison
 );
 
-// get all studies route
 router.get("/", authenticateUser, getAllStudies);
 router.delete("/:id", authenticateUser, deleteStudyById);
 
