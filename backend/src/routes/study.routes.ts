@@ -40,7 +40,7 @@ router.post(
 );
 
 router.get("/study-session/:id", getStudyByIdSession);
-// in the getStudyById service
+router.get("/:id/check-session-exists", checkSessionExists);
 router.get("/:id", authenticateUser, getStudyById);
 
 // For public access to participate in study

@@ -104,45 +104,41 @@ export const getComparisonById = async (
 export const deleteComparisonByIdService = async (
   comparisonId: string
 ): Promise<void> => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    // Find the comparison to get its studyId before deletion
+    // Find the comparison
     const comparison = await Comparison.findById(comparisonId);
-
     if (!comparison) {
       throw new Error("Comparison not found");
     }
 
-    const studyId = comparison.study;
 
-    // Extract stimulus IDs from the options array
-    const stimulusIds = comparison.options.map((option) => option.stimulus);
-
-    // Delete the comparison
-    await Comparison.findByIdAndDelete(comparisonId).session(session);
-
-    // Remove the comparison from the study's comparisons array
-    await mongoose
-      .model("Study")
-      .findByIdAndUpdate(
-        studyId,
-        { $pull: { comparisons: comparisonId } },
-        { session }
-      );
-
-    // Delete any associated stimuli if needed
-    if (stimulusIds.length > 0) {
-      await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
+    const study = await Study.findById(comparison.study);
+    if (!study) {
+      throw new Error("Study not found");
     }
 
-    await session.commitTransaction();
+    if (study.status === "active" || study.status === "completed") {
+      throw new Error("Cannot delete comparison from an active or completed study");
+    }
+
+
+    const stimulusIds = comparison.options?.map(opt => opt.stimulus) || [];
+
+    // Delete stimuli
+    if (stimulusIds.length > 0) {
+      await Stimulus.deleteMany({ _id: { $in: stimulusIds } });
+    }
+
+    // Remove the comparison from the study's comparisons array
+    await Study.findByIdAndUpdate(
+      comparison.study,
+      { $pull: { comparisons: comparisonId } }
+    );
+
+    // Delete the comparison
+    await Comparison.findByIdAndDelete(comparisonId);
   } catch (error) {
-    await session.abortTransaction();
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
@@ -210,16 +206,36 @@ export const updateComparisonService = async ({
 
 
 export const deleteComparisonById = async (id: string): Promise<void> => {
-  const comparison = await Comparison.findById(id);
-  if (!comparison) throw new Error("Comparison not found");
+  try {
+    // Find the comparison
+    const comparison = await Comparison.findById(id);
+    if (!comparison) throw new Error("Comparison not found");
 
-  const study = await Study.findById(comparison.study);
-  if (!study) throw new Error("Study not found");
+    // Check study status
+    const study = await Study.findById(comparison.study);
+    if (!study) throw new Error("Study not found");
+    if (["active", "completed"].includes(study.status)) {
+      throw new Error("Cannot delete comparison from active/completed study");
+    }
 
-  if (["active", "completed"].includes(study.status)) {
-    throw new Error("Cannot delete comparison from active/completed study");
+
+    const stimulusIds = comparison.options?.map(opt => opt.stimulus) || [];
+
+
+    if (stimulusIds.length > 0) {
+      await Stimulus.deleteMany({ _id: { $in: stimulusIds } });
+    }
+
+    
+    await Study.findByIdAndUpdate(
+      comparison.study,
+      { $pull: { comparisons: id } }
+    );
+
+    // Delete the comparison
+    await Comparison.findByIdAndDelete(id);
+  } catch (error) {
+    throw error;
   }
-
-  await Comparison.findByIdAndDelete(id);
 };
 

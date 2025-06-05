@@ -126,23 +126,26 @@ const handleUnpublishStudy = async () => {
   };
 
 const handleDeleteStudy = async () => {
-      if (study.status === "active" && study.participantCount > 0) {
-    alert("You cannot delete comparisons from a active study with participants study.");
+  if (study.status === "active" && study.participantCount > 0) {
+    setError("Cannot delete an active study that has participants.");
     return;
   }
-    if (study.status === "active") {
-    alert("You cannot delete comparisons from a published study.");
+  if (study.status === "completed") {
+    setError("Cannot delete a completed study.");
     return;
   }
-  const confirm = window.confirm("Are you sure you want to delete this study?");
+  
+  const confirm = window.confirm("Are you sure you want to delete this study? This action cannot be undone.");
   if (!confirm) return;
 
   try {
     await deleteStudy(studyId);
-    alert("Study deleted.");
-    navigate("/studies");
+    setSuccess("Study deleted successfully!");
+    setTimeout(() => {
+      navigate("/studies");
+    }, 1000); // Give user a moment to see the success message
   } catch (err) {
-    alert(err.message || "Failed to delete study.");
+    setError(err.message || "Failed to delete study.");
   }
 };
 
