@@ -7,6 +7,8 @@ import {
   getAllStudiesService,
   deleteStudyByIdService,
   getStudyByIdSessionService,
+  activateStudyService,
+  deactivateStudyService,
 } from "../services/study.service";
 import mongoose from "mongoose";
 import { StudySession } from "../models/session.model";
@@ -119,19 +121,19 @@ export const activateStudy = async (
   res: Response
 ): Promise<void> => {
   try {
-    const study = await Study.findById(req.params.id);
-    if (!study) {
-      res.status(404).json({ message: "Study not found" });
-      return;
-    }
-
-    study.status = "active";
-    await study.save();
-
+    const study = await activateStudyService(req.params.id);
     res.status(200).json(study);
-  } catch (err) {
-    console.error("Failed to activate study:", err);
-    res.status(500).json({ message: "Failed to publish study" });
+  } catch (error: unknown) {
+    console.error("Failed to activate study:", error);
+    if (error instanceof Error) {
+      if (error.message === "Study not found") {
+        res.status(404).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Failed to publish study" });
+    }
   }
 };
 
@@ -140,19 +142,19 @@ export const deactivateStudy = async (
   res: Response
 ): Promise<void> => {
   try {
-    const study = await Study.findById(req.params.id);
-    if (!study) {
-      res.status(404).json({ message: "Study not found" });
-      return;
-    }
-
-    study.status = "draft";
-    await study.save();
-
+    const study = await deactivateStudyService(req.params.id);
     res.status(200).json(study);
-  } catch (err) {
-    console.error("Failed to deactivate study:", err);
-    res.status(500).json({ message: "Failed to unpublish study" });
+  } catch (error: unknown) {
+    console.error("Failed to deactivate study:", error);
+    if (error instanceof Error) {
+      if (error.message === "Study not found") {
+        res.status(404).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Failed to unpublish study" });
+    }
   }
 };
 
@@ -183,12 +185,6 @@ export const deleteStudyById = async (
       return;
     }
 
-    /* st existingSession = await StudySession.findOne({ study: id });
-    if (existingSession) {
-      console.log("blocked: active session")
-      res.status(400).json({ message: "Cannot delete a study with active sessions" });
-      return;
-    } */
 
     await deleteStudyByIdService(id);
 
