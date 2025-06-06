@@ -16,29 +16,17 @@ export const addComparisonToStudy = async (studyId, formData) => {
 };
 
 export const deleteComparison = async (comparisonId) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/comparisons/${comparisonId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+  const res = await fetch(`${BASE_URL}/api/comparisons/${comparisonId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
 
-    if (!res.ok) {
-      
-      let errorMessage = "Failed to delete comparison";
-      try {
-        const err = await res.json();
-        errorMessage = err.message || errorMessage;
-      } catch {
-      
-      }
-      throw new Error(errorMessage);
-    }
-
-    return true;
-  } catch (error) {
-    
-    throw error;
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to delete comparison");
   }
+
+  return true;
 };
 
 

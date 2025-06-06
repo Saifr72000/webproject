@@ -2,17 +2,13 @@ import { Request, Response } from "express";
 import {
   createComparisonService,
   createStimulusService,
+  getComparisonById,
+  deleteComparisonByIdService,
+  updateComparisonService
 } from "../services/comparison.service";
-
-import { Comparison, IComparison } from "../models/comparison.model";
-import { IStimulus, Stimulus } from "../models/stimuli.model";
-import multer from "multer";
-import { getComparisonById, deleteComparisonById } from "../services/comparison.service";
+import { IStimulus } from "../models/stimuli.model";
 import { StudySession } from "../models/session.model";
 import mongoose, { Types } from "mongoose";
-import { IComparisonOption } from "../models/comparison.model";
-import { createStimulusFromFile } from "../services/stimuli.service";
-import { updateComparisonService } from "../services/comparison.service";
 
 
 
@@ -97,7 +93,7 @@ export const getComparisonByIdController = async (
 // delete comparison by Id controller
 export const deleteComparisonByIdController = async (req: Request, res: Response): Promise<void> => {
   try {
-    await deleteComparisonById(req.params.id);
+    await deleteComparisonByIdService(req.params.id);
     res.status(200).json({ message: "Comparison deleted" });
   } catch (err: any) {
     res.status(400).json({ message: err.message });

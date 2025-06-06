@@ -85,14 +85,15 @@ export const getAllStudiesService = async (
 export const deleteStudyByIdService = async (
   studyId: string
 ): Promise<void> => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const study = await Study.findById(studyId);
 
     if (!study) {
       throw new Error("Study not found");
+    }
+
+    if (study.status === "active" || study.status === "completed") {
+      throw new Error("Cannot delete an active or completed study");
     }
 
     // Find all comparisons for the study
@@ -105,21 +106,16 @@ export const deleteStudyByIdService = async (
 
     // Delete all associated stimuli
     if (stimulusIds.length > 0) {
-      await Stimulus.deleteMany({ _id: { $in: stimulusIds } }).session(session);
+      await Stimulus.deleteMany({ _id: { $in: stimulusIds } });
     }
 
-   
-    await Comparison.deleteMany({ study: studyId }).session(session);
+    // Delete all comparisons
+    await Comparison.deleteMany({ study: studyId });
 
-    // delete the study
-    await Study.findByIdAndDelete(studyId).session(session);
-
-    await session.commitTransaction();
+    // Delete the study
+    await Study.findByIdAndDelete(studyId);
   } catch (error) {
-    await session.abortTransaction();
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 

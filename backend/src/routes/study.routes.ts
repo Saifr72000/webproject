@@ -39,7 +39,13 @@ router.post(
   createStudy
 );
 
-router.get("/:id/check-session-exists/", checkSessionExists);
+
+router.get("/study-session/:id", getStudyByIdSession);
+router.get("/:id/check-session-exists", checkSessionExists);
+router.get("/:id", authenticateUser, getStudyById);
+
+// For public access to participate in study
+
 
 router.get("/study-session/:id", getStudyByIdSession);
 
